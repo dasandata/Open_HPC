@@ -12,26 +12,26 @@
 ```
 ip a # 인터페이스 목록 확인
 ```
->[root@master:~]# ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000
-    link/ether d0:94:66:2e:98:38 brd ff:ff:ff:ff:ff:ff
-3: em2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000
-    link/ether d0:94:66:2e:98:39 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.0.116/24 brd 192.168.0.255 scope global em2
-       valid_lft forever preferred_lft forever
-4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000
-    link/ether d0:94:66:2e:98:3a brd ff:ff:ff:ff:ff:ff
-5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000
-    link/ether d0:94:66:2e:98:3b brd ff:ff:ff:ff:ff:ff
-6: p1p1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000
-    link/ether b4:96:91:18:09:74 brd ff:ff:ff:ff:ff:ff
-7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000
-    link/ether b4:96:91:18:09:76 brd ff:ff:ff:ff:ff:ff
-[root@master:~]#  
+>[root@master:~]# ip a  
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
+    inet 127.0.0.1/8 scope host lo  
+       valid_lft forever preferred_lft forever  
+2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
+    link/ether d0:94:66:2e:98:38 brd ff:ff:ff:ff:ff:ff  
+3: em2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
+    link/ether d0:94:66:2e:98:39 brd ff:ff:ff:ff:ff:ff  
+    inet 192.168.0.116/24 brd 192.168.0.255 scope global em2  
+       valid_lft forever preferred_lft forever  
+4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
+    link/ether d0:94:66:2e:98:3a brd ff:ff:ff:ff:ff:ff  
+5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
+    link/ether d0:94:66:2e:98:3b brd ff:ff:ff:ff:ff:ff  
+6: p1p1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
+    link/ether b4:96:91:18:09:74 brd ff:ff:ff:ff:ff:ff  
+7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
+    link/ether b4:96:91:18:09:76 brd ff:ff:ff:ff:ff:ff  
+[root@master:~]#    
 
 ```
 EXT_NIC=ifcfg-em2 #ex)외부망
