@@ -12,7 +12,7 @@
 ```
 ip a # 인터페이스 목록 확인
 ```
->[root@master:~]# ip a  
+>>[root@master:~]# ip a  
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
@@ -35,7 +35,7 @@ ip a # 인터페이스 목록 확인
 
 ```
 EXT_NIC=ifcfg-em2 #ex)외부망
-INT_NIC=ifcfg-p1p1 ex)내부망
+INT_NIC=ifcfg-p1p1 #ex)내부망
 
 cat /etc/sysconfig/network-scripts/{$EXT_NIC}
 cat /etc/sysconfig/network-scripts/{$INT_NIC}
