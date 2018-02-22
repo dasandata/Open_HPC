@@ -1,40 +1,66 @@
-# 다산데이타 OpenHPC 셋업 표준안 (2017-09)
-
+# 다산데이타 OpenHPC 1.3 셋업 표준안 (2018-22)
 
 ## ====== Open HPC =======
-http://openhpc.community/downloads/
+참조 링크 : http://openhpc.community/downloads/
 
 ## 60.   Module
-https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
-
-
+참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
 
 ## 61. OpenHPC Network, Firewall Setup
 
-### 내 외부 망 / 인터페이스 설정
-`ip a
+### 외부망 및 내부망 인터페이스 설정 및 변수로 선언
+```
+ip a # 인터페이스 목록 확인
+```
+>[root@master:~]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000
+    link/ether d0:94:66:2e:98:38 brd ff:ff:ff:ff:ff:ff
+3: em2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000
+    link/ether d0:94:66:2e:98:39 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.116/24 brd 192.168.0.255 scope global em2
+       valid_lft forever preferred_lft forever
+4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000
+    link/ether d0:94:66:2e:98:3a brd ff:ff:ff:ff:ff:ff
+5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000
+    link/ether d0:94:66:2e:98:3b brd ff:ff:ff:ff:ff:ff
+6: p1p1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000
+    link/ether b4:96:91:18:09:74 brd ff:ff:ff:ff:ff:ff
+7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000
+    link/ether b4:96:91:18:09:76 brd ff:ff:ff:ff:ff:ff
+[root@master:~]#  
 
-cat /etc/sysconfig/network-scripts/ifcfg-em1
-cat /etc/sysconfig/network-scripts/ifcfg-em2
-`
+```
+EXT_NIC=ifcfg-em2 #ex)외부망
+INT_NIC=ifcfg-p1p1 ex)내부망
 
-# 내부망 ip는 10.1.1.x 대역으로 설정
+cat /etc/sysconfig/network-scripts/{$EXT_NIC}
+cat /etc/sysconfig/network-scripts/{$INT_NIC}
+```
+### 내부망 ip는 10.1.1.x 대역으로 설정
+```
+vi /etc/sysconfig/network-scripts/{$INT_NIC}
+```
 
-vi /etc/sysconfig/network-scripts/ifcfg-em2
-cat /etc/sysconfig/network-scripts/ifcfg-em2
+```
+cat /etc/sysconfig/network-scripts/ifcfg-p1p1
 
-ifdown em2 && ifup em2
+ifdown p1p1 && ifup p1p1
 ip a
-
-# 방화벽 설정 변경
+```
+### 방화벽 설정 변경
+```
 firewall-cmd --change-interface=em2   --zone=trusted
 firewall-cmd --list-all --zone=external
 firewall-cmd --list-all --zone=trusted
+```
 
+## 62. OpenHPC repository Install, ntp service enable
 
-
-62. OpenHPC repository Install, ntp service enable
-
+```
 yum repolist
 yum -y -q install http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm
 yum repolist
@@ -42,7 +68,7 @@ yum repolist
 echo "server time.bora.net" >> /etc/ntp.conf
 systemctl enable ntpd.service
 systemctl restart ntpd
-
+```
 
 
 63. OpenHPC base, resource management services Install
