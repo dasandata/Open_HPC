@@ -2,12 +2,12 @@
 ***
 
 ## # ====== Open HPC =======
-### # Root 로 로그인하여 설치를 시작 합니다.
-#### # 참조 링크 : http://openhpc.community/downloads/
+\# Root 로 로그인하여 설치를 시작 합니다.
+\# 참조 링크 : http://openhpc.community/downloads/
 
 ## # 60.   Module
-### # Module 에 대한 사전 지식이 필요 합니다.
-#### # 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
+\# Module 에 대한 사전 지식이 필요 합니다.
+\# 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
 
 ***
 
