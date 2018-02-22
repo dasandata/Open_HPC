@@ -1,14 +1,14 @@
 # 다산데이타 OpenHPC 1.3 셋업 표준안 (2018-22)
-
-## ====== Open HPC =======
-참조 링크 : http://openhpc.community/downloads/
-
-## 60.   Module
-참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
-
-## 61. OpenHPC Network, Firewall Setup
-
-### 외부망 및 내부망 인터페이스 설정 및 변수로 선언
+ #
+## # ====== Open HPC =======
+ # 참조 링크 : http://openhpc.community/downloads/
+ #
+## # 60.   Module
+ # 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
+ #
+## # 61. OpenHPC Network, Firewall Setup
+ #
+### # 외부망 및 내부망 인터페이스 설정 및 변수로 선언
 ```bash
 ip a # 인터페이스 목록 확인
 
@@ -34,10 +34,11 @@ ip a # 인터페이스 목록 확인
 
 
 ```bash
-EXT_NIC=ifcfg-em2 #ex)외부망
-INT_NIC=ifcfg-p1p1 #ex)내부망
+EXT_NIC=em2 #ex)외부망
+INT_NIC=p1p1 #ex)내부망
+```
 
-cat /etc/sysconfig/network-scripts/${EXT_NIC}
+cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 
 ```
 >**NAME=em2**  
@@ -52,7 +53,7 @@ DEFROUTE=yes
 **ZONE=external**  
 
 ```bash
-cat /etc/sysconfig/network-scripts/${INT_NIC}
+cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
 >**BOOTPROTO=dhcp  
@@ -60,38 +61,95 @@ NAME=p1p1
 ONBOOT=no  
 ZONE=trusted**  
 
-### 내부망 ip는 10.1.1.x 대역으로 설정
+### # 가독성 향상을 위해 불필요한 IPV6 항목 삭제
 ```bash
-perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/${INT_NIC}
-perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/${INT_NIC}
-
-echo "IPADDR=10.1.1.1"  >>  /etc/sysconfig/network-scripts/${INT_NIC}
-echo "PREFIX=24"  >>  /etc/sysconfig/network-scripts/${INT_NIC}
+sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
+sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
 
+### # 내부망 ip는 10.1.1.x 대역으로 설정
 ```bash
-cat /etc/sysconfig/network-scripts/${INT_NIC}
+perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
+echo "IPADDR=10.1.1.1"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+echo "PREFIX=24"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+
+cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+
+```
+
+### # ip 변경 설정 적용
+```bash
 ifdown ${INT_NIC} && ifup ${INT_NIC}
 
 ip a
 
 ```
-### 방화벽 설정 변경
-```
-firewall-cmd --change-interface=em2   --zone=trusted
+>1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
+    inet 127.0.0.1/8 scope host lo  
+       valid_lft forever preferred_lft forever  
+2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
+    link/ether ================= brd ff:ff:ff:ff:ff:ff  
+3: em2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
+    link/ether ================= brd ff:ff:ff:ff:ff:ff  
+    inet 192.168.0.116/24 brd 192.168.0.255 scope global em2  
+       valid_lft forever preferred_lft forever  
+4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
+    link/ether ================= brd ff:ff:ff:ff:ff:ff  
+5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
+    link/ether ================= brd ff:ff:ff:ff:ff:ff  
+6: **p1p1**: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state **UP** qlen 1000  
+    link/ether ================= brd ff:ff:ff:ff:ff:ff  
+    **inet 10.1.1.1/24** brd 10.1.1.255 scope global p1p1  
+       valid_lft forever preferred_lft forever  
+7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
+    link/ether ================= brd ff:ff:ff:ff:ff:ff  
+
+### # 방화벽 설정 변경
+```bash
+firewall-cmd --change-interface=${INT_NIC}  --zone=trusted  --permanent
+firewall-cmd --reload
+
 firewall-cmd --list-all --zone=external
+```
+>external (active)  
+  target: default  
+  icmp-block-inversion: no  
+  interfaces: em2  
+
+```bash
 firewall-cmd --list-all --zone=trusted
-```
-
-## 62. OpenHPC repository Install, ntp service enable
 
 ```
-yum repolist
-yum -y -q install http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm
-yum repolist
+>external (active)  
+  target: default  
+  icmp-block-inversion: no  
+  interfaces: em2  
 
+ #
+## # 62. OpenHPC repository Install, ntp service enable
+ #
+### # 현재 repolist 확인
+```bash
+yum repolist
+```
+
+```bash
+yum -y install \
+http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
+>> dasan_log_install_openhpc_repository.txt
+
+tail dasan_log_install_openhpc_repository.txt
+```
+
+```bash
+yum repolist
+```
+
+```bash
 echo "server time.bora.net" >> /etc/ntp.conf
 systemctl enable ntpd.service
 systemctl restart ntpd
@@ -240,7 +298,6 @@ cat $CHROOT/var/spool/pbs/mom_priv/config
 chroot $CHROOT opt/pbs/libexec/pbs_habitat
 
 chroot $CHROOT systemctl enable pbs
-
 
 
 
