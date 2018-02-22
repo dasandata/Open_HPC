@@ -1,70 +1,22 @@
-다산데이타 OpenHPC 셋업 표준안 (2017-09)
+# 다산데이타 OpenHPC 셋업 표준안 (2017-09)
 
-====== Open HPC =======	2
-61. OpenHPC Network, Firewall Setup	2
-62. OpenHPC repository Install, ntp service enable	2
-63. OpenHPC base, resource management services Install	2
-- (Slurm) resource management services Install	3
-- (PBS Pro ) resource management services Install	3
-- Add InfiniBand support services on master node	3
-- basic Warewulf setup for master node	4
-- Define compute image for provisioning	4
-- Customize system configuration	5
-- (Additional Custom) Increase locked memory limits	6
-제외 // - (Additional Custom) Enable ssh control via resource manager (Slurm)	6
-제외 // - (Additional Custom) Enable forwarding of system logs	6
-- (Additional Custom) Add Ganglia monitoring	6
-제외 // - (Additional Custom) Add ClusterShell	7
-제외 // - (Additional Custom) Add genders	7
-- Import files	8
-- Finalizing provisioning configuration	8
-- Assemble Virtual Node File System (VNFS) image	8
-64. Register nodes for provisioning	8
-- node  n01 boot on pxe	9
-제외 // @@. OpenHPC - Masquerade Setting	9
-- Master 설정	9
-- node 에 설정 적용 (설정 안되어 있었을 경우)	10
-65. OpenHPC - Add Node (Clone)	10
-66. WOL - Wake Nodes	10
-64. OpenHPC - Add User	11
-65. OpenHPC - Node Boot Image Update (after add Program)	11
-제외 // @@. OpenHPC - user's ssh login to compute nodes	12
-66. OpenHPC -  Node Local Disk Mount (/scratch)	12
-67.  Install OpenHPC Development Components	13
-68.  (PBS Pro)  Resource Manager Startup  & Run a Test Job	13
--  Interactive execution	14
--  Batch execution	14
-70.  LAMMPS (Molecular Dynamics Simulator)	16
-71.  Material Studio Install	18
-@@. OpenHPC - NFS Mount	19
-@@. Install OpenHPC Development Components	19
-@@ .Intel    Compile install   < Free  versaion  >	19
-@@. Resource Manager Startup	23
-@@. Interactive execution	23
-8.1    HPL   TEST	24
 
-===== 목차 끝 =====
+## ====== Open HPC =======
+http://openhpc.community/downloads/
 
-#
-# ====== Open HPC =======
-#
-# http://openhpc.community/downloads/
+## 60.   Module
+https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
 
-#
-# 60.   Module
-#
-# https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
-#
 
-#
-#61. OpenHPC Network, Firewall Setup
-#
-# 내 외부 망 / 인터페이스 설정
-ip a
+
+## 61. OpenHPC Network, Firewall Setup
+
+### 내 외부 망 / 인터페이스 설정
+`ip a
 
 cat /etc/sysconfig/network-scripts/ifcfg-em1
 cat /etc/sysconfig/network-scripts/ifcfg-em2
-
+`
 
 # 내부망 ip는 10.1.1.x 대역으로 설정
 
