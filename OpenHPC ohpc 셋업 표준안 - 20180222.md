@@ -42,8 +42,8 @@ ip a    # 인터페이스 목록 확인
 
 ```bash
 # 인터페이스 명은 상황에 맞체 변경해 주어야 합니다.
-EXT_NIC=*em2* # 외부망
-INT_NIC=*p1p1* # 내부망
+EXT_NIC=em2 # 외부망
+INT_NIC=p1p1 # 내부망
 
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 
@@ -152,26 +152,94 @@ yum repolist
 ```
 
 출력 예)  
->
+>Loaded plugins: fastestmirror, langpacks, priorities  
+Loading mirror speeds from cached hostfile  
+ \* base: data.nicehosting.co.kr  
+ \* epel: mirror01.idc.hinet.net  
+ \* extras: data.nicehosting.co.kr  
+ \* updates: data.nicehosting.co.kr  
+116 packages excluded due to repository priority protections  
+repo id             repo name                                         status  
+!base/7/x86_64      CentOS-7 - Base                                        9,591  
+!epel/x86_64        Extra Packages for Enterprise Linux 7 - x86_64    12,182+116  
+!extras/7/x86_64    CentOS-7 - Extras                                        388  
+!updates/7/x86_64   CentOS-7 - Updates                                     1,929  
+repolist: 24,090  
 
-
-
+### # OpenHPC repository 설치
 ```bash
 yum -y install \
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
->> ~/dasan_log_install_openhpc_repository.txt
+>> ~/dasan_log_ohpc_openhpc_repository.txt
 
-tail ~/dasan_log_install_openhpc_repository.txt
+tail ~/dasan_log_ohpc_openhpc_repository.txt
+```
 
+출력 예)  
+> Running transaction test  
+Transaction test succeeded  
+Running transaction  
+  Installing : ohpc-release-1.3-1.el7.x86_64                                1/1   
+  Verifying  : ohpc-release-1.3-1.el7.x86_64                                1/1   
+Installed:  
+  ohpc-release.x86_64 0:1.3-1.el7                                               
+Complete!  
+
+### # repolist 확인
 ```
 
 ```bash
 yum repolist
 
 ```
+출력 예)
+>Loaded plugins: fastestmirror, langpacks, priorities  
+OpenHPC                                                  | 1.6 kB     00:00     
+OpenHPC-updates                                          | 1.2 kB     00:00     
+(1/3): OpenHPC/group_gz                                    | 1.7 kB   00:00     
+(2/3): OpenHPC/primary                                     | 155 kB   00:01     
+(3/3): OpenHPC-updates/primary                             | 192 kB   00:01     
+Loading mirror speeds from cached hostfile  
+ * base: data.nicehosting.co.kr  
+ * epel: mirror.rise.ph  
+ * extras: data.nicehosting.co.kr  
+ * updates: data.nicehosting.co.kr  
+OpenHPC                                                                 821/821  
+OpenHPC-updates                                                       1010/1010  
+139 packages excluded due to repository priority protections  
+repo id             repo name                                         status  
+OpenHPC             OpenHPC-1.3 - Base                                   321+500  
+OpenHPC-updates     OpenHPC-1.3 - Updates                                428+582  
+base/7/x86_64       CentOS-7 - Base                                        9,591  
+epel/x86_64         Extra Packages for Enterprise Linux 7 - x86_64    12,182+116  
+extras/7/x86_64     CentOS-7 - Extras                                        388  
+updates/7/x86_64    CentOS-7 - Updates                                     1,929  
+repolist: 24,839  
+
+
+### # NTP Server 설정
+
+```bash
+cat /etc/ntp.conf | grep -v "#\|^$"
+```
+출력 예)
+>driftfile /var/lib/ntp/drift  
+restrict default nomodify notrap nopeer noquery  
+restrict 127.0.0.1   
+restrict ::1  
+server 0.centos.pool.ntp.org iburst  
+server 1.centos.pool.ntp.org iburst  
+server 2.centos.pool.ntp.org iburst  
+server 3.centos.pool.ntp.org iburst  
+includefile /etc/ntp/crypto/pw  
+keys /etc/ntp/keys  
+disable monitor  
 
 ```bash
 echo "server time.bora.net" >> /etc/ntp.conf
+
+cat /etc/ntp.conf | grep -v "#\|^$"
+
 systemctl enable ntpd.service
 systemctl restart ntpd
 
@@ -183,47 +251,145 @@ systemctl restart ntpd
 
 ```bash
 MASTER_HOSTNAME=$(hostname)
-MASTER_IP=*10.1.1.1*
-MASTER_INT_INTERFACE=*em2*
-NODE_NAME=*node*
-NUM_NODES=*${전체노드 수}*
+MASTER_IP=10.1.1.1
+MASTER_INT_INTERFACE=em2
+NODE_NAME=node
 export CHROOT=/opt/ohpc/admin/images/centos7.4
 ```
 
+### # 클러스터 이름을 정의하고, 전체 노드 수량에 맞추어 입력
 ```bash
-echo "${MASTER_IP}  ${MASTER_HOSTNAME}"  >>  /etc/hosts
+CLUSTER_NAME=${클러스터 이름 정의}
+NUM_NODES=${전체 노드 수}
+NODE_NUMBER="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
+
+```
+
+```bash
+echo "${MASTER_IP}     ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
 ```
-> 출력 예)  
+출력 예)
+>127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6  
+10.1.1.1    master  
 
+### # openhpc base 설치
 
 ```bash
-yum -y install ohpc-base ohpc-warewulf  >> ~/dasan_log_ohpc_base,warewulf.txt
+yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt
 tail ~/dasan_log_ohpc_base,warewulf.txt
 
 ```
-> 출력 예)  
+출력 예)  
+>  tftp-server.x86_64 0:5.2-13.el7                     
+  warewulf-cluster-ohpc.x86_64 0:3.8pre-9.2                                     
+  warewulf-common-ohpc.x86_64 0:3.8pre-11.1                                     
+  warewulf-ipmi-ohpc.x86_64 0:3.8pre-9.1                                        
+  warewulf-provision-ohpc.x86_64 0:3.8pre-28.1                                  
+  warewulf-provision-server-ohpc.x86_64 0:3.8pre-28.1                           
+  warewulf-vnfs-ohpc.x86_64 0:3.8pre-19.1                                       
+  xinetd.x86_64 2:2.3.15-13.el7                                                 
+Complete!  
 
 
 
-### # 63-B. (Slurm) resource management services Install
+## # 63번 항목, Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.
+\# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.
+
+## # 63-A. (Slurm) resource management services Install
+### # Install to ohpc-slurm-server
+```bash
+yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
+tail ~/dasan_log_ohpc_resourcemanager_slurm.txt
+```
+출력 예)
+>  pmix-ohpc.x86_64 0:1.2.3-20.1                                                 
+  slurm-devel-ohpc.x86_64 0:17.02.9-69.2                                        
+  slurm-munge-ohpc.x86_64 0:17.02.9-69.2                                        
+  slurm-ohpc.x86_64 0:17.02.9-69.2                                              
+  slurm-perlapi-ohpc.x86_64 0:17.02.9-69.2                                      
+  slurm-plugins-ohpc.x86_64 0:17.02.9-69.2                                      
+  slurm-slurmdbd-ohpc.x86_64 0:17.02.9-69.2                                     
+  slurm-sql-ohpc.x86_64 0:17.02.9-69.2                                          
+Complete!  
+
+### # Slurm config file 설정 (/etc/slurm/slurm.conf)
+
+#### # ClusterName 변경
+```bash
+grep ClusterName /etc/slurm/slurm.conf
+
+```
+출력 예)
+>ClusterName=linux  
 
 ```bash
-yum -y install ohpc-slurm-server
-grep ControlMachine /etc/slurm/slurm.conf
-ControlMachine=linux0
-perl -pi -e "s/ControlMachine=\S+/ControlMachine=${hostname}/" /etc/slurm/slurm.conf
+perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/"  /etc/slurm/slurm.conf
 
-grep ControlMachine /etc/slurm/slurm.conf
-ControlMachine=ohpc-master
+grep ClusterName /etc/slurm/slurm.conf
 
-grep NodeName= /etc/slurm/slurm.conf
-NodeName=n[01-08] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN
-
-vi /etc/slurm/slurm.conf
-grep NodeName= /etc/slurm/slurm.conf
-NodeName=n[1-?] Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 State=UNKNOWN
 ```
+출력 예)
+>ClusterName=*OpenHPC-Dasandata*
+
+#### # ControlMachine 이름 변경
+```bash
+grep ControlMachine /etc/slurm/slurm.conf
+
+```
+출력 예)
+>ControlMachine=linux0   
+
+```bash
+perl -pi -e "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" /etc/slurm/slurm.conf
+
+grep ControlMachine /etc/slurm/slurm.conf
+
+```
+출력 예)
+>ControlMachine=*master*
+
+#### # NodeName, CPU & Memory 속성 변경
+
+\# slurm.conf 파일의 NodeName을 클러스터 노드의 Hostname 과 동일하게 변경하고,
+\# 사양에 맞추어 Sockets, Cores, Thread, RealMemory 값을 변경 합니다.
+\# Sockets = 노드의 물리적인 CPU 갯수.
+\# CoresPerSocket = 각 물리 CPU의 논리적 코어 갯수.
+\# Thread = 하이퍼스레딩 사용 여부. (사용시 2, 미사용시 1)
+\# RealMemory = 노드의 실제 메모리 보다 약간 작게 합니다. 단위는 megabyte (예를 들어 64GB 라면 60GB = 60000)
+
+##### # NodeName 설정
+```bash
+echo "NodeName="${NODE_NAME}${NODE_NUMBER} &&
+grep NodeName= /etc/slurm/slurm.conf
+```
+출력 예)
+>NodeName=node[1-3]  
+NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
+
+```bash
+perl -pi -e "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_NUMBER}/" /etc/slurm/slurm.conf
+grep NodeName= /etc/slurm/slurm.conf
+```
+출력 예) **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
+>NodeName=*node[1-3]* Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
+
+##### # Node CPU 설정
+\# 변수 선언  # node 의 cpu 사양에 맞게 조정.
+\# **물리 CPU가 2개 이고, CPU 당 코어가 10개, 하이퍼스레딩은 켜진(Enable) 상태 인 경우...**  
+```bash
+SOCKETS=2
+CoresPerSocket=10
+THREAD=2
+```
+
+
+
+
+#### # NodeName, GPU 속성 추가 (Gres)
+
+
 
 
 
@@ -327,13 +493,14 @@ grep clienthost $CHROOT/var/spool/pbs/mom_priv/config
 perl -pi -e "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" $CHROOT/var/spool/pbs/mom_priv/config
 grep clienthost $CHROOT/var/spool/pbs/mom_priv/config
 
+
+```bash
 echo "\$usecp *:/home /home" >> $CHROOT/var/spool/pbs/mom_priv/config
 cat $CHROOT/var/spool/pbs/mom_priv/config
 chroot $CHROOT opt/pbs/libexec/pbs_habitat
 
 chroot $CHROOT systemctl enable pbs
-
-
+```
 
 
 # Add IB support and enable
@@ -369,6 +536,7 @@ echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
 cat $CHROOT/etc/fstab
 
 # Export /home and OpenHPC public packages from master server
+```bash
 cat /etc/exports
 echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
 echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
@@ -378,6 +546,7 @@ cat /etc/exports
 exportfs -a
 systemctl enable nfs-server
 systemctl restart nfs-server
+```
 
 
 # Enable NTP time service on computes and identify master host as local NTP server
