@@ -1,14 +1,20 @@
 # 다산데이타 OpenHPC 1.3 셋업 표준안 (2018-22)
- #
+***
+
 ## # ====== Open HPC =======
- # 참조 링크 : http://openhpc.community/downloads/
- #
+### # Root 로 로그인하여 설치를 시작 합니다.
+#### # 참조 링크 : http://openhpc.community/downloads/
+
 ## # 60.   Module
- # 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
- #
+### # Module 에 대한 사전 지식이 필요 합니다.
+#### # 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
+
+***
+
 ## # 61. OpenHPC Network, Firewall Setup
- #
+
 ### # 외부망 및 내부망 인터페이스 설정 및 변수로 선언
+
 ```bash
 ip a # 인터페이스 목록 확인
 
@@ -34,14 +40,16 @@ ip a # 인터페이스 목록 확인
 
 
 ```bash
-EXT_NIC=em2 #ex)외부망
-INT_NIC=p1p1 #ex)내부망
-```
+# 인터페이스 명은 상황에 맞체 변경해 주어야 합니다.
+EXT_NIC=em2 # 외부망
+INT_NIC=p1p1 # 내부망
 
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 
 ```
->**NAME=em2**  
+
+> 출력 예)  
+**NAME=em2**  
 ONBOOT=yes  
 BOOTPROTO=none  
 IPADDR=192.168.0.116  
@@ -56,9 +64,10 @@ DEFROUTE=yes
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
->**BOOTPROTO=dhcp  
-NAME=p1p1  
+> 출력 예)  
+**NAME=p1p1  
 ONBOOT=no  
+BOOTPROTO=dhcp  
 ZONE=trusted**  
 
 ### # 가독성 향상을 위해 불필요한 IPV6 항목 삭제
@@ -87,7 +96,8 @@ ifdown ${INT_NIC} && ifup ${INT_NIC}
 ip a
 
 ```
->1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
+> 출력 예)  
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
        valid_lft forever preferred_lft forever  
@@ -115,7 +125,8 @@ firewall-cmd --reload
 
 firewall-cmd --list-all --zone=external
 ```
->external (active)  
+> 출력 예)  
+  external (active)  
   target: default  
   icmp-block-inversion: no  
   interfaces: em2  
@@ -124,58 +135,77 @@ firewall-cmd --list-all --zone=external
 firewall-cmd --list-all --zone=trusted
 
 ```
->external (active)  
+> 출력 예)  
+  external (active)  
   target: default  
   icmp-block-inversion: no  
   interfaces: em2  
 
- #
+
 ## # 62. OpenHPC repository Install, ntp service enable
- #
+
 ### # 현재 repolist 확인
 ```bash
 yum repolist
+
 ```
+
+> 출력 예)  
+
 
 ```bash
 yum -y install \
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
->> dasan_log_install_openhpc_repository.txt
+>> ~/dasan_log_install_openhpc_repository.txt
 
-tail dasan_log_install_openhpc_repository.txt
+tail ~/dasan_log_install_openhpc_repository.txt
+
 ```
 
 ```bash
 yum repolist
+
 ```
 
 ```bash
 echo "server time.bora.net" >> /etc/ntp.conf
 systemctl enable ntpd.service
 systemctl restart ntpd
+
 ```
 
+## # 63. OpenHPC base, resource management services Install
 
-63. OpenHPC base, resource management services Install
+### # 변수 정의 및 선언
 
-# 변수 정의 및 선언
-
+```bash
 MASTER_HOSTNAME=$(hostname)
-MASTER_IP=10.1.1.254
-MASTER_INT_INTERFACE=em2
-NODE_NAME=n
-NUM_NODES=8
-export CHROOT=/opt/ohpc/admin/images/centos7.3
+MASTER_IP=*10.1.1.1*
+MASTER_INT_INTERFACE=*em2*
+NODE_NAME=*node*
+NUM_NODES=*${전체노드 수}*
+export CHROOT=/opt/ohpc/admin/images/centos7.4
+```
 
-echo "${MASTER_IP}  ${MASTER_HOSTNAME}" >>  /etc/hosts
+```bash
+echo "${MASTER_IP}  ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
+```
+> 출력 예)  
 
-yum -y install ohpc-base ohpc-warewulf
+
+```bash
+yum -y install ohpc-base ohpc-warewulf  >> ~/dasan_log_ohpc_base,warewulf.txt
+tail ~/dasan_log_ohpc_base,warewulf.txt
+
+```
+> 출력 예)  
 
 
 
-    - (Slurm) resource management services Install
+### # 63-B. (Slurm) resource management services Install
 
+```bash
 yum -y install ohpc-slurm-server
 grep ControlMachine /etc/slurm/slurm.conf
 ControlMachine=linux0
@@ -190,12 +220,13 @@ NodeName=n[01-08] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN
 vi /etc/slurm/slurm.conf
 grep NodeName= /etc/slurm/slurm.conf
 NodeName=n[1-?] Sockets=1 CoresPerSocket=1 ThreadsPerCore=1 State=UNKNOWN
+```
 
 
 
+### # 63-B. (PBS Pro ) resource management services Install
 
-   - (PBS Pro ) resource management services Install
-
+```bash
 yum -y install pbspro-server-ohpc
 
 
@@ -204,15 +235,15 @@ yum -y install pbspro-server-ohpc
 
 yum -y groupinstall "InfiniBand Support"
 yum -y install infinipath-psm
+```
 
 
-
-# Load IB drivers
+### # Load IB drivers
 [sms]# systemctl start rdma
 
 [sms]# cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-scripts
 
-# Define local IPoIB address and netmask
+### # Define local IPoIB address and netmask
 [sms]# perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 [sms]# perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 
