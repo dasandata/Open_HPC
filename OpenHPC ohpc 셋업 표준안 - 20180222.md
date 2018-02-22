@@ -2,12 +2,12 @@
 ***
 
 ## # ====== Open HPC =======
-\# Root 로 로그인하여 설치를 시작 합니다.
-\# 참조 링크 : http://openhpc.community/downloads/
+\# Root 로 로그인하여 설치를 시작 합니다.  
+\# 참조 링크 : http://openhpc.community/downloads/  
 
 ## # 60.   Module
-\# Module 에 대한 사전 지식이 필요 합니다.
-\# 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf
+\# Module 에 대한 사전 지식이 필요 합니다.  
+\# 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf  
 
 ***
 
@@ -16,9 +16,10 @@
 ### # 외부망 및 내부망 인터페이스 설정 및 변수로 선언
 
 ```bash
-ip a # 인터페이스 목록 확인
+ip a    # 인터페이스 목록 확인
 
 ```
+출력 예)
 > 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
@@ -41,15 +42,14 @@ ip a # 인터페이스 목록 확인
 
 ```bash
 # 인터페이스 명은 상황에 맞체 변경해 주어야 합니다.
-EXT_NIC=em2 # 외부망
-INT_NIC=p1p1 # 내부망
+EXT_NIC=*em2* # 외부망
+INT_NIC=*p1p1* # 내부망
 
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 
 ```
-
-> 출력 예)  
-**NAME=em2**  
+출력 예)
+>**NAME=em2**  
 ONBOOT=yes  
 BOOTPROTO=none  
 IPADDR=192.168.0.116  
@@ -64,7 +64,8 @@ DEFROUTE=yes
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
-> 출력 예)  
+출력 예)
+>
 **NAME=p1p1  
 ONBOOT=no  
 BOOTPROTO=dhcp  
@@ -96,8 +97,8 @@ ifdown ${INT_NIC} && ifup ${INT_NIC}
 ip a
 
 ```
-> 출력 예)  
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
+출력 예)
+>1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
        valid_lft forever preferred_lft forever  
@@ -125,21 +126,21 @@ firewall-cmd --reload
 
 firewall-cmd --list-all --zone=external
 ```
-> 출력 예)  
-  external (active)  
-  target: default  
-  icmp-block-inversion: no  
-  interfaces: em2  
+출력 예)
+>external (active)  
+target: default  
+icmp-block-inversion: no  
+interfaces: em2  
 
 ```bash
 firewall-cmd --list-all --zone=trusted
 
 ```
-> 출력 예)  
-  external (active)  
-  target: default  
-  icmp-block-inversion: no  
-  interfaces: em2  
+출력 예)
+>external (active)  
+target: default  
+icmp-block-inversion: no  
+interfaces: em2  
 
 
 ## # 62. OpenHPC repository Install, ntp service enable
@@ -150,7 +151,9 @@ yum repolist
 
 ```
 
-> 출력 예)  
+출력 예)  
+>
+
 
 
 ```bash
