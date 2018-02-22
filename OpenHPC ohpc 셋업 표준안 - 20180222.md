@@ -9,7 +9,7 @@
 ## 61. OpenHPC Network, Firewall Setup
 
 ### 외부망 및 내부망 인터페이스 설정 및 변수로 선언
-```
+```bash
 ip a # 인터페이스 목록 확인
 
 ```
@@ -33,7 +33,7 @@ ip a # 인터페이스 목록 확인
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
 
 
-```
+```bash
 EXT_NIC=ifcfg-em2 #ex)외부망
 INT_NIC=ifcfg-p1p1 #ex)내부망
 
@@ -51,7 +51,7 @@ DNS2=8.8.8.8
 DEFROUTE=yes  
 **ZONE=external**  
 
-```
+```bash
 cat /etc/sysconfig/network-scripts/${INT_NIC}
 
 ```
@@ -61,7 +61,7 @@ ONBOOT=no
 ZONE=trusted**  
 
 ### 내부망 ip는 10.1.1.x 대역으로 설정
-```
+```bash
 perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/${INT_NIC}
 perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/${INT_NIC}
 
@@ -70,7 +70,7 @@ echo "PREFIX=24"  >>  /etc/sysconfig/network-scripts/${INT_NIC}
 
 ```
 
-```
+```bash
 cat /etc/sysconfig/network-scripts/${INT_NIC}
 
 ifdown ${INT_NIC} && ifup ${INT_NIC}
