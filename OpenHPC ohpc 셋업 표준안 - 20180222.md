@@ -11,44 +11,72 @@
 ### 외부망 및 내부망 인터페이스 설정 및 변수로 선언
 ```
 ip a # 인터페이스 목록 확인
+
 ```
 > 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
        valid_lft forever preferred_lft forever  
 2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether d0:94:66:2e:98:38 brd ff:ff:ff:ff:ff:ff  
-3: em2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
-    link/ether d0:94:66:2e:98:39 brd ff:ff:ff:ff:ff:ff  
-    inet 192.168.0.116/24 brd 192.168.0.255 scope global em2  
+    link/ether ================ brd ff:ff:ff:ff:ff:ff  
+3: **em2**: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
+    link/ether ================ brd ff:ff:ff:ff:ff:ff  
+    inet **192.168.0.116/24** brd 192.168.0.255 scope global em2  
        valid_lft forever preferred_lft forever  
 4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether d0:94:66:2e:98:3a brd ff:ff:ff:ff:ff:ff  
+    link/ether ================ brd ff:ff:ff:ff:ff:ff  
 5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether d0:94:66:2e:98:3b brd ff:ff:ff:ff:ff:ff  
-6: p1p1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
-    link/ether b4:96:91:18:09:74 brd ff:ff:ff:ff:ff:ff  
+    link/ether ================ brd ff:ff:ff:ff:ff:ff  
+6: **p1p1**: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
+    link/ether ================ brd ff:ff:ff:ff:ff:ff  
 7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
-    link/ether b4:96:91:18:09:76 brd ff:ff:ff:ff:ff:ff  
+    link/ether ================ brd ff:ff:ff:ff:ff:ff  
 
 
 ```
 EXT_NIC=ifcfg-em2 #ex)외부망
 INT_NIC=ifcfg-p1p1 #ex)내부망
 
-cat /etc/sysconfig/network-scripts/{$EXT_NIC}
-cat /etc/sysconfig/network-scripts/{$INT_NIC}
+cat /etc/sysconfig/network-scripts/${EXT_NIC}
+
 ```
+>**NAME=em2**  
+ONBOOT=yes  
+BOOTPROTO=none  
+IPADDR=192.168.0.116  
+PREFIX=24  
+GATEWAY=192.168.0.1  
+DNS1=168.126.63.1  
+DNS2=8.8.8.8  
+DEFROUTE=yes  
+**ZONE=external**  
+
+```
+cat /etc/sysconfig/network-scripts/${INT_NIC}
+
+```
+>**BOOTPROTO=dhcp  
+NAME=p1p1  
+ONBOOT=no  
+ZONE=trusted**  
+
 ### 내부망 ip는 10.1.1.x 대역으로 설정
 ```
-vi /etc/sysconfig/network-scripts/{$INT_NIC}
+perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/${INT_NIC}
+perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/${INT_NIC}
+
+echo "IPADDR=10.1.1.1"  >>  /etc/sysconfig/network-scripts/${INT_NIC}
+echo "PREFIX=24"  >>  /etc/sysconfig/network-scripts/${INT_NIC}
+
 ```
 
 ```
-cat /etc/sysconfig/network-scripts/ifcfg-p1p1
+cat /etc/sysconfig/network-scripts/${INT_NIC}
 
-ifdown p1p1 && ifup p1p1
+ifdown ${INT_NIC} && ifup ${INT_NIC}
+
 ip a
+
 ```
 ### 방화벽 설정 변경
 ```
