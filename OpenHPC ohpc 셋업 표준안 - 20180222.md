@@ -12,9 +12,7 @@
 ```
 ip a # 인터페이스 목록 확인
 ```
-~~~
-[root@master:~]# ip a  
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
+> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
        valid_lft forever preferred_lft forever  
@@ -32,8 +30,7 @@ ip a # 인터페이스 목록 확인
     link/ether b4:96:91:18:09:74 brd ff:ff:ff:ff:ff:ff  
 7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
     link/ether b4:96:91:18:09:76 brd ff:ff:ff:ff:ff:ff  
-[root@master:~]#    
-~~~
+
 
 ```
 EXT_NIC=ifcfg-em2 #ex)외부망
