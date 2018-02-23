@@ -3,7 +3,8 @@
 \# Root 로 로그인하여 설치를 시작 합니다.  
 \# 참조 링크 : http://openhpc.community/downloads/  
 
-## # 변수 정의 및 선언 (파일로 작성)
+***
+## # 1. 변수 정의 및 선언 (파일로 작성)
 
 ```bash
 vi ~/dasan_ohpc_variable.sh
@@ -15,7 +16,7 @@ vi ~/dasan_ohpc_variable.sh
 #!/bin/bash
 
 # 클러스터 이름.
-CLUSTER_NAME=${클러스터 이름}
+CLUSTER_NAME=OpenHPC-Dasandata # 변경 필요
 
 # MASTER 의 이름 과 IP.
 MASTER_HOSTNAME=$(hostname)
@@ -51,7 +52,7 @@ source  ~/dasan_ohpc_variable.sh
 
 ***
 
-## # Network, Firewall Setup.
+## # 2. Network, Firewall Setup.
 
 ### # 외부망 및 내부망 인터페이스 설정.
 
@@ -94,16 +95,17 @@ GATEWAY=192.168.0.1
 DNS1=168.126.63.1  
 DNS2=8.8.8.8  
 DEFROUTE=yes  
+<일부 값 생략>  
 
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
 출력 예)
->
-NAME=*p1p1*  
+>NAME=*p1p1*  
 ONBOOT=no  
 BOOTPROTO=dhcp  
+<일부 값 생략>  
 
 ### # 가독성 향상을 위해, 불 필요한 IPV6 항목 삭제.
 ```bash
@@ -180,9 +182,10 @@ firewall-cmd --list-all --zone=trusted
   icmp-block-inversion: no  
   interfaces: em1 *p1p1*  
 
+***
 
 ## # 3. Install OpenHPC Components
-## # 3.1 Enable OpenHPC repository for local use
+### # 3.1 Enable OpenHPC repository for local use
 
 ### # 현재 repolist 확인
 ```bash
@@ -285,9 +288,9 @@ systemctl restart ntpd
 
 ```
 
-## # 63. OpenHPC base, resource management services Install
+## # 4. OpenHPC base, Resource Management Services Install.
 
-### # 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록
+### # 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록.
 ```bash
 echo "${MASTER_IP}     ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
@@ -317,10 +320,10 @@ Complete!
 
 
 
-## # 63번 항목, Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.
+## # 4번 항목중 , Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.
 \# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.
 
-## # 63-A. (Slurm) resource management services Install
+## # 4-A. (Slurm) resource management services Install
 ### # Install to ohpc-slurm-server
 ```bash
 yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
@@ -425,7 +428,7 @@ grep NodeName= /etc/slurm/slurm.conf
 >NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
-## # 63-B. (PBS Pro) resource management services Install
+## # 4-B. (PBS Pro) resource management services Install
 ### # Install to pbspro-server-ohpc
 
 ```bash
@@ -433,21 +436,21 @@ yum -y install pbspro-server-ohpc
 
 ```
 
-## # 64. (Optional) Add InfiniBand support services on master node
+## # 5. (Optional) Add InfiniBand support services on master node
 
 ```bash
 yum -y groupinstall "InfiniBand Support"
 yum -y install infinipath-psm
 ```
 
-### # (Optional) Load InfiniBand drivers
+### # 5-1. (Optional) Load InfiniBand drivers
 ```bash
 systemctl start rdma
 
 cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-scripts
 ```
 
-### # (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
+### # 5-2. (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
 ```bash
 perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
@@ -455,42 +458,51 @@ perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/i
 echo  “MTU=4096”  >>  /
 ```
 
-### # (Optional) Initiate ib0 (InfiniBand Interface 0)
+### # 5-3. (Optional) Initiate ib0 (InfiniBand Interface 0)
 ```bash
 ifup ib0
 
 rdma   tunning
 
 udaddy -s  10.1.1.1
+
 ```
 
 
+## # 6. Complete basic Warewulf setup for master node
 
+### # 클러스터 내부망 인터페이스 변경.
+\# 내부망 인터페이스 설정 내용 점검.
+```bash
+echo ${INT_NIC}
 
-## # 65. Complete basic Warewulf setup for master node
+ifconfig ${INT_NIC}
+```
 
-### # What is the default network device that the master will use to
-
-
+\# warewulf provision.conf 파일의 기본값 확인.
 ```bash
 grep device /etc/warewulf/provision.conf
 ```
 출력 얘)
->
+># What is the default network device that the master will use to  
+network device = eth1  
 
-
+\# 인터페이스 명 변경
 ```bash
-echo ${INT_NIC}
 
 perl -pi -e "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
 grep device /etc/warewulf/provision.conf
+```
 
+### # tftp 서비스 Enable.
+```bash
 grep disable /etc/xinetd.d/tftp
 perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
 grep disable /etc/xinetd.d/tftp
+```
 
-ifconfig ${INT_NIC}
-
+### # 관련 서비스 부팅시 시작 되도록 변경(enable) 및 Restarting.
+```bash
 systemctl enable dhcpd
 systemctl restart xinetd
 
@@ -499,27 +511,41 @@ systemctl restart mariadb
 
 systemctl enable httpd.service
 systemctl restart httpd
-
 ```
 
-### # Define compute image for provisioning
+### # Define NODE image for provisioning
 
-#### # Define chroot location
-export CHROOT=/opt/ohpc/admin/images/centos7.4
+#### # Check chroot location
+```bash
+echo ${CHROOT}
+```
+출력 예)
+>/opt/ohpc/admin/images/centos7.4
 
-# Build initial chroot image
+#### # Build initial chroot image
+```bash
 wwmkchroot centos-7 ${CHROOT}
+```
 
-# Install compute node base meta-package
+#### # Install compute node base meta-package
+```bash
 yum -y --installroot=${CHROOT} install ohpc-base-compute  parted  xfsprogs  python-devel
 
 cat /etc/resolv.conf
 cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
+```
 
-# Add Slurm client support meta-package
+***
+
+#### # Add Slurm client support meta-package
+\# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
+```bash
 yum -y --installroot=${CHROOT} install ohpc-slurm-client
+```
 
-# Add PBS Professional client support
+#### # Add PBS Professional client support
+\# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
+```bash
 yum -y --installroot=${CHROOT} install pbspro-execution-ohpc
 
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
@@ -531,49 +557,60 @@ grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
 perl -pi -e "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" ${CHROOT}/var/spool/pbs/mom_priv/config
 grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
 
-
-```bash
 echo "\$usecp *:/home /home" >> ${CHROOT}/var/spool/pbs/mom_priv/config
-cat ${CHROOT}/var/spool/pbs/mom_priv/config
-chroot ${CHROOT} opt/pbs/libexec/pbs_habitat
+cat    ${CHROOT}/var/spool/pbs/mom_priv/config
+chroot ${CHROOT}/opt/pbs/libexec/pbs_habitat
 
 chroot ${CHROOT} systemctl enable pbs
 ```
 
+***
 
-# Add IB support and enable
+#### # (Optional) Add IB support and enable
+```bash
 yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support"
 yum -y --installroot=${CHROOT} install infinipath-psm
 chroot ${CHROOT} systemctl enable rdma
+```
 
- # Add Network Time Protocol (NTP) support
+#### # Add Network Time Protocol (NTP) support
+```bash
 yum -y --installroot=${CHROOT} install ntp
+```
 
-# Add kernel drivers
+#### # Add kernel drivers
+```bash
 yum -y --installroot=${CHROOT} install kernel
+```
 
-# Include modules user environment
+#### # Include modules user environment
+```bash
 yum -y --installroot=${CHROOT} install lmod-ohpc
+```
 
 
+### # Customize system configuration
 
-    - Customize system configuration
-
-# Initialize warewulf database and add new cluster key to base image
+#### # Initialize warewulf database and add new cluster key to base image
+```bash
 wwinit database
 wwinit ssh_keys
 cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
+```
 
-# Add NFS client mounts of /home and /opt/ohpc/pub and /data to base image
+#### # Add NFS client mounts of /home and /opt/ohpc/pub and /data to base image
+```bash
 echo ${MASTER_HOSTNAME}
-cat ${CHROOT}/etc/fstab
+cat  ${CHROOT}/etc/fstab
 
 echo "${MASTER_HOSTNAME}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> ${CHROOT}/etc/fstab
 echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
-echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
-cat ${CHROOT}/etc/fstab
+# data 디렉토리를 별도로 구성하는 경우에만.
+# echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+cat  ${CHROOT}/etc/fstab
+```
 
-# Export /home and OpenHPC public packages from master server
+#### # Export /home and OpenHPC public packages from master server
 ```bash
 cat /etc/exports
 echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
@@ -586,14 +623,16 @@ systemctl enable nfs-server
 systemctl restart nfs-server
 ```
 
-
-# Enable NTP time service on computes and identify master host as local NTP server
+#### # Enable NTP time service on computes and identify master host as local NTP server
 chroot ${CHROOT} systemctl enable ntpd
 echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 
- - (Additional Custom) Increase locked memory limits
+***
 
-# Update memlock settings on master and compute
+### # (Additional Custom) Increase locked memory limits
+
+#### # Update memlock settings on master and compute
+```bash
 perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
 perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
 perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
@@ -601,16 +640,18 @@ perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/secu
 
 tail /etc/security/limits.conf
 tail ${CHROOT}/etc/security/limits.conf
+```
 
+#### # 제외 // - (Additional Custom) Enable ssh control via resource manager (Slurm)
+\# slurm Resource Manager 를 통한 명령 외에 는 노드에 접근할 수 없도록 하는 설정 인데,
+\# 관리의 편의를 위해 설정하지 않습니다.
+```bash
+# echo "account required pam_slurm.so" >> ${CHROOT}/etc/pam.d/sshd
+```
 
-제외 // - (Additional Custom) Enable ssh control via resource manager (Slurm)
+### # 제외 // - (Additional Custom) Enable forwarding of system logs
 
-echo "account required pam_slurm.so" >> ${CHROOT}/etc/pam.d/sshd
-
-
-제외 // - (Additional Custom) Enable forwarding of system logs
-
-# Configure SMS to receive messages and reload rsyslog configuration
+### # Configure SMS to receive messages and reload rsyslog configuration
 
 grep ModLoad /etc/rsyslog.conf
 
