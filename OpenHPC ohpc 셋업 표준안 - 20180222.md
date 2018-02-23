@@ -320,8 +320,8 @@ tail ~/dasan_log_ohpc_base,warewulf.txt
 Complete!  
 
 ## # 5.Resource Management Services Install.
-\# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.
-\# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.
+\# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
+\# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.  
 
 ## # 5-A. (Slurm) Resource Management Services Install
 ### # 5-A-1. Install to ohpc-slurm-server
