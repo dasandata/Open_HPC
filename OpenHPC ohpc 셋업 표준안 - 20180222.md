@@ -1,19 +1,59 @@
-# 다산데이타 OpenHPC 1.3 셋업 표준안 (2018-22)
+# 다산데이타 OpenHPC 1.3 (Centos 7.4) 셋업 표준안 (2018-02)
 ***
-
-## # ====== Open HPC =======
 \# Root 로 로그인하여 설치를 시작 합니다.  
 \# 참조 링크 : http://openhpc.community/downloads/  
 
-## # 60.   Module
-\# Module 에 대한 사전 지식이 필요 합니다.  
-\# 참조 링크 : https://media.readthedocs.org/pdf/lmod/latest/lmod.pdf  
+## # 변수 정의 및 선언 (파일로 작성)
+
+```bash
+vi ~/dasan_ohpc_variable.sh
+
+```
+
+\# '~/dasan_ohpc_variable.sh' 파일 내용.
+```bash
+#!/bin/bash
+
+# 클러스터 이름.
+CLUSTER_NAME=${클러스터 이름}
+
+# MASTER 의 이름 과 IP.
+MASTER_HOSTNAME=$(hostname)
+MASTER_IP=10.1.1.1
+MASTER_PREFIX=24
+
+# 인터페이스 이름.
+EXT_NIC=em2 # 외부망.
+INT_NIC=p1p1 # 내부망.
+
+# NODE 의 이름, 수량, 사양.
+NODE_NAME=node
+NODE_NUM=${전체 노드 수}
+NODE_RANGE="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
+
+# NODE 의 CPU 사양에 맞게 조정.
+# 물리 CPU가 2개 이고, CPU 당 코어가 10개, 하이퍼스레딩은 켜진(Enable) 상태 인 경우.  
+SOCKETS=2          ## 물리 CPU 2개
+CORESPERSOCKET=10  ## CPU 당 코어 10개
+THREAD=2           ## 하이퍼스레딩 Enable
+
+# 노드 배포 이미지 경로.
+export CHROOT=/opt/ohpc/admin/images/centos7.4
+
+# end of file.
+```
+
+\# 변수 적용.
+```bash
+source  ~/dasan_ohpc_variable.sh
+
+```
 
 ***
 
-## # 61. OpenHPC Network, Firewall Setup
+## # Network, Firewall Setup.
 
-### # 외부망 및 내부망 인터페이스 설정 및 변수로 선언
+### # 외부망 및 내부망 인터페이스 설정.
 
 ```bash
 ip a    # 인터페이스 목록 확인
@@ -26,30 +66,26 @@ ip a    # 인터페이스 목록 확인
        valid_lft forever preferred_lft forever  
 2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
-3: **em2**: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
+3: *em2*: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
-    inet **192.168.0.116/24** brd 192.168.0.255 scope global em2  
+    inet *192.168.0.116/24* brd 192.168.0.255 scope global em2  
        valid_lft forever preferred_lft forever  
 4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
 5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
-6: **p1p1**: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
+6: *p1p1*: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
 7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
 
-
+#### # Master 의 외부/내부 인터페이스 설정내용 확인
 ```bash
-# 인터페이스 명은 상황에 맞체 변경해 주어야 합니다.
-EXT_NIC=em2 # 외부망
-INT_NIC=p1p1 # 내부망
-
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 
 ```
 출력 예)
->**NAME=em2**  
+>NAME=*em2*  
 ONBOOT=yes  
 BOOTPROTO=none  
 IPADDR=192.168.0.116  
@@ -58,7 +94,6 @@ GATEWAY=192.168.0.1
 DNS1=168.126.63.1  
 DNS2=8.8.8.8  
 DEFROUTE=yes  
-**ZONE=external**  
 
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
@@ -66,25 +101,27 @@ cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 출력 예)
 >
-**NAME=p1p1  
+NAME=*p1p1*  
 ONBOOT=no  
 BOOTPROTO=dhcp  
-ZONE=trusted**  
 
-### # 가독성 향상을 위해 불필요한 IPV6 항목 삭제
+### # 가독성 향상을 위해, 불 필요한 IPV6 항목 삭제.
 ```bash
 sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
 
-### # 내부망 ip는 10.1.1.x 대역으로 설정
+### # Master 의 내부망 인터페이스의 설정 변경.
 ```bash
 perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+```
 
-echo "IPADDR=10.1.1.1"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-echo "PREFIX=24"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+### # Master 의 내부망 ip 설정
+```bash
+echo "IPADDR=${MASTER_IP}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+echo "PREFIX=${MASTER_PREFIX}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
@@ -112,38 +149,40 @@ ip a
     link/ether ================= brd ff:ff:ff:ff:ff:ff  
 5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
     link/ether ================= brd ff:ff:ff:ff:ff:ff  
-6: **p1p1**: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state **UP** qlen 1000  
+6: *p1p1*: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state *UP* qlen 1000  
     link/ether ================= brd ff:ff:ff:ff:ff:ff  
-    **inet 10.1.1.1/24** brd 10.1.1.255 scope global p1p1  
+    *inet 10.1.1.1/24* brd 10.1.1.255 scope global p1p1  
        valid_lft forever preferred_lft forever  
 7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
     link/ether ================= brd ff:ff:ff:ff:ff:ff  
 
 ### # 방화벽 설정 변경
 ```bash
-firewall-cmd --change-interface=${INT_NIC}  --zone=trusted  --permanent
+firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
+firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 firewall-cmd --reload
 
 firewall-cmd --list-all --zone=external
 ```
 출력 예)
->external (active)  
-target: default  
+>*external* (active)  
+target: *default*  
 icmp-block-inversion: no  
-interfaces: em2  
+interfaces: *em2*  
 
 ```bash
 firewall-cmd --list-all --zone=trusted
 
 ```
 출력 예)
->external (active)  
-target: default  
-icmp-block-inversion: no  
-interfaces: em2  
+>*trusted* (active)  
+  target: ACCEPT  
+  icmp-block-inversion: no  
+  interfaces: em1 *p1p1*  
 
 
-## # 62. OpenHPC repository Install, ntp service enable
+## # 3. Install OpenHPC Components
+## # 3.1 Enable OpenHPC repository for local use
 
 ### # 현재 repolist 확인
 ```bash
@@ -154,10 +193,10 @@ yum repolist
 출력 예)  
 >Loaded plugins: fastestmirror, langpacks, priorities  
 Loading mirror speeds from cached hostfile  
- \* base: data.nicehosting.co.kr  
- \* epel: mirror01.idc.hinet.net  
- \* extras: data.nicehosting.co.kr  
- \* updates: data.nicehosting.co.kr  
+ * base: data.nicehosting.co.kr  
+ * epel: mirror01.idc.hinet.net  
+ * extras: data.nicehosting.co.kr  
+ * updates: data.nicehosting.co.kr  
 116 packages excluded due to repository priority protections  
 repo id             repo name                                         status  
 !base/7/x86_64      CentOS-7 - Base                                        9,591  
@@ -166,7 +205,7 @@ repo id             repo name                                         status
 !updates/7/x86_64   CentOS-7 - Updates                                     1,929  
 repolist: 24,090  
 
-### # OpenHPC repository 설치
+### # Install to OpenHPC repository.
 ```bash
 yum -y install \
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
@@ -221,6 +260,7 @@ repolist: 24,839
 
 ```bash
 cat /etc/ntp.conf | grep -v "#\|^$"
+
 ```
 출력 예)
 >driftfile /var/lib/ntp/drift  
@@ -247,24 +287,7 @@ systemctl restart ntpd
 
 ## # 63. OpenHPC base, resource management services Install
 
-### # 변수 정의 및 선언
-
-```bash
-MASTER_HOSTNAME=$(hostname)
-MASTER_IP=10.1.1.1
-MASTER_INT_INTERFACE=em2
-NODE_NAME=node
-export CHROOT=/opt/ohpc/admin/images/centos7.4
-```
-
-### # 클러스터 이름을 정의하고, 전체 노드 수량에 맞추어 입력
-```bash
-CLUSTER_NAME=${클러스터 이름 정의}
-NUM_NODES=${전체 노드 수}
-NODE_NUMBER="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
-
-```
-
+### # 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록
 ```bash
 echo "${MASTER_IP}     ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
@@ -272,7 +295,7 @@ cat /etc/hosts
 출력 예)
 >127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6  
-10.1.1.1    master  
+*10.1.1.1    master*  
 
 ### # openhpc base 설치
 
@@ -350,7 +373,7 @@ grep ControlMachine /etc/slurm/slurm.conf
 출력 예)
 >ControlMachine=*master*
 
-#### # NodeName, CPU & Memory 속성 변경
+#### # NodeName, CPU & Memory 속성 설정
 
 \# slurm.conf 파일의 NodeName을 클러스터 노드의 Hostname 과 동일하게 변경하고,
 \# 사양에 맞추어 Sockets, Cores, Thread, RealMemory 값을 변경 합니다.
@@ -361,98 +384,112 @@ grep ControlMachine /etc/slurm/slurm.conf
 
 ##### # NodeName 설정
 ```bash
-echo "NodeName="${NODE_NAME}${NODE_NUMBER} &&
-grep NodeName= /etc/slurm/slurm.conf
+echo "NodeName="${NODE_NAME}${NODE_RANGE} &&  # 선언 되어 있는 변수 확인
+grep NodeName= /etc/slurm/slurm.conf  # slurm 설정 파일의 기본 값 확인.
 ```
 출력 예)
 >NodeName=node[1-3]  
 NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 ```bash
-perl -pi -e "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_NUMBER}/" /etc/slurm/slurm.conf
+perl -pi -e "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_RANGE}/" /etc/slurm/slurm.conf
 grep NodeName= /etc/slurm/slurm.conf
 ```
 출력 예) **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
 >NodeName=*node[1-3]* Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
-##### # Node CPU 설정
-\# 변수 선언  # node 의 cpu 사양에 맞게 조정.
-\# **물리 CPU가 2개 이고, CPU 당 코어가 10개, 하이퍼스레딩은 켜진(Enable) 상태 인 경우...**  
+
+
+##### # Node CPU, Memory 속성 설정
+
+\# 앞서 정의한 변수 값을 다시 한번 검토 한 후 진행 합니다.
 ```bash
-SOCKETS=2
-CoresPerSocket=10
-THREAD=2
+cat ~/dasan_ohpc_variable.sh
 ```
 
+\# slurm 설정파일(slurm.conf)의  기존 설정 값 확인.
+```bash
+grep NodeName= /etc/slurm/slurm.conf
+```
+출력 예)
+>NodeName=node[1-3] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
+
+```bash
+perl -pi -e "s/Sockets=\S+/Sockets=${SOCKETS}/"  /etc/slurm/slurm.conf
+perl -pi -e "s/CoresPerSocket=\S+/CoresPerSocket=${CORESPERSOCKET}/"  /etc/slurm/slurm.conf
+perl -pi -e "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.conf
+
+grep NodeName= /etc/slurm/slurm.conf
+```
+출력 예)
+>NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
-
-#### # NodeName, GPU 속성 추가 (Gres)
-
-
-
-
-
-### # 63-B. (PBS Pro ) resource management services Install
+## # 63-B. (PBS Pro) resource management services Install
+### # Install to pbspro-server-ohpc
 
 ```bash
 yum -y install pbspro-server-ohpc
 
+```
 
+## # 64. (Optional) Add InfiniBand support services on master node
 
-   - Add InfiniBand support services on master node
-
+```bash
 yum -y groupinstall "InfiniBand Support"
 yum -y install infinipath-psm
 ```
 
+### # (Optional) Load InfiniBand drivers
+```bash
+systemctl start rdma
 
-### # Load IB drivers
-[sms]# systemctl start rdma
+cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-scripts
+```
 
-[sms]# cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-scripts
-
-### # Define local IPoIB address and netmask
-[sms]# perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
-[sms]# perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+### # (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
+```bash
+perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 
 echo  “MTU=4096”  >>  /
+```
 
-# Initiate ib0
-[sms]# ifup ib0
+### # (Optional) Initiate ib0 (InfiniBand Interface 0)
+```bash
+ifup ib0
 
-
-
-
-
- rdma   tunning
+rdma   tunning
 
 udaddy -s  10.1.1.1
+```
 
 
 
 
+## # 65. Complete basic Warewulf setup for master node
+
+### # What is the default network device that the master will use to
 
 
-
-
-     - basic Warewulf setup for master node
-
-# What is the default network device that the master will use to
+```bash
 grep device /etc/warewulf/provision.conf
+```
+출력 얘)
+>
 
-echo ${MASTER_INT_INTERFACE}
 
-perl -pi -e "s/device = eth1/device = ${MASTER_INT_INTERFACE}/" /etc/warewulf/provision.conf
+```bash
+echo ${INT_NIC}
+
+perl -pi -e "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
 grep device /etc/warewulf/provision.conf
 
 grep disable /etc/xinetd.d/tftp
 perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
 grep disable /etc/xinetd.d/tftp
 
-
-
-ifconfig ${MASTER_INT_INTERFACE}
+ifconfig ${INT_NIC}
 
 systemctl enable dhcpd
 systemctl restart xinetd
@@ -463,59 +500,60 @@ systemctl restart mariadb
 systemctl enable httpd.service
 systemctl restart httpd
 
+```
 
-   - Define compute image for provisioning
+### # Define compute image for provisioning
 
-# Define chroot location
-export CHROOT=/opt/ohpc/admin/images/centos7.3
+#### # Define chroot location
+export CHROOT=/opt/ohpc/admin/images/centos7.4
 
 # Build initial chroot image
-wwmkchroot centos-7 $CHROOT
+wwmkchroot centos-7 ${CHROOT}
 
 # Install compute node base meta-package
-yum -y --installroot=$CHROOT install ohpc-base-compute  parted  xfsprogs  python-devel
+yum -y --installroot=${CHROOT} install ohpc-base-compute  parted  xfsprogs  python-devel
 
 cat /etc/resolv.conf
-cp -p /etc/resolv.conf $CHROOT/etc/resolv.conf
+cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 
 # Add Slurm client support meta-package
-yum -y --installroot=$CHROOT install ohpc-slurm-client
+yum -y --installroot=${CHROOT} install ohpc-slurm-client
 
 # Add PBS Professional client support
-yum -y --installroot=$CHROOT install pbspro-execution-ohpc
+yum -y --installroot=${CHROOT} install pbspro-execution-ohpc
 
-grep PBS_SERVER $CHROOT/etc/pbs.conf
-perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" $CHROOT/etc/pbs.conf
+grep PBS_SERVER ${CHROOT}/etc/pbs.conf
+perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
 
-chroot $CHROOT/opt/pbs/libexec/pbs_habitat
+chroot ${CHROOT}/opt/pbs/libexec/pbs_habitat
 
-grep clienthost $CHROOT/var/spool/pbs/mom_priv/config
-perl -pi -e "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" $CHROOT/var/spool/pbs/mom_priv/config
-grep clienthost $CHROOT/var/spool/pbs/mom_priv/config
+grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
+perl -pi -e "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" ${CHROOT}/var/spool/pbs/mom_priv/config
+grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
 
 
 ```bash
-echo "\$usecp *:/home /home" >> $CHROOT/var/spool/pbs/mom_priv/config
-cat $CHROOT/var/spool/pbs/mom_priv/config
-chroot $CHROOT opt/pbs/libexec/pbs_habitat
+echo "\$usecp *:/home /home" >> ${CHROOT}/var/spool/pbs/mom_priv/config
+cat ${CHROOT}/var/spool/pbs/mom_priv/config
+chroot ${CHROOT} opt/pbs/libexec/pbs_habitat
 
-chroot $CHROOT systemctl enable pbs
+chroot ${CHROOT} systemctl enable pbs
 ```
 
 
 # Add IB support and enable
-yum -y --installroot=$CHROOT groupinstall "InfiniBand Support"
-yum -y --installroot=$CHROOT install infinipath-psm
-chroot $CHROOT systemctl enable rdma
+yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support"
+yum -y --installroot=${CHROOT} install infinipath-psm
+chroot ${CHROOT} systemctl enable rdma
 
  # Add Network Time Protocol (NTP) support
-yum -y --installroot=$CHROOT install ntp
+yum -y --installroot=${CHROOT} install ntp
 
 # Add kernel drivers
-yum -y --installroot=$CHROOT install kernel
+yum -y --installroot=${CHROOT} install kernel
 
 # Include modules user environment
-yum -y --installroot=$CHROOT install lmod-ohpc
+yum -y --installroot=${CHROOT} install lmod-ohpc
 
 
 
@@ -524,16 +562,16 @@ yum -y --installroot=$CHROOT install lmod-ohpc
 # Initialize warewulf database and add new cluster key to base image
 wwinit database
 wwinit ssh_keys
-cat ~/.ssh/cluster.pub >> $CHROOT/root/.ssh/authorized_keys
+cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
 
 # Add NFS client mounts of /home and /opt/ohpc/pub and /data to base image
 echo ${MASTER_HOSTNAME}
-cat $CHROOT/etc/fstab
+cat ${CHROOT}/etc/fstab
 
-echo "${MASTER_HOSTNAME}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> $CHROOT/etc/fstab
-echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
-echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
-cat $CHROOT/etc/fstab
+echo "${MASTER_HOSTNAME}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> ${CHROOT}/etc/fstab
+echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+cat ${CHROOT}/etc/fstab
 
 # Export /home and OpenHPC public packages from master server
 ```bash
@@ -550,24 +588,24 @@ systemctl restart nfs-server
 
 
 # Enable NTP time service on computes and identify master host as local NTP server
-chroot $CHROOT systemctl enable ntpd
-echo "server ${MASTER_HOSTNAME}" >> $CHROOT/etc/ntp.conf
+chroot ${CHROOT} systemctl enable ntpd
+echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 
  - (Additional Custom) Increase locked memory limits
 
 # Update memlock settings on master and compute
 perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
 perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
-perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' $CHROOT/etc/security/limits.conf
-perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' $CHROOT/etc/security/limits.conf
+perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
+perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
 
 tail /etc/security/limits.conf
-tail $CHROOT/etc/security/limits.conf
+tail ${CHROOT}/etc/security/limits.conf
 
 
 제외 // - (Additional Custom) Enable ssh control via resource manager (Slurm)
 
-echo "account required pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
+echo "account required pam_slurm.so" >> ${CHROOT}/etc/pam.d/sshd
 
 
 제외 // - (Additional Custom) Enable forwarding of system logs
@@ -585,14 +623,14 @@ grep UDPServerRun /etc/rsyslog.conf
 systemctl restart rsyslog
 
 # Define compute node forwarding destination
-echo "*.* @${MASTER_HOSTNAME}:514" >> $CHROOT/etc/rsyslog.conf
+echo "*.* @${MASTER_HOSTNAME}:514" >> ${CHROOT}/etc/rsyslog.conf
 
 # Disable most local logging on computes. Emergency and boot logs will remain on the compute nodes
-perl -pi -e "s/^\*\.info/\\#\*\.info/" $CHROOT/etc/rsyslog.conf
-perl -pi -e "s/^authpriv/\\#authpriv/" $CHROOT/etc/rsyslog.conf
-perl -pi -e "s/^mail/\\#mail/" $CHROOT/etc/rsyslog.conf
-perl -pi -e "s/^cron/\\#cron/" $CHROOT/etc/rsyslog.conf
-perl -pi -e "s/^uucp/\\#uucp/" $CHROOT/etc/rsyslog.conf
+perl -pi -e "s/^\*\.info/\\#\*\.info/" ${CHROOT}/etc/rsyslog.conf
+perl -pi -e "s/^authpriv/\\#authpriv/" ${CHROOT}/etc/rsyslog.conf
+perl -pi -e "s/^mail/\\#mail/" ${CHROOT}/etc/rsyslog.conf
+perl -pi -e "s/^cron/\\#cron/" ${CHROOT}/etc/rsyslog.conf
+perl -pi -e "s/^uucp/\\#uucp/" ${CHROOT}/etc/rsyslog.conf
 
 
    - (Additional Custom) Add Ganglia monitoring
@@ -600,7 +638,7 @@ perl -pi -e "s/^uucp/\\#uucp/" $CHROOT/etc/rsyslog.conf
 yum -y install ohpc-ganglia
 
 # Install Ganglia compute node daemon
-yum -y --installroot=$CHROOT install ganglia-gmond-ohpc
+yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc
 
 # Use example configuration script to enable unicast receiver on master host
 /usr/bin/cp  /opt/ohpc/pub/examples/ganglia/gmond.conf  /etc/ganglia/gmond.conf
@@ -610,7 +648,7 @@ perl -pi -e "s/<sms>/${MASTER_HOSTNAME}/" /etc/ganglia/gmond.conf
 grep 'host ='  /etc/ganglia/gmond.conf
 
 # Add configuration to compute image and provide gridname
-/usr/bin/cp   /etc/ganglia/gmond.conf  $CHROOT/etc/ganglia/gmond.conf
+/usr/bin/cp   /etc/ganglia/gmond.conf  ${CHROOT}/etc/ganglia/gmond.conf
 echo "gridname MySite" >> /etc/ganglia/gmetad.conf
 
 
@@ -620,7 +658,7 @@ systemctl enable gmetad
 systemctl start gmond
 systemctl start gmetad
 
-chroot $CHROOT systemctl enable gmond
+chroot ${CHROOT} systemctl enable gmond
 
 # Restart web server
 systemctl try-restart httpd
@@ -650,7 +688,7 @@ yum -y install genders-ohpc
 
 # Generate a sample genders file
 echo -e "${MASTER_HOSTNAME}\tsms" > /etc/genders
-for ((i=1; i<$NUM_NODES; i++)) ; do echo -e "${NODE_NAME[$i]}\tcompute" done >> /etc/genders
+for ((i=1; i<$NODE_NUM; i++)) ; do echo -e "${NODE_NAME[$i]}\tcompute" done >> /etc/genders
 
 
 
@@ -682,8 +720,8 @@ echo "drivers += overlay" >> $WW_CONF
 - Assemble Virtual Node File System (VNFS) image
 
 # Assemble Virtual Node File System (VNFS) image
-export CHROOT=/opt/ohpc/admin/images/centos7.3
-wwvnfs --chroot $CHROOT
+export CHROOT=/opt/ohpc/admin/images/centos7.4
+wwvnfs --chroot ${CHROOT}
 
 
 64. Register nodes for provisioning
@@ -828,7 +866,7 @@ wwsh node list
 wwsh -y node set n02 --netdev=eth0 --ipaddr=10.1.1.2 --hwaddr=70:85:c2:4d:a8:b7  --gateway=10.1.1.254  --netmask=255.255.255.0
 
 
-66. WOL - Wake Nodes
+## #66. WOL - Wake Nodes
 
 vi node_on_by_WOL.sh
 cat node_on_by_WOL.sh
@@ -846,10 +884,10 @@ n0[7]=70:85:c2:4d:a8:b1
 n0[8]=70:85:c2:4d:a7:ac
 
 # Node Num + 1
-NUM_NODES=9
+NODE_NUM=9
 
 # Wake On Command
-for ((i=1 ; i<$NUM_NODES ; i++))
+for ((i=1 ; i<$NODE_NUM ; i++))
 do
 ether-wake -i em2 ${n0[$i]}
 done
@@ -861,7 +899,7 @@ sh node_on_by_WOL.sh
 pdsh -w n[01-08] date | sort
 
 
-64. OpenHPC - Add User
+## # 64. OpenHPC - Add User
 
 adduser test
 passwd test
@@ -881,11 +919,11 @@ ssh compute01
 
 65. OpenHPC - Node Boot Image Update (after add Program)
 [root@ohpc-master:~]# # Define chroot location
-[root@ohpc-master:~]# export CHROOT=/opt/ohpc/admin/images/centos7.3
-[root@ohpc-master:~]# echo $CHROOT
+[root@ohpc-master:~]# export CHROOT=/opt/ohpc/admin/images/centos7.4
+[root@ohpc-master:~]# echo ${CHROOT}
 /opt/ohpc/admin/images/centos7.3
 [root@ohpc-master:~]#
-[root@ohpc-master:~]# yum -y --installroot=$CHROOT install tmux
+[root@ohpc-master:~]# yum -y --installroot=${CHROOT} install tmux
 Loaded plugins: fastestmirror, langpacks, priorities
 
 <생략>
@@ -937,43 +975,49 @@ ssh compute02 reboot
 
 
 # Define chroot location
-export CHROOT=/opt/ohpc/admin/images/centos7.3
+```bash
+echo ${CHROOT}
 
-yum -y --installroot=$CHROOT install parted xfsprogs
-mkdir $CHROOT/scratch
-wwvnfs --chroot=$CHROOT
+yum -y --installroot=${CHROOT} install parted xfsprogs
+mkdir ${CHROOT}/scratch
+wwvnfs --chroot=${CHROOT}
 
 pdsh -w n[01-08] reboot
+```
 
 ===== reboot ======
-
+```bash
 pdsh -w n[01-08] date
 
 pdsh -w n[01-08] parted  -s /dev/sda "mklabel  GPT "
 pdsh -w n[01-08] parted  -s /dev/sda "mkpart primary 0% 100%"
 pdsh -w n[01-08] mkfs.xfs  -f  -L SCRATCH   -i  size=1024  -s  size=4096   /dev/sda1
+```
 
+```bash
+export CHROOT=/opt/ohpc/admin/images/centos7.4
+echo "LABEL="SCRATCH"  /scratch   xfs  defaults  0 0 "  >>  ${CHROOT}/etc/fstab
+cat ${CHROOT}/etc/fstab
 
-export CHROOT=/opt/ohpc/admin/images/centos7.3
-echo "LABEL="SCRATCH"  /scratch   xfs  defaults  0 0 "  >>  $CHROOT/etc/fstab
-cat $CHROOT/etc/fstab
+vi ${CHROOT}/etc/rc.d/rc.local
+tail -3 ${CHROOT}/etc/rc.d/rc.local
+```
 
-vi $CHROOT/etc/rc.d/rc.local
-tail -3 $CHROOT/etc/rc.d/rc.local
 # dasandata add
 chmod 1777 /scratch
 
-ll $CHROOT/etc/rc.d/rc.local
-chmod +x $CHROOT/etc/rc.d/rc.local
+ll ${CHROOT}/etc/rc.d/rc.local
+chmod +x ${CHROOT}/etc/rc.d/rc.local
 
-ll $CHROOT/etc/rc.d/rc.local
+ll ${CHROOT}/etc/rc.d/rc.local
 
-wwvnfs --chroot=$CHROOT
+wwvnfs --chroot=${CHROOT}
 
 pdsh -w n[01-08] reboot
 
 ===== reboot ======
 
+```bash
 pdsh -w n[01-08] date
 
 pdsh -w n[01-08] lsblk
@@ -981,29 +1025,43 @@ pdsh -w n[01-08] 'df -hT | grep -v tmpfs' | sort | grep -v Filesystem
 
 pdsh -w n[01-08] 'll / | grep scratch'
 
+```
 
 
-67.  Install OpenHPC Development Components
+## # 67.  Install OpenHPC Development Components
 
 # Install autotools meta-package (Default)
+```bash
 yum -y  install ohpc-autotools EasyBuild-ohpc hwloc-ohpc spack-ohpc valgrind-ohpc
+```
 
 # Compilers ## gcc ver 7 and 5.4
+```bash
 yum -y  install gnu7-compilers-ohpc   gnu-compilers-ohpc
+```
 
 # MPI Stacks
+```bash
 yum -y  install openmpi-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc
+```
 
 # Install perf-tools meta-package
+```bash
 yum -y  install ohpc-gnu7-perf-tools
 yum -y  groupinstall  ohpc-perf-tools-gnu
+```
 
 # Setup default development environment
+```bash
 yum -y  install lmod-defaults-gnu7-openmpi-ohpc
+```
 ### yum -y install lmod-defaults-gnu-openmpi-ohpc
 
+
 # Install 3rd party libraries/tools meta-packages built with GNU toolchain
+```bash
 yum -y  install   ohpc-gnu7-serial-libs   ohpc-gnu7-io-libs   ohpc-gnu7-python-libs  ohpc-gnu7-runtimes
+```
 
 # Install parallel lib meta-packages for all available MPI toolchains
 yum -y  install   ohpc-gnu7-mpich-parallel-libs   ohpc-gnu7-mvapich2-parallel-libs   ohpc-gnu7-openmpi-parallel-libs
@@ -1040,8 +1098,8 @@ qmgr -c "set server job_history_enable=True"
 
 # register compute hosts with pbspro
 # Node Num + 1
-NUM_NODES=9
-for ((i=1 ; i<$NUM_NODES ; i++))  ;   do  qmgr -c "create node n0$i"  ;   done
+NODE_NUM=9
+for ((i=1 ; i<$NODE_NUM ; i++))  ;   do  qmgr -c "create node n0$i"  ;   done
 
 ll /var/spool/pbs/server_priv/topology
 pbsnodes -a
@@ -1315,21 +1373,21 @@ ls -l /usr/lib/jvm/
 rpm -qa | grep java
 java -version
 
-export CHROOT=/opt/ohpc/admin/images/centos7.3
-yum -y --installroot=$CHROOT install glibc*.i686  libgcc*.i686  redhat-lsb  redhat-lsb*.i686  \
+export CHROOT=/opt/ohpc/admin/images/centos7.4
+yum -y --installroot=${CHROOT} install glibc*.i686  libgcc*.i686  redhat-lsb  redhat-lsb*.i686  \
 compat-libstdc++*  compat-libstdc++*.i686 compat-libstdc++*  compat-libstdc++*.i686
 
-wwvnfs --chroot $CHROOT
+wwvnfs --chroot ${CHROOT}
 
-chroot $CHROOT rpm -qa | grep  glibc
-chroot $CHROOT rpm -qa | grep  libgcc
-chroot $CHROOT rpm -qa | grep  libstdc++
-chroot $CHROOT rpm -qa | grep  redhat-lsb
-chroot $CHROOT rpm -qa | grep  compat-libstdc++
-chroot $CHROOT rpm -qa | grep  fontconfig
-chroot $CHROOT rpm -qa | grep libSM
-chroot $CHROOT rpm -qa | grep libXext
-chroot $CHROOT rpm -qa | grep libXrender
+chroot ${CHROOT} rpm -qa | grep  glibc
+chroot ${CHROOT} rpm -qa | grep  libgcc
+chroot ${CHROOT} rpm -qa | grep  libstdc++
+chroot ${CHROOT} rpm -qa | grep  redhat-lsb
+chroot ${CHROOT} rpm -qa | grep  compat-libstdc++
+chroot ${CHROOT} rpm -qa | grep  fontconfig
+chroot ${CHROOT} rpm -qa | grep libSM
+chroot ${CHROOT} rpm -qa | grep libXext
+chroot ${CHROOT} rpm -qa | grep libXrender
 
 pdsh -w n[01-08] reboot
 
@@ -1353,12 +1411,12 @@ pdsh -w n[01-08] reboot
 [root@ohpc-master:openhpc]# systemctl restart nfs-server
 [root@ohpc-master:openhpc]#
 [root@ohpc-master:openhpc]# # Define chroot location
-[root@ohpc-master:openhpc]# export CHROOT=/opt/ohpc/admin/images/centos7.3
+[root@ohpc-master:openhpc]# export CHROOT=/opt/ohpc/admin/images/centos7.4
 
 [root@ohpc-master:openhpc]# # Add NFS client mounts of /home and /opt/ohpc/pub and /data to base image
-[root@ohpc-master:openhpc]# echo "ohpc-master:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> $CHROOT/etc/fstab
-[root@ohpc-master:openhpc]# echo "ohpc-master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
-[root@ohpc-master:openhpc]# echo "ohpc-master:/data /data nfs nfsvers=3 0 0" >> $CHROOT/etc/fstab
+[root@ohpc-master:openhpc]# echo "ohpc-master:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> ${CHROOT}/etc/fstab
+[root@ohpc-master:openhpc]# echo "ohpc-master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+[root@ohpc-master:openhpc]# echo "ohpc-master:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
 [root@ohpc-master:openhpc]#
 [root@ohpc-master:openhpc]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.3
 [root@ohpc-master:openhpc]# #Nodes reboot
