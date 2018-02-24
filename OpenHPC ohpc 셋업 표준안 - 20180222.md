@@ -643,13 +643,26 @@ chroot ${CHROOT} rpm -qa | grep glibc-common
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
- ohpc-base-compute  parted  xfsprogs  python-devel  yum  htop
+ ohpc-base-compute  parted  xfsprogs  python-devel  yum  htop >> ~/dasan_log_ohpc_meta-package.txt
+ tail ~/dasan_log_ohpc_meta-package.txt  
+
 ```
+출력 예)
+>  python-urlgrabber.noarch 0:3.10-8.el7                                         
+  pyxattr.x86_64 0:0.5.1-5.el7                                                  
+  rpm-build-libs.x86_64 0:4.11.3-25.el7                                         
+  rpm-python.x86_64 0:4.11.3-25.el7                                             
+  xorg-x11-proto-devel.noarch 0:7.7-20.el7                                      
+  yum-metadata-parser.x86_64 0:1.1.4-10.el7                                     
+  yum-plugin-fastestmirror.noarch 0:1.1.31-42.el7                               
+  zlib-devel.x86_64 0:1.2.7-17.el7                                              
+Complete!  
 
-
+#### # node image 에 dns 설정 (master 와 동일하게).
 ```bash
 cat /etc/resolv.conf
-cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
+cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf  
+
 ```
 
 ***
@@ -657,8 +670,12 @@ cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 #### # Add Slurm client support meta-package
 \# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
-yum -y --installroot=${CHROOT} install ohpc-slurm-client
+yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt
+tail ~/dasan_log_ohpc_slurmclient.txt
+
 ```
+
+***
 
 #### # Add PBS Professional client support
 \# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
@@ -681,47 +698,81 @@ chroot ${CHROOT}/opt/pbs/libexec/pbs_habitat
 chroot ${CHROOT} systemctl enable pbs
 ```
 
+***
+
 #### # (Optional) Add IB support and enable
+\# 인피니밴드(InfiniBand) 를 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support"
 yum -y --installroot=${CHROOT} install infinipath-psm
 chroot ${CHROOT} systemctl enable rdma
 ```
 
-#### # Add Network Time Protocol (NTP) support
+***
+
+#### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment
 ```bash
-yum -y --installroot=${CHROOT} install ntp
+yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt
+tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
+
 ```
 
-#### # Add kernel drivers
-```bash
-yum -y --installroot=${CHROOT} install kernel
-```
+## # 8. Customize system configuration
 
-#### # Include modules user environment
-```bash
-yum -y --installroot=${CHROOT} install lmod-ohpc
-```
-
-## # Customize system configuration
-
-#### # Initialize warewulf database and add new cluster key to base image
+### # 8-1. Initialize warewulf database and add new cluster key to base image
 ```bash
 wwinit database
 wwinit ssh_keys
 cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
-```
 
-#### # Add NFS client mounts of /home and /opt/ohpc/pub and /data to base image
+```
+출력 예)
+>[root@master:\~]# wwinit database  
+database:     Checking to see if RPM 'mysql-server' is installed             NO  
+database:     Checking to see if RPM 'mariadb-server' is installed           OK  
+database:     Activating Systemd unit: mariadb  
+database:      + /bin/systemctl -q enable mariadb.service                    OK  
+database:      + /bin/systemctl -q restart mariadb.service                   OK  
+database:      + mysqladmin --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf OK  
+database:     Database version: UNDEF (need to create database)  
+database:      + mysql --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf ware OK  
+database:      + mysql --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf ware OK  
+database:      + mysql --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf ware OK  
+database:     Checking binstore kind                                    SUCCESS  
+Done.  
+[root@master:\~]# wwinit ssh_keys  
+ssh_keys:     Checking ssh keys for root                                     OK  
+ssh_keys:     Checking root's ssh config                                     OK  
+ssh_keys:     Checking for default RSA1 host key for nodes                   NO  
+ssh_keys:     Creating default node ssh_host_key:  
+                                                                             OK  
+ssh_keys:     Checking for default RSA host key for nodes                    NO  
+ssh_keys:     Creating default node ssh_host_rsa_key:  
+ssh_keys:      + ssh-keygen -q -t rsa -f /etc/warewulf/vnfs/ssh/ssh_host_rsa OK  
+ssh_keys:     Checking for default DSA host key for nodes                    NO  
+ssh_keys:     Creating default node ssh_host_dsa_key:  
+ssh_keys:      + ssh-keygen -q -t dsa -f /etc/warewulf/vnfs/ssh/ssh_host_dsa OK  
+ssh_keys:     Checking for default ECDSA host key for nodes                  NO  
+ssh_keys:     Creating default node ssh_host_ecdsa_key:  
+                                                                             OK  
+Done.  
+[root@master:\~]# cat \~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys  
+[root@master:\~]#   
+
+#### # 8-2. Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image
+
 ```bash
+df -hT | grep -v tmpfs
 echo ${MASTER_HOSTNAME}
 cat  ${CHROOT}/etc/fstab
 
 echo "${MASTER_HOSTNAME}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> ${CHROOT}/etc/fstab
 echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
-# data 디렉토리를 별도로 구성하는 경우에만.
+
+# 아래는 data 디렉토리를 별도로 구성하는 경우에만.
 # echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
-cat  ${CHROOT}/etc/fstab
+cat  ${CHROOT}/etc/fstab  
+
 ```
 
 #### # Export /home and OpenHPC public packages from master server
