@@ -1,6 +1,6 @@
 # 다산데이타 OpenHPC 1.3 (Centos 7.4) 셋업 표준안 (2018-02)
 
-\# 참조 링크 : http://openhpc.community/
+\# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인하여 설치를 시작 합니다.  
 
 ***
@@ -17,27 +17,28 @@ vi ~/dasan_ohpc_variable.sh
 #!/bin/bash
 
 # 클러스터 이름.
-CLUSTER_NAME=OpenHPC-Dasandata # 변경 필요
+export CLUSTER_NAME=OpenHPC-Dasandata # 변경 필요
 
 # MASTER 의 이름 과 IP.
-MASTER_HOSTNAME=$(hostname)
-MASTER_IP=10.1.1.1
-MASTER_PREFIX=24
+export MASTER_HOSTNAME=$(hostname)
+export MASTER_IP=10.1.1.1
+export MASTER_PREFIX=24
 
 # 인터페이스 이름.
-EXT_NIC=em2 # 외부망.
-INT_NIC=p1p1 # 내부망.
+export EXT_NIC=em2 # 외부망.
+export INT_NIC=p1p1 # 내부망.
+export NODE_INT_NIC=p1p1  # node 들의 내부망 인터페이스 명.
 
 # NODE 의 이름, 수량, 사양.
-NODE_NAME=node
-NODE_NUM=${전체 노드 수}
-NODE_RANGE="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
+export NODE_NAME=node
+export NODE_NUM=${전체 노드 수}
+export NODE_RANGE="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
 
 # NODE 의 CPU 사양에 맞게 조정.
 # 물리 CPU가 2개 이고, CPU 당 코어가 10개, 하이퍼스레딩은 켜진(Enable) 상태 인 경우.  
-SOCKETS=2          ## 물리 CPU 2개
-CORESPERSOCKET=10  ## CPU 당 코어 10개
-THREAD=2           ## 하이퍼스레딩 Enable
+export SOCKETS=2          ## 물리 CPU 2개
+export CORESPERSOCKET=10  ## CPU 당 코어 10개
+export THREAD=2           ## 하이퍼스레딩 Enable
 
 # 노드 배포 이미지 경로.
 export CHROOT=/opt/ohpc/admin/images/centos7.4
@@ -817,6 +818,7 @@ systemctl enable nfs-server
 systemctl restart nfs-server
 
 exportfs
+
 ```
 출력 예)
 >/home         	<world>
@@ -828,8 +830,8 @@ exportfs
 ```bash
 chroot ${CHROOT} systemctl enable ntpd
 echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
-```
 
+```
 
 ***
 
@@ -897,6 +899,7 @@ chroot ${CHROOT} systemctl enable gmond
 #### # Restart web server
 ```bash
 systemctl try-restart httpd
+
 ```
 
 \# Open to http://localhost/ganglia
@@ -911,12 +914,14 @@ To import local file-based credentials, issue the following:
 wwsh file import /etc/passwd
 wwsh file import /etc/group
 wwsh file import /etc/shadow
- 
+
 ```
-### # optional support for controlling IPoIB interfaces
+### # (Optional) Support for Controlling IPoIB Interfaces
+\# 인피니밴드 (InfiniBand) 사용시에만 수행.
 ```bash
 wwsh file import /opt/ohpc/pub/examples/network/centos/ifcfg-ib0.ww
 wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
+
 ```
 
 ## # Finalizing provisioning configuration
@@ -924,44 +929,53 @@ wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 # Assemble bootstrap image
 ```bash
 wwbootstrap  `uname -r`
+
 ```
 
 # (Optional) Include BeeGFS/Lustre drivers; needed if enabling additional kernel modules on computes
 ```bash
 export WW_CONF=/etc/warewulf/bootstrap.conf
 echo "drivers += updates/kernel/" >> $WW_CONF
+
 ```
 
 # (Optional) Include overlayfs drivers; needed by Singularity
-`echo "drivers += overlay" >> $WW_CONF`
+```bash
+echo "drivers += overlay" >> $WW_CONF
+
+```
 
 ## Assemble Virtual Node File System (VNFS) image
 
 ### # Assemble Virtual Node File System (VNFS) image
+
 ```bash
 export CHROOT=/opt/ohpc/admin/images/centos7.4
 wwvnfs --chroot ${CHROOT}
+
 ```
 
 ***
 
 ## # 64. Register nodes for provisioning
+
 ### # Set provisioning interface as the default networking device
 ```bash
-echo "GATEWAYDEV=eth0" > /tmp/network.$$
+echo "GATEWAYDEV=${NODE_INT_NIC}" > /tmp/network.$$
 wwsh -y file import /tmp/network.$$ --name network
 wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
+
 ```
 
  # Add new nodes to Warewulf data store
 ```bash
-wwsh -y node new n01  --netdev  eth0 --ipaddr=10.1.1.1 --hwaddr=******** --gateway ${MASTER_IP}  --netmask=255.255.255.0
-```
+wwsh -y node new node1  --netdev  ${NODE_INT_NIC} --ipaddr=10.1.1.1 --hwaddr=******** --gateway ${MASTER_IP}  --netmask=255.255.255.0
 
+```
 
 ### # Define provisioning image for hosts
 ```bash
-wwsh -y provision set "n01" --vnfs=centos7.3 --bootstrap=` uname -r ` --files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
+wwsh -y provision set "node1" --vnfs=centos7.4 --bootstrap=` uname -r ` --files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
 
 wwsh  node list
 wwsh  node print
@@ -972,6 +986,7 @@ wwsh  dhcp  update
 wwsh  dhcp   restart
 wwsh  bootstrap  list
 wwsh  vnfs  list
+
 ```
 
 ### # Restart dhcp / update PXE
@@ -979,23 +994,24 @@ wwsh  vnfs  list
 ```bash
 systemctl restart dhcpd
 wwsh pxe update
+
 ```
 
-### # node  n01 boot on pxe
+### # node01 boot on pxe
 ```bash
-ping n01
-ssh n01
+ping node1
+ssh node1
 df -hT
 
 su - dasan
-ssh n01
+ssh node1
 ```
 
 ## 65. OpenHPC - Add Node (Clone)
 
 ```bash
 wwsh node list
-wwsh -y node clone n01 n02
+wwsh -y node clone node1 n02
 wwsh node list
 ```
 
@@ -1062,7 +1078,7 @@ ssh compute01
 [root@ohpc-master:~]# # Define chroot location
 [root@ohpc-master:~]# export CHROOT=/opt/ohpc/admin/images/centos7.4
 [root@ohpc-master:~]# echo ${CHROOT}
-/opt/ohpc/admin/images/centos7.3
+/opt/ohpc/admin/images/centos7.4
 [root@ohpc-master:~]#
 [root@ohpc-master:~]# yum -y --installroot=${CHROOT} install tmux
 Loaded plugins: fastestmirror, langpacks, priorities
@@ -1071,7 +1087,7 @@ Loaded plugins: fastestmirror, langpacks, priorities
 
 Complete!
 [root@ohpc-master:~]#
-[root@ohpc-master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.3
+[root@ohpc-master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
 <생략>
 
 [root@ohpc-master:~]#
@@ -1098,8 +1114,8 @@ Connection to compute01 closed.
 ## # 제외 // @@. OpenHPC - user's ssh login to compute nodes
 
 ```bash
-vi /opt/ohpc/admin/images/centos7.3/etc/pam.d/sshd
-tail -5 /opt/ohpc/admin/images/centos7.3/etc/pam.d/sshd
+vi /opt/ohpc/admin/images/centos7.4/etc/pam.d/sshd
+tail -5 /opt/ohpc/admin/images/centos7.4/etc/pam.d/sshd
 ```
 session    include      password-auth
 session    include      postlogin
@@ -1107,7 +1123,7 @@ session    include      postlogin
 -session   optional     pam_reauthorize.so prepare
 #account required pam_slurm.so
 
-wwvnfs --chroot /opt/ohpc/admin/images/centos7.3
+wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
 
 ssh compute01 reboot
 ssh compute02 reboot
