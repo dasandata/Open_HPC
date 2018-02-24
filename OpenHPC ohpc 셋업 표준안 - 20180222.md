@@ -1,18 +1,35 @@
-# Dasandata OpenHPC (v1.3.3-CentOS7.4 Base OS) Cluster Building Recipes (2018.02)
+# OpenHPC (v1.3.3-CentOS7.4 Base OS) Cluster Building Recipes
+# Dasandata (2018.02)
 
 \# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인 하여 설치를 시작 합니다.  
-![Cluster Architecture](https://image.slidesharecdn.com/schulz-mug-17-170930151325/95/openhpc-project-overview-and-updates-8-638.jpg?cb=1506784595)
+![Cluster Architecture]
+(https://image.slidesharecdn.com/schulz-mug-17-170930151325/95/openhpc-project-overview-and-updates-8-638.jpg?cb=1506784595)
 
 ***
 
-## # 1 Introduction
+## # 1. Introduction
+안녕하세요?  
+다산데이타 입니다.  
+
+저희가 지원해 드리고 있는 HPC Cluster Tool 중 하나인   
+OpenHPC Cluster 의 설치 방법 입니다.  
+
+대부분의 내용은 공식 메뉴얼의 순서에 맞추어 작성 하였으며,  
+편의상 필요한 부분들을 추가하거나 수정하였습니다.   
+
+자세한 내용은 공식 Install Recipe 를 참조 하시면 좋습니다 :)  
+http://openhpc.community/downloads/
+
+궁금하신 점이나 오류, 오탈자 등을 발견 하시면 아래 주소로 메일 부탁 드립니다 ^^;  
+mail@dasandata.co.kr
+
+감사합니다.  
 
 ## # 1.3 Inputs - 변수 정의 및 적용 (파일로 작성)
 
 ```bash
 vi ~/dasan_ohpc_variable.sh  
-
 ```
 
 \# '~/dasan_ohpc_variable.sh' 파일 내용.
@@ -47,24 +64,21 @@ export CORESPERSOCKET=10  ## CPU 당 코어 10개
 export THREAD=2           ## 하이퍼스레딩 Enable
 
 # end of file.
-
 ```
 
 ### # 변수 적용.
 ```bash
-source  ~/dasan_ohpc_variable.sh  
-
+source  ~/dasan_ohpc_variable.sh
 ```
 
 ***
 
-## # 2 Network and Firewall Setup to Base Operating System (BOS)
+## # 2. Network and Firewall Setup to Base Operating System (BOS)
 
 ### # 2.1 외부망 및 내부망 인터페이스 설정.
 
 ```bash
 ip a    # 인터페이스 목록 확인  
-
 ```
 출력 예)
 > 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
@@ -89,7 +103,6 @@ ip a    # 인터페이스 목록 확인
 ### # 2.2 Master 의 외부/내부 인터페이스 설정내용 확인
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
-
 ```
 출력 예)
 >NAME=*em2*  
@@ -105,7 +118,6 @@ DEFROUTE=yes
 
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-
 ```
 출력 예)
 >NAME=*p1p1*  
@@ -116,15 +128,13 @@ BOOTPROTO=dhcp
 ### # 2.3 가독성 향상을 위해, 불 필요한 IPV6 항목 삭제.
 ```bash
 sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
-sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}  
-
+sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 
 ### # 2.4 Master 의 내부망 인터페이스의 설정 변경.
 ```bash
 perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}  
-
+perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 
 ### # 2.5 Master 의 내부망 ip 설정
@@ -132,16 +142,13 @@ perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT
 echo "IPADDR=${MASTER_IP}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 echo "PREFIX=${MASTER_PREFIX}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
-cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}  
-
+cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 
 ### # 2.6 ip 변경 설정 적용
 ```bash
 ifdown ${INT_NIC} && ifup ${INT_NIC}
-
-ip a  
-
+ip a
 ```
 출력 예)
 >1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
@@ -171,8 +178,7 @@ firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 firewall-cmd --reload
 
-firewall-cmd --list-all --zone=external  
-
+firewall-cmd --list-all --zone=external
 ```
 출력 예)
 >*external* (active)  
@@ -181,8 +187,7 @@ icmp-block-inversion: no
 interfaces: *em2*  
 
 ```bash
-firewall-cmd --list-all --zone=trusted  
-
+firewall-cmd --list-all --zone=trusted
 ```
 출력 예)
 >*trusted* (active)  
