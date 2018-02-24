@@ -233,8 +233,7 @@ repolist: 24,090
 yum -y install \
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
 >> ~/dasan_log_ohpc_openhpc_repository.txt
-
-tail ~/dasan_log_ohpc_openhpc_repository.txt
+tail -1 ~/dasan_log_ohpc_openhpc_repository.txt
 ```
 
 *output example>*  
@@ -422,7 +421,7 @@ grep NodeName= /etc/slurm/slurm.conf
 #### # Install to pbspro-server-ohpc
 ```bash
 yum -y install pbspro-server-ohpc >> ~/dasan_log_ohpc_resourcemanager_pbspro.txt
-tail ~/dasan_log_ohpc_resourcemanager_pbspro.txt
+tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 ```
 
 ***
@@ -679,7 +678,7 @@ cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 \# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt
-tail ~/dasan_log_ohpc_slurmclient.txt
+tail -1 ~/dasan_log_ohpc_slurmclient.txt
 ```
 
 ***
@@ -720,7 +719,7 @@ chroot ${CHROOT} systemctl enable rdma
 ### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
 yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt
-tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
+tail -1 ~/dasan_log_ohpc_ntp,kernel,modules.txt  
 ```
 
 ## # 3.8.3 Customize system configuration
@@ -863,12 +862,12 @@ tail ${CHROOT}/etc/security/limits.conf
 #### # Install Ganglia meta-package on master
 ```bash
 yum -y install ohpc-ganglia >> ~/dasan_log_ohpc_ganglia.txt
-tail ~/dasan_log_ohpc_ganglia.txt
+tail -1 ~/dasan_log_ohpc_ganglia.txt
 ```
 #### # Install Ganglia compute node daemon
 ```bash
 yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc >> ~/dasan_log_ohpc_ganglia-node.txt
-tail ~/dasan_log_ohpc_ganglia-node.txt
+tail -1 ~/dasan_log_ohpc_ganglia-node.txt
 ```
 #### # Use example configuration script to enable unicast receiver on master host
 ```bash
@@ -1092,29 +1091,29 @@ wwsh  object  print  -p :all
 ```bash
 yum -y install  ohpc-autotools EasyBuild-ohpc hwloc-ohpc spack-ohpc valgrind-ohpc \
 >> ~/dasan_log_ohpc_autotools,meta-package.txt
-tail ~/dasan_log_ohpc_autotools,meta-package.txt
+tail -1 ~/dasan_log_ohpc_autotools,meta-package.txt
 ```
 
 ### # 4.2 Compilers (gcc ver 7 and 5.4)
 ```bash
 yum -y install  gnu7-compilers-ohpc  gnu-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt
-tail ~/dasan_log_ohpc_Compilers.txt
+tail -1 ~/dasan_log_ohpc_Compilers.txt
 ```
 
 ### # 4.3 MPI Stacks
 ```bash
 yum -y install  openmpi-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc >> ~/dasan_log_ohpc_MPI-Stacks.txt
-tail ~/dasan_log_ohpc_MPI-Stacks.txt
+tail -1 ~/dasan_log_ohpc_MPI-Stacks.txt
 ```
 
 ### # 4.4 Performance Tools
 #### # Install perf-tools meta-package
 ```bash
 yum -y install ohpc-gnu7-perf-tools >> ~/dasan_log_ohpc_perf-tools-gnu7.txt
-tail ~/dasan_log_ohpc_perf-tools-gnu7.txt
+tail -1 ~/dasan_log_ohpc_perf-tools-gnu7.txt
 
 yum -y groupinstall  ohpc-perf-tools-gnu >> ~/dasan_log_ohpc_perf-tools-gnu.txt
-tail ~/dasan_log_ohpc_perf-tools-gnu.txt
+tail -1 ~/dasan_log_ohpc_perf-tools-gnu.txt
 ```
 
 
@@ -1124,7 +1123,7 @@ tail ~/dasan_log_ohpc_perf-tools-gnu.txt
 ### # 4.5 Setup default development environment
 ```bash
 yum -y install  lmod-defaults-gnu7-openmpi-ohpc  >> ~/dasan_log_ohpc_lmod-gnu7.txt
-tail ~/dasan_log_ohpc_lmod-gnu7.txt
+tail -1 ~/dasan_log_ohpc_lmod-gnu7.txt
 ```
 
 ### # 4.6 3rd Party Libraries and Tools
@@ -1132,21 +1131,21 @@ tail ~/dasan_log_ohpc_lmod-gnu7.txt
 ```bash
 yum -y install  ohpc-gnu7-serial-libs hpc-gnu7-io-libs ohpc-gnu7-python-libs \
  ohpc-gnu7-runtimes >> ~/dasan_log_ohpc_3rdPartyLib.txt
-tail ~/dasan_log_ohpc_3rdPartyLib.txt
+tail -1 ~/dasan_log_ohpc_3rdPartyLib.txt
 ```
 
 #### # Install parallel lib meta-packages for all available MPI toolchains
 ```bash
 yum -y install  ohpc-gnu7-mpich-parallel-libs ohpc-gnu7-mvapich2-parallel-libs \
  ohpc-gnu7-openmpi-parallel-libs  >> ~/dasan_log_ohpc_parallellib.txt
-tail ~/dasan_log_ohpc_parallellib.txt
+tail -1 ~/dasan_log_ohpc_parallellib.txt
 ````
 
 #### # Install gnu5 MPI Stacks & lib & meta-packages
 ```bash
 yum -y groupinstall  ohpc-io-libs-gnu ohpc-parallel-libs-gnu ohpc-parallel-libs-gnu-mpich \
  ohpc-python-libs-gnu ohpc-runtimes-gnu ohpc-serial-libs-gnu >> ~/dasan_log_ohpc_gnu5MPI.txt
-tail ~/dasan_log_ohpc_gnu5MPI.txt
+tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 ```
 
 
