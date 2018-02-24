@@ -78,7 +78,7 @@ source  ~/dasan_ohpc_variable.sh
 ```bash
 ip a    # 인터페이스 목록 확인  
 ```
-Output example)
+output example>
 > 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
@@ -102,7 +102,7 @@ Output example)
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 ```
-Output example)
+output example>
 >NAME=*em2*  
 ONBOOT=yes  
 BOOTPROTO=none  
@@ -117,7 +117,7 @@ DEFROUTE=yes
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
-Output example)
+output example>
 >NAME=*p1p1*  
 ONBOOT=no  
 BOOTPROTO=dhcp  
@@ -148,7 +148,7 @@ cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ifdown ${INT_NIC} && ifup ${INT_NIC}
 ip a
 ```
-Output example)
+output example>
 >1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
@@ -178,7 +178,7 @@ firewall-cmd --reload
 
 firewall-cmd --list-all --zone=external
 ```
-Output example)
+output example>
 >*external* (active)  
 target: *default*  
 icmp-block-inversion: no  
@@ -187,7 +187,7 @@ interfaces: *em2*
 ```bash
 firewall-cmd --list-all --zone=trusted
 ```
-Output example)
+output example>
 >*trusted* (active)  
   target: ACCEPT  
   icmp-block-inversion: no  
@@ -198,7 +198,7 @@ Output example)
 echo "${MASTER_IP}     ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
 ```
-Output example)
+output example>
 >127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
 ::1          localhost localhost.localdomain localhost6 localhost6.localdomain6  
 *10.1.1.1    master*  
@@ -213,7 +213,7 @@ Output example)
 yum repolist
 ```
 
-Output example)  
+output example>  
 >Loaded plugins: fastestmirror, langpacks, priorities  
 Loading mirror speeds from cached hostfile  
  \* base: data.nicehosting.co.kr  
@@ -237,7 +237,7 @@ http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.e
 tail ~/dasan_log_ohpc_openhpc_repository.txt
 ```
 
-Output example)  
+output example>  
 > Running transaction test  
 Transaction test succeeded  
 Running transaction  
@@ -252,7 +252,7 @@ Complete!
 ```bash
 yum repolist
 ```
-Output example)
+output example>
 >Loaded plugins: fastestmirror, langpacks, priorities  
 OpenHPC                                                  | 1.6 kB     00:00     
 OpenHPC-updates                                          | 1.2 kB     00:00     
@@ -285,7 +285,7 @@ repolist: 24,839
 yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
-Output example)  
+output example>  
 >  tftp-server.x86_64 0:5.2-13.el7                     
   warewulf-cluster-ohpc.x86_64 0:3.8pre-9.2                                     
   warewulf-common-ohpc.x86_64 0:3.8pre-11.1                                     
@@ -301,7 +301,7 @@ Complete!
 ```bash
 cat /etc/ntp.conf | grep -v "#\|^$"
 ```
-Output example)
+output example>
 >driftfile /var/lib/ntp/drift  
 restrict default nomodify notrap nopeer noquery  
 restrict 127.0.0.1   
@@ -334,7 +334,7 @@ systemctl restart ntpd
 yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
-Output example)
+output example>
 >  pmix-ohpc.x86_64 0:1.2.3-20.1                                                 
   slurm-devel-ohpc.x86_64 0:17.02.9-69.2                                        
   slurm-munge-ohpc.x86_64 0:17.02.9-69.2                                        
@@ -352,7 +352,7 @@ Complete!
 grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 
 ```
-Output example)
+output example>
 >ClusterName=linux  
 ControlMachine=linux0   
 
@@ -362,7 +362,7 @@ perl -pi -e "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" /etc/slurm
 grep ClusterName /etc/slurm/slurm.conf
 
 ```
-Output example)
+output example>
 >ClusterName=*OpenHPC-Dasandata*  
 ControlMachine=*master*  
 
@@ -380,7 +380,7 @@ ControlMachine=*master*
 echo "NodeName="${NODE_NAME}${NODE_RANGE} &&  # 선언 되어 있는 변수 확인
 grep NodeName= /etc/slurm/slurm.conf          # slurm 설정 파일의 기본 값 확인.
 ```
-Output example)
+output example>
 >NodeName=node[1-3]  
 NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
@@ -388,7 +388,7 @@ NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN
 perl -pi -e "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_RANGE}/" /etc/slurm/slurm.conf
 grep NodeName= /etc/slurm/slurm.conf
 ```
-Output example) **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
+output example> **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
 >NodeName=*node[1-3]* Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 #### # Node CPU, Memory 속성 설정
@@ -403,7 +403,7 @@ bash ~/dasan_ohpc_variable.sh
 ```bash
 grep NodeName= /etc/slurm/slurm.conf
 ```
-Output example)
+output example>
 >NodeName=node[1-3] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 ```bash
@@ -413,7 +413,7 @@ perl -pi -e "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.c
 
 grep NodeName= /etc/slurm/slurm.conf  
 ```
-Output example)
+output example>
 >NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
@@ -472,7 +472,7 @@ echo ${INT_NIC}
 
 ifconfig ${INT_NIC}
 ```
-Output example)
+output example>
 >p1p1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500  
         inet 10.1.1.1  netmask 255.255.255.0  broadcast 10.1.1.255  
         ether ================  txqueuelen 1000  (Ethernet)  
@@ -485,7 +485,7 @@ Output example)
 ```bash
 grep device /etc/warewulf/provision.conf
 ```
-Output example)
+output example>
 >\# What is the default network device that the master will use to  
 network device = **eth1**  
 
@@ -496,7 +496,7 @@ perl -pi -e "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
 grep device /etc/warewulf/provision.conf
 ```
 
-Output example)
+output example>
 >\# What is the default network device that the master will use to  
 network device = **p1p1**  
 
@@ -507,7 +507,7 @@ perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
 grep disable /etc/xinetd.d/tftp
 ```
 
-Output example)
+output example>
 >[root@master:\~]# grep disable /etc/xinetd.d/tftp  
 	disable			= yes  
 [root@master:\~]# perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
@@ -534,14 +534,14 @@ systemctl restart httpd
 ```bash
 echo ${CHROOT}
 ```
-Output example)
+output example>
 >/opt/ohpc/admin/images/centos7.4
 
 #### # Build initial BOS image
 ```bash
 wwmkchroot centos-7 ${CHROOT}
 ```
-Output example)
+output example>
 >Loaded plugins: fastestmirror, langpacks, priorities  
 os-base                                                  | 3.6 kB     00:00     
 (1/2): os-base/x86_64/group_gz                             | 156 kB   00:01     
@@ -579,7 +579,7 @@ uname -r
 
 chroot ${CHROOT} uname -r
 ```
-Output example)
+output example>
 >[root@master:~]# uname -r  
 3.10.0-693.17.1.el7.x86_64  
 [root@master:~]#   
@@ -595,7 +595,7 @@ rpm -qa | grep glibc-common
 chroot ${CHROOT} rpm -qa | grep glibc-common
 ```
 
-Output example)
+output example>
 >[root@master:\~]# rpm -qa | grep glibc-common  
 **glibc-2.17-196.el7_4.2.x86_64**  
 [root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
@@ -606,7 +606,7 @@ Output example)
 yum -y --installroot=${CHROOT} update
 ```
 
-Output example)
+output example>
 >Loaded plugins: fastestmirror, langpacks, priorities  
 OpenHPC                                                  | 1.6 kB     00:00     
 OpenHPC-updates                                          | 1.2 kB     00:00     
@@ -641,7 +641,7 @@ rpm -qa | grep glibc-common
 chroot ${CHROOT} rpm -qa | grep glibc-common
 ```
 
-Output example)
+output example>
 >[root@master:\~]# rpm -qa | grep glibc-common  
 **glibc-common-2.17-196.el7_4.2.x86_64**  
 [root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
@@ -656,7 +656,7 @@ yum -y --installroot=${CHROOT} install \
 tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```
-Output example)
+output example>
 >  python-urlgrabber.noarch 0:3.10-8.el7                                         
   pyxattr.x86_64 0:0.5.1-5.el7                                                  
   rpm-build-libs.x86_64 0:4.11.3-25.el7                                         
@@ -730,7 +730,7 @@ tail ~/dasan_log_ohpc_ntp,kernel,modules.txt
 wwinit database
 wwinit ssh_keys
 ```
-Output example)
+output example>
 >[root@master:\~]# wwinit database  
 database:     Checking to see if RPM 'mysql-server' is installed             NO  
 database:     Checking to see if RPM 'mariadb-server' is installed           OK  
@@ -761,7 +761,7 @@ ssh_keys:     Creating default node ssh_host_ecdsa_key:
                                                                              OK  
 Done.  
 
-### # 추후 node 에 root 가 자동으로 로그인 할 수 있도록 sshkey 를 복사 합니다.
+### # root 가 패스워드 없이 node 에 로그인 할 수 있도록 sshkey 를 복사 합니다.
 ```bash
 cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
 ```
@@ -781,7 +781,7 @@ echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHR
 cat  ${CHROOT}/etc/fstab  
 ```
 
-Output example)
+output example>
 >[root@master:\~]# df -hT | grep -v tmpfs  
 Filesystem                     Type      Size  Used Avail Use% Mounted on  
 /dev/mapper/centos_master-root xfs       898G  9.6G  889G   2% /  
@@ -813,7 +813,7 @@ echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
 cat /etc/exports
 ```
 
-Output example)
+output example>
 >/home \*(rw,no_subtree_check,fsid=10,no_root_squash)
 /opt/ohpc/pub \*(ro,no_subtree_check,fsid=11)
 
@@ -827,7 +827,7 @@ systemctl restart nfs-server
 exportfs
 ```
 
-Output example)
+output example>
 >/home         	<world>
 /opt/ohpc/pub 	<world>
 
@@ -947,13 +947,28 @@ echo "drivers += overlay" >> $WW_CONF
 ```bash
 wwbootstrap  `uname -r`
 ```
+output example>
+>Number of drivers included in bootstrap: 513  
+Number of firmware images included in bootstrap: 96  
+Building and compressing bootstrap  
+Integrating the Warewulf bootstrap: 3.10.0-693.17.1.el7.x86_64  
+Including capability: provision-adhoc  
+Including capability: provision-files  
+Including capability: provision-selinux  
+Including capability: provision-vnfs  
+Including capability: setup-filesystems  
+Including capability: transport-http  
+Compressing the initramfs  
+Locating the kernel object  
+Bootstrap image '3.10.0-693.17.1.el7.x86_64' is ready  
+Done.  
 
 ## # 3.9.2 Assemble Virtual Node File System (VNFS) image
 
 ```bash
 echo ${CHROOT}
 ```
-Output example)
+output example>
 >/opt/ohpc/admin/images/centos7.4
 
 ```bash
@@ -967,29 +982,33 @@ wwvnfs --chroot ${CHROOT}
 echo "GATEWAYDEV=${NODE_INT_NIC}" > /tmp/network.$$
 wwsh -y file import /tmp/network.$$ --name network
 wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
-
 ```
 
- # Add new nodes to Warewulf data store
+### Add new nodes to Warewulf data store
 ```bash
-wwsh -y node new node1  --netdev  ${NODE_INT_NIC} --ipaddr=10.1.1.1 --hwaddr=******** --gateway ${MASTER_IP}  --netmask=255.255.255.0
-
+wwsh node new ${NODE_NAME}<노드번호> --netdev ${NODE_INT_NIC} --ipaddr=10.1.1.11 --hwaddr=<기입> --gateway ${MASTER_IP} --netmask=255.255.255.0
 ```
 
 ### # Define provisioning image for hosts
 ```bash
-wwsh -y provision set "node1" --vnfs=centos7.4 --bootstrap=` uname -r ` --files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
+wwsh -y provision set "${NODE_NAME}<노드번호>" --vnfs=centos7.4 --bootstrap=`uname -r ` --files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
+```
 
+### # Command List of Checking node configuration
+```bash
 wwsh  node list
 wwsh  node print
 wwsh  object  print  -p :all
 wwsh  file list
-wwsh  pxe  update
-wwsh  dhcp  update
-wwsh  dhcp   restart
-wwsh  bootstrap  list
-wwsh  vnfs  list
+wwsh  bootstrap list
+wwsh  vnfs list
+```
 
+
+```bash
+wwsh  pxe  update
+wwsh  dhcp update
+wwsh  dhcp restart
 ```
 
 ### # Restart dhcp / update PXE
@@ -1114,39 +1133,23 @@ Connection to compute01 closed.
 ```
 
 
-## # 제외 // @@. OpenHPC - user's ssh login to compute nodes
-
-```bash
-vi /opt/ohpc/admin/images/centos7.4/etc/pam.d/sshd
-tail -5 /opt/ohpc/admin/images/centos7.4/etc/pam.d/sshd
-```
-session    include      password-auth
-session    include      postlogin
-# Used with polkit to reauthorize users in remote sessions
--session   optional     pam_reauthorize.so prepare
-#account required pam_slurm.so
-
-wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
-
-ssh compute01 reboot
-ssh compute02 reboot
+### # Node Local Disk Mount (ex: /scratch)
 
 
-66. OpenHPC -  Node Local Disk Mount (/scratch)
-
-
-# Define chroot location
+#### # Define chroot location
 ```bash
 echo ${CHROOT}
 
 yum -y --installroot=${CHROOT} install parted xfsprogs
 mkdir ${CHROOT}/scratch
+
 wwvnfs --chroot=${CHROOT}
 
-pdsh -w n[01-08] reboot
+pdsh -w node[1-x] reboot
 ```
 
-===== reboot ======
+===== node reboot ======
+
 ```bash
 pdsh -w n[01-08] date
 
@@ -1189,11 +1192,13 @@ pdsh -w n[01-08] 'll / | grep scratch'
 ```
 
 
-## # 67.  Install OpenHPC Development Components
+## # 4. Install OpenHPC Development Components
+
+### # 4.1 Development Tools
 
 # Install autotools meta-package (Default)
 ```bash
-yum -y  install ohpc-autotools EasyBuild-ohpc hwloc-ohpc spack-ohpc valgrind-ohpc
+yum -y install ohpc-autotools EasyBuild-ohpc hwloc-ohpc spack-ohpc valgrind-ohpc
 ```
 
 # Compilers ## gcc ver 7 and 5.4
