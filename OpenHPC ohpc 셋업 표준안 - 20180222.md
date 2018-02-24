@@ -1,8 +1,9 @@
 # Dasandata OpenHPC (v1.3.3-CentOS7.4 Base OS) Cluster Building Recipes (2018.02)
 
 \# 참조 링크 : http://openhpc.community/  
-\# Root 로 로그인하여 설치를 시작 합니다.  
+\# Root 로 로그인 하여 설치를 시작 합니다.  
 ![Cluster Architecture](https://image.slidesharecdn.com/schulz-mug-17-170930151325/95/openhpc-project-overview-and-updates-8-638.jpg?cb=1506784595)
+
 ***
 
 ## # 1 Introduction
@@ -10,11 +11,11 @@
 ## # 1.3 Inputs - 변수 정의 및 적용 (파일로 작성)
 
 ```bash
-vi ~/dasan_ohpc_variable.sh
+vi ~/dasan_ohpc_variable.sh  
 
 ```
 
-### # '~/dasan_ohpc_variable.sh' 파일 내용.
+\# '~/dasan_ohpc_variable.sh' 파일 내용.
 ```bash
 #!/bin/bash
 
@@ -51,7 +52,7 @@ export THREAD=2           ## 하이퍼스레딩 Enable
 
 ### # 변수 적용.
 ```bash
-source  ~/dasan_ohpc_variable.sh
+source  ~/dasan_ohpc_variable.sh  
 
 ```
 
@@ -62,7 +63,7 @@ source  ~/dasan_ohpc_variable.sh
 ### # 2.1 외부망 및 내부망 인터페이스 설정.
 
 ```bash
-ip a    # 인터페이스 목록 확인
+ip a    # 인터페이스 목록 확인  
 
 ```
 출력 예)
@@ -115,14 +116,15 @@ BOOTPROTO=dhcp
 ### # 2.3 가독성 향상을 위해, 불 필요한 IPV6 항목 삭제.
 ```bash
 sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
-sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}  
 
 ```
 
 ### # 2.4 Master 의 내부망 인터페이스의 설정 변경.
 ```bash
 perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}  
+
 ```
 
 ### # 2.5 Master 의 내부망 ip 설정
@@ -130,7 +132,7 @@ perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT
 echo "IPADDR=${MASTER_IP}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 echo "PREFIX=${MASTER_PREFIX}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
-cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}  
 
 ```
 
@@ -138,7 +140,7 @@ cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```bash
 ifdown ${INT_NIC} && ifup ${INT_NIC}
 
-ip a
+ip a  
 
 ```
 출력 예)
@@ -169,7 +171,8 @@ firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 firewall-cmd --reload
 
-firewall-cmd --list-all --zone=external
+firewall-cmd --list-all --zone=external  
+
 ```
 출력 예)
 >*external* (active)  
@@ -178,7 +181,7 @@ icmp-block-inversion: no
 interfaces: *em2*  
 
 ```bash
-firewall-cmd --list-all --zone=trusted
+firewall-cmd --list-all --zone=trusted  
 
 ```
 출력 예)
