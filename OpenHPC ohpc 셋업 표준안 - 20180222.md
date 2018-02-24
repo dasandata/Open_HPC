@@ -609,10 +609,10 @@ updates                                                  | 3.4 kB     00:00
 (1/2): epel/x86_64/updateinfo                              | 892 kB   00:02     
 (2/2): epel/x86_64/primary_db                              | 6.2 MB   00:11     
 Determining fastest mirrors  
- * base: ftp.daumkakao.com  
- * epel: mirror01.idc.hinet.net  
- * extras: ftp.daumkakao.com  
- * updates: ftp.daumkakao.com  
+ \* base: ftp.daumkakao.com  
+ \* epel: mirror01.idc.hinet.net  
+ \* extras: ftp.daumkakao.com  
+ \* updates: ftp.daumkakao.com  
 OpenHPC                                                                 821/821  
 OpenHPC-updates                                                       1010/1010  
 139 packages excluded due to repository priority protections  
@@ -633,9 +633,9 @@ chroot ${CHROOT} rpm -qa | grep glibc-common
 ```
 
 출력 예)
->[root@master:~]# rpm -qa | grep glibc-common  
+>[root@master:\~]# rpm -qa | grep glibc-common  
 **glibc-common-2.17-196.el7_4.2.x86_64**  
-[root@master:~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
+[root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
 **glibc-common-2.17-196.el7_4.2.x86_64**  
 
 
@@ -644,7 +644,7 @@ chroot ${CHROOT} rpm -qa | grep glibc-common
 ```bash
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute  parted  xfsprogs  python-devel  yum  htop >> ~/dasan_log_ohpc_meta-package.txt
- tail ~/dasan_log_ohpc_meta-package.txt  
+tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```
 출력 예)
@@ -710,16 +710,16 @@ chroot ${CHROOT} systemctl enable rdma
 
 ***
 
-#### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment
+#### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
 yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt
 tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
 
 ```
 
-## # 8. Customize system configuration
+## # 8. Customize system configuration.
 
-### # 8-1. Initialize warewulf database and add new cluster key to base image
+### # 8-1. Initialize warewulf database and add new cluster key to base image.
 ```bash
 wwinit database
 wwinit ssh_keys
@@ -759,7 +759,7 @@ Done.
 [root@master:\~]# cat \~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys  
 [root@master:\~]#   
 
-#### # 8-2. Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image
+### # 8-2. Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image.
 
 ```bash
 df -hT | grep -v tmpfs
@@ -770,25 +770,60 @@ echo "${MASTER_HOSTNAME}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0
 echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.
-# echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+#echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
 cat  ${CHROOT}/etc/fstab  
 
 ```
+출력 예)
+>[root@master:\~]# df -hT | grep -v tmpfs  
+Filesystem                     Type      Size  Used Avail Use% Mounted on  
+/dev/mapper/centos_master-root xfs       898G  9.6G  889G   2% /  
+/dev/sda1                      xfs      1014M  189M  826M  19% /boot  
+/dev/mapper/vg_home-lv_home    xfs        39T   55M   39T   1% /home  
+[root@master:\~]#  
+[root@master:\~]# cat  ${CHROOT}/etc/fstab  
+\#GENERATED_ENTRIES#  
+tmpfs /dev/shm tmpfs defaults 0 0  
+devpts /dev/pts devpts gid=5,mode=620 0 0  
+sysfs /sys sysfs defaults 0 0  
+proc /proc proc defaults 0 0  
+master:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0  
+master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0  
+[root@master:\~]#  
 
-#### # Export /home and OpenHPC public packages from master server
+
+### # 8-3. Export /home and OpenHPC public packages from master server.
+
 ```bash
 cat /etc/exports
+
 echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
 echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
-echo "/data *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
-cat /etc/exports
 
+# 아래는 data 디렉토리를 별도로 구성하는 경우에만.  
+#echo "/data *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+
+cat /etc/exports
+```
+출력 예)
+>/home \*(rw,no_subtree_check,fsid=10,no_root_squash)
+/opt/ohpc/pub \*(ro,no_subtree_check,fsid=11)
+
+
+```bash
 exportfs -a
+
 systemctl enable nfs-server
 systemctl restart nfs-server
-```
 
-#### # Enable NTP time service on computes and identify master host as local NTP server
+exportfs
+```
+출력 예)
+>/home         	<world>
+/opt/ohpc/pub 	<world>
+
+
+### # 8-4. Enable NTP time service on computes and identify master host as local NTP server.
 
 ```bash
 chroot ${CHROOT} systemctl enable ntpd
@@ -796,9 +831,12 @@ echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 ```
 
 
-### # (Additional Custom) Increase locked memory limits
+***
 
-#### # Update memlock settings on master and compute
+### # 8-5. (Optional Custom) Increase locked memory limits
+\# 기본 네트워크 구성이 InfiniBand 또는 Omni-Path를 로 되어 있을 경우에만 수행 합니다.
+
+\# Update memlock settings on master and compute
 ```bash
 perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
 perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
@@ -809,37 +847,50 @@ tail /etc/security/limits.conf
 tail ${CHROOT}/etc/security/limits.conf
 ```
 
-## # (Additional Custom) Add Ganglia monitoring
-# Install Ganglia meta-package on master
-`yum -y install ohpc-ganglia`
+***
 
-# Install Ganglia compute node daemon
-`yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc`
+### # 8-6. Add Ganglia monitoring.
+\# Ganglia Monitoring System : https://en.wikipedia.org/wiki/Ganglia_(software)
 
-# Use example configuration script to enable unicast receiver on master host
+#### # Install Ganglia meta-package on master
+```bash
+yum -y install ohpc-ganglia >> ~/dasan_log_ohpc_ganglia.txt
+tail ~/dasan_log_ohpc_ganglia.txt  
+
+```
+
+#### # Install Ganglia compute node daemon
+```bash
+yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc >> ~/dasan_log_ohpc_ganglia-node.txt
+tail ~/dasan_log_ohpc_ganglia-node.txt  
+
+```
+
+#### # Use example configuration script to enable unicast receiver on master host
 ```bash
 /usr/bin/cp  /opt/ohpc/pub/examples/ganglia/gmond.conf  /etc/ganglia/gmond.conf
 
 grep 'host =' /etc/ganglia/gmond.conf
 perl -pi -e "s/<sms>/${MASTER_HOSTNAME}/" /etc/ganglia/gmond.conf
-grep 'host ='  /etc/ganglia/gmond.conf
+grep 'host ='  /etc/ganglia/gmond.conf  
+
 ```
 
-# Add configuration to compute image and provide gridname
+#### # Add configuration to compute image and provide gridname
 ```bash
 /usr/bin/cp   /etc/ganglia/gmond.conf  ${CHROOT}/etc/ganglia/gmond.conf
-echo "gridname MySite" >> /etc/ganglia/gmetad.conf
+echo "gridname MySite" >> /etc/ganglia/gmetad.conf  
+
 ```
-
-
-# Start and enable Ganglia services
+#### # Start and enable Ganglia services
 ```bash
 systemctl enable gmond
 systemctl enable gmetad
 systemctl start gmond
 systemctl start gmetad
 
-chroot ${CHROOT} systemctl enable gmond
+chroot ${CHROOT} systemctl enable gmond  
+
 ```
 
 # Restart web server
