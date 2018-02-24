@@ -319,6 +319,8 @@ tail ~/dasan_log_ohpc_base,warewulf.txt
   xinetd.x86_64 2:2.3.15-13.el7                                                 
 Complete!  
 
+***
+
 ## # 5.Resource Management Services Install.
 \# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
 \# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.  
@@ -344,7 +346,7 @@ Complete!
 
 #### # ClusterName 과 ControlMachine 변경
 ```bash
-grep 'ClusterName\|ClusterName' /etc/slurm/slurm.conf
+grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 
 ```
 출력 예)
@@ -419,6 +421,8 @@ yum -y install pbspro-server-ohpc >> ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 tail ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 ```
 
+***
+
 ## # 6. (Optional) Add InfiniBand support services on master node
 
 ```bash
@@ -450,23 +454,32 @@ rdma   tunning
 udaddy -s  10.1.1.1
 
 ```
+***
 
 ## # 7. Complete basic Warewulf setup for master node
 
 ### # 7-1. 클러스터 내부망 인터페이스 변경.
-\# 내부망 인터페이스 설정 내용 점검.
+\# 내부망 인터페이스 설정 내용 확인.  
 ```bash
 echo ${INT_NIC}
 
 ifconfig ${INT_NIC}
 ```
+출력 예)
+>p1p1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500  
+        inet 10.1.1.1  netmask 255.255.255.0  broadcast 10.1.1.255  
+        ether ================  txqueuelen 1000  (Ethernet)  
+        RX packets 12612  bytes 3974604 (3.7 MiB)  
+        RX errors 0  dropped 0  overruns 0  frame 0  
+        TX packets 29576  bytes 1362244 (1.2 MiB)  
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0  
 
-\# warewulf provision.conf 파일의 기본값 확인.
+\# warewulf provision.conf 파일의 기본값 확인.  
 ```bash
 grep device /etc/warewulf/provision.conf
 ```
 출력 얘)
-># What is the default network device that the master will use to  
+>\# What is the default network device that the master will use to  
 network device = **eth1**  
 
 \# 인터페이스 명 변경
@@ -476,12 +489,24 @@ perl -pi -e "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
 grep device /etc/warewulf/provision.conf
 ```
 
+출력 얘)
+>\# What is the default network device that the master will use to  
+network device = **p1p1**  
+
 ### # 7-2. tftp 서비스 Enable.
 ```bash
 grep disable /etc/xinetd.d/tftp
 perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
 grep disable /etc/xinetd.d/tftp
 ```
+
+출력 예)
+>[root@master:~]# grep disable /etc/xinetd.d/tftp  
+	disable			= yes  
+[root@master:~]# perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
+[root@master:~]# grep disable /etc/xinetd.d/tftp  
+ disable = no  
+[root@master:~]#   
 
 ### # 7-3. 관련 서비스 부팅시 시작 되도록 변경(enable) 및 Restarting.
 ```bash
@@ -504,15 +529,126 @@ echo ${CHROOT}
 출력 예)
 >/opt/ohpc/admin/images/centos7.4
 
-#### # Build initial chroot image.
+#### # Build initial node image.
 ```bash
 wwmkchroot centos-7 ${CHROOT}
 ```
+출력 예)
+>Loaded plugins: fastestmirror, langpacks, priorities  
+os-base                                                  | 3.6 kB     00:00     
+(1/2): os-base/x86_64/group_gz                             | 156 kB   00:01     
+(2/2): os-base/x86_64/primary_db                           | 5.7 MB   01:55     
+Determining fastest mirrors  
+Resolving Dependencies  
+--> Running transaction check  
+--> Package basesystem.noarch 0:10.0-7.el7.centos will be installed  
+--> Package bash.x86_64 0:4.2.46-28.el7 will be installed  
+<일부 생략>  
+--> Finished Dependency Resolution  
+Dependencies Resolved  
+================================================================================  
+ Package                      Arch    Version                    Repository  
+                                                                           Size  
+================================================================================  
+Installing:  
+ basesystem                   noarch  10.0-7.el7.centos          os-base  5.0 k  
+ bash                         x86_64  4.2.46-28.el7              os-base  1.0 M  
+ centos-release               x86_64  **7-4.1708.el7.centos**        os-base   23 k  
+<일부 생략>  
+Transaction Summary  
+================================================================================  
+Install  43 Packages (+132 Dependent packages)  
+Total download size: 85 M  
+Installed size: 363 M  
+Downloading packages:  
+<일부 생략>  
+Complete!  
+
+#### # Build 된 node image 와 master 의 kernel version 비교.
+
+```bash
+uname -r
+
+chroot ${CHROOT} uname -r
+```
+출력 예)
+>[root@master:~]# uname -r  
+3.10.0-693.17.1.el7.x86_64  
+[root@master:~]#   
+[root@master:~]# chroot ${CHROOT} uname -r  
+3.10.0-693.17.1.el7.x86_64  
+
+#### # Build 된 node provision image 의 기본 glibc 라이브러리 업데이트.  
+\# glibc 라이브러리 버젼 차이에 의한 locale 오류를 방지하기 위해 업데이트를 실행 합니다.  
+\# 업데이트 전 버젼 확인 및 비교.  
+
+```bash
+rpm -qa | grep glibc-common
+chroot ${CHROOT} rpm -qa | grep glibc-common
+```
+
+출력 예)
+>[root@master:~]# rpm -qa | grep glibc-common  
+**glibc-2.17-196.el7_4.2.x86_64**  
+[root@master:~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
+**glibc-2.17-196.el7.x86_64**  
+
+\# 업데이트
+```bash
+yum -y --installroot=${CHROOT} update
+```
+
+출력 예)
+>Loaded plugins: fastestmirror, langpacks, priorities  
+OpenHPC                                                  | 1.6 kB     00:00     
+OpenHPC-updates                                          | 1.2 kB     00:00     
+base                                                     | 3.6 kB     00:00     
+epel/x86_64/metalink                                     | 7.0 kB     00:00     
+epel                                                     | 4.7 kB     00:00     
+extras                                                   | 3.4 kB     00:00     
+updates                                                  | 3.4 kB     00:00     
+(1/2): epel/x86_64/updateinfo                              | 892 kB   00:02     
+(2/2): epel/x86_64/primary_db                              | 6.2 MB   00:11     
+Determining fastest mirrors  
+ * base: ftp.daumkakao.com  
+ * epel: mirror01.idc.hinet.net  
+ * extras: ftp.daumkakao.com  
+ * updates: ftp.daumkakao.com  
+OpenHPC                                                                 821/821  
+OpenHPC-updates                                                       1010/1010  
+139 packages excluded due to repository priority protections  
+Resolving Dependencies  
+--> Running transaction check  
+<일부 생략>  
+---> Package glibc.x86_64 0:2.17-196.el7 will be updated  
+---> Package glibc.x86_64 0:2.17-196.el7_4.2 will be an update  
+---> Package glibc-common.x86_64 0:2.17-196.el7 will be updated  
+---> Package glibc-common.x86_64 0:2.17-196.el7_4.2 will be an update  
+<일부 생략>  
+Complete!  
+
+\# 업데이트 후 버젼 확인 및 비교.
+```bash
+rpm -qa | grep glibc-common
+chroot ${CHROOT} rpm -qa | grep glibc-common
+```
+
+출력 예)
+>[root@master:~]# rpm -qa | grep glibc-common  
+**glibc-common-2.17-196.el7_4.2.x86_64**  
+[root@master:~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
+**glibc-common-2.17-196.el7_4.2.x86_64**  
+
 
 #### # Install compute node base meta-package.
+\# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
-yum -y --installroot=${CHROOT} install ohpc-base-compute  parted  xfsprogs  python-devel
+yum -y --installroot=${CHROOT} install \
+ ohpc-base-compute  parted  xfsprogs  python-devel  yum  htop
+```
 
+
+```bash
 cat /etc/resolv.conf
 cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 ```
