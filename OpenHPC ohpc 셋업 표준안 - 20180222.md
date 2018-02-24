@@ -14,7 +14,7 @@
 OpenHPC Cluster 의 설치 방법 입니다.  
 
 대부분의 내용은 공식 메뉴얼의 순서에 맞추어 작성 하였으며,  
-편의상 필요한 부분들을 추가하거나 수정하였습니다.   
+편의상 필요한 부분들을 제외/추가/수정 하였습니다.   
 
 자세한 내용은 공식 Install Recipe 를 참조 하시면 좋습니다 :)  
 http://openhpc.community/downloads/  
@@ -78,7 +78,7 @@ source  ~/dasan_ohpc_variable.sh
 ```bash
 ip a    # 인터페이스 목록 확인  
 ```
-출력 예)
+Output example)
 > 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
@@ -102,7 +102,7 @@ ip a    # 인터페이스 목록 확인
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 ```
-출력 예)
+Output example)
 >NAME=*em2*  
 ONBOOT=yes  
 BOOTPROTO=none  
@@ -117,7 +117,7 @@ DEFROUTE=yes
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
-출력 예)
+Output example)
 >NAME=*p1p1*  
 ONBOOT=no  
 BOOTPROTO=dhcp  
@@ -148,7 +148,7 @@ cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ifdown ${INT_NIC} && ifup ${INT_NIC}
 ip a
 ```
-출력 예)
+Output example)
 >1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
     inet 127.0.0.1/8 scope host lo  
@@ -178,7 +178,7 @@ firewall-cmd --reload
 
 firewall-cmd --list-all --zone=external
 ```
-출력 예)
+Output example)
 >*external* (active)  
 target: *default*  
 icmp-block-inversion: no  
@@ -187,7 +187,7 @@ interfaces: *em2*
 ```bash
 firewall-cmd --list-all --zone=trusted
 ```
-출력 예)
+Output example)
 >*trusted* (active)  
   target: ACCEPT  
   icmp-block-inversion: no  
@@ -198,7 +198,7 @@ firewall-cmd --list-all --zone=trusted
 echo "${MASTER_IP}     ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
 ```
-출력 예)
+Output example)
 >127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
 ::1          localhost localhost.localdomain localhost6 localhost6.localdomain6  
 *10.1.1.1    master*  
@@ -213,7 +213,7 @@ cat /etc/hosts
 yum repolist
 ```
 
-출력 예)  
+Output example)  
 >Loaded plugins: fastestmirror, langpacks, priorities  
 Loading mirror speeds from cached hostfile  
  \* base: data.nicehosting.co.kr  
@@ -237,7 +237,7 @@ http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.e
 tail ~/dasan_log_ohpc_openhpc_repository.txt
 ```
 
-출력 예)  
+Output example)  
 > Running transaction test  
 Transaction test succeeded  
 Running transaction  
@@ -252,7 +252,7 @@ Complete!
 ```bash
 yum repolist
 ```
-출력 예)
+Output example)
 >Loaded plugins: fastestmirror, langpacks, priorities  
 OpenHPC                                                  | 1.6 kB     00:00     
 OpenHPC-updates                                          | 1.2 kB     00:00     
@@ -285,7 +285,7 @@ repolist: 24,839
 yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
-출력 예)  
+Output example)  
 >  tftp-server.x86_64 0:5.2-13.el7                     
   warewulf-cluster-ohpc.x86_64 0:3.8pre-9.2                                     
   warewulf-common-ohpc.x86_64 0:3.8pre-11.1                                     
@@ -301,7 +301,7 @@ Complete!
 ```bash
 cat /etc/ntp.conf | grep -v "#\|^$"
 ```
-출력 예)
+Output example)
 >driftfile /var/lib/ntp/drift  
 restrict default nomodify notrap nopeer noquery  
 restrict 127.0.0.1   
@@ -326,7 +326,7 @@ systemctl restart ntpd
 
 ### # 3.4 Add resource management services on master node
 \# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
-\# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.  
+\# GPU Cluster 의 경우 3.4-A. Slurm 을 설치해야 합니다.  
 
 ### # 3.4-A (Slurm) Resource Management Services Install.
 #### # Install slurm server meta-package
@@ -334,7 +334,7 @@ systemctl restart ntpd
 yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
-출력 예)
+Output example)
 >  pmix-ohpc.x86_64 0:1.2.3-20.1                                                 
   slurm-devel-ohpc.x86_64 0:17.02.9-69.2                                        
   slurm-munge-ohpc.x86_64 0:17.02.9-69.2                                        
@@ -352,7 +352,7 @@ Complete!
 grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 
 ```
-출력 예)
+Output example)
 >ClusterName=linux  
 ControlMachine=linux0   
 
@@ -362,7 +362,7 @@ perl -pi -e "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" /etc/slurm
 grep ClusterName /etc/slurm/slurm.conf
 
 ```
-출력 예)
+Output example)
 >ClusterName=*OpenHPC-Dasandata*  
 ControlMachine=*master*  
 
@@ -380,7 +380,7 @@ ControlMachine=*master*
 echo "NodeName="${NODE_NAME}${NODE_RANGE} &&  # 선언 되어 있는 변수 확인
 grep NodeName= /etc/slurm/slurm.conf          # slurm 설정 파일의 기본 값 확인.
 ```
-출력 예)
+Output example)
 >NodeName=node[1-3]  
 NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
@@ -388,7 +388,7 @@ NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN
 perl -pi -e "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_RANGE}/" /etc/slurm/slurm.conf
 grep NodeName= /etc/slurm/slurm.conf
 ```
-출력 예) **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
+Output example) **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
 >NodeName=*node[1-3]* Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 #### # Node CPU, Memory 속성 설정
@@ -403,7 +403,7 @@ bash ~/dasan_ohpc_variable.sh
 ```bash
 grep NodeName= /etc/slurm/slurm.conf
 ```
-출력 예)
+Output example)
 >NodeName=node[1-3] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 ```bash
@@ -413,7 +413,7 @@ perl -pi -e "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.c
 
 grep NodeName= /etc/slurm/slurm.conf  
 ```
-출력 예)
+Output example)
 >NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
@@ -472,7 +472,7 @@ echo ${INT_NIC}
 
 ifconfig ${INT_NIC}
 ```
-출력 예)
+Output example)
 >p1p1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500  
         inet 10.1.1.1  netmask 255.255.255.0  broadcast 10.1.1.255  
         ether ================  txqueuelen 1000  (Ethernet)  
@@ -485,7 +485,7 @@ ifconfig ${INT_NIC}
 ```bash
 grep device /etc/warewulf/provision.conf
 ```
-출력 예)
+Output example)
 >\# What is the default network device that the master will use to  
 network device = **eth1**  
 
@@ -496,7 +496,7 @@ perl -pi -e "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
 grep device /etc/warewulf/provision.conf
 ```
 
-출력 예)
+Output example)
 >\# What is the default network device that the master will use to  
 network device = **p1p1**  
 
@@ -507,7 +507,7 @@ perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
 grep disable /etc/xinetd.d/tftp
 ```
 
-출력 예)
+Output example)
 >[root@master:\~]# grep disable /etc/xinetd.d/tftp  
 	disable			= yes  
 [root@master:\~]# perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
@@ -534,14 +534,14 @@ systemctl restart httpd
 ```bash
 echo ${CHROOT}
 ```
-출력 예)
+Output example)
 >/opt/ohpc/admin/images/centos7.4
 
 #### # Build initial BOS image
 ```bash
 wwmkchroot centos-7 ${CHROOT}
 ```
-출력 예)
+Output example)
 >Loaded plugins: fastestmirror, langpacks, priorities  
 os-base                                                  | 3.6 kB     00:00     
 (1/2): os-base/x86_64/group_gz                             | 156 kB   00:01     
@@ -579,7 +579,7 @@ uname -r
 
 chroot ${CHROOT} uname -r
 ```
-출력 예)
+Output example)
 >[root@master:~]# uname -r  
 3.10.0-693.17.1.el7.x86_64  
 [root@master:~]#   
@@ -595,7 +595,7 @@ rpm -qa | grep glibc-common
 chroot ${CHROOT} rpm -qa | grep glibc-common
 ```
 
-출력 예)
+Output example)
 >[root@master:\~]# rpm -qa | grep glibc-common  
 **glibc-2.17-196.el7_4.2.x86_64**  
 [root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
@@ -606,7 +606,7 @@ chroot ${CHROOT} rpm -qa | grep glibc-common
 yum -y --installroot=${CHROOT} update
 ```
 
-출력 예)
+Output example)
 >Loaded plugins: fastestmirror, langpacks, priorities  
 OpenHPC                                                  | 1.6 kB     00:00     
 OpenHPC-updates                                          | 1.2 kB     00:00     
@@ -641,7 +641,7 @@ rpm -qa | grep glibc-common
 chroot ${CHROOT} rpm -qa | grep glibc-common
 ```
 
-출력 예)
+Output example)
 >[root@master:\~]# rpm -qa | grep glibc-common  
 **glibc-common-2.17-196.el7_4.2.x86_64**  
 [root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
@@ -656,7 +656,7 @@ yum -y --installroot=${CHROOT} install \
 tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```
-출력 예)
+Output example)
 >  python-urlgrabber.noarch 0:3.10-8.el7                                         
   pyxattr.x86_64 0:0.5.1-5.el7                                                  
   rpm-build-libs.x86_64 0:4.11.3-25.el7                                         
@@ -730,7 +730,7 @@ tail ~/dasan_log_ohpc_ntp,kernel,modules.txt
 wwinit database
 wwinit ssh_keys
 ```
-출력 예)
+Output example)
 >[root@master:\~]# wwinit database  
 database:     Checking to see if RPM 'mysql-server' is installed             NO  
 database:     Checking to see if RPM 'mariadb-server' is installed           OK  
@@ -781,7 +781,7 @@ echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHR
 cat  ${CHROOT}/etc/fstab  
 ```
 
-출력 예)
+Output example)
 >[root@master:\~]# df -hT | grep -v tmpfs  
 Filesystem                     Type      Size  Used Avail Use% Mounted on  
 /dev/mapper/centos_master-root xfs       898G  9.6G  889G   2% /  
@@ -813,7 +813,7 @@ echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
 cat /etc/exports
 ```
 
-출력 예)
+Output example)
 >/home \*(rw,no_subtree_check,fsid=10,no_root_squash)
 /opt/ohpc/pub \*(ro,no_subtree_check,fsid=11)
 
@@ -827,7 +827,7 @@ systemctl restart nfs-server
 exportfs
 ```
 
-출력 예)
+Output example)
 >/home         	<world>
 /opt/ohpc/pub 	<world>
 
@@ -953,7 +953,7 @@ wwbootstrap  `uname -r`
 ```bash
 echo ${CHROOT}
 ```
-출력 예)
+Output example)
 >/opt/ohpc/admin/images/centos7.4
 
 ```bash
