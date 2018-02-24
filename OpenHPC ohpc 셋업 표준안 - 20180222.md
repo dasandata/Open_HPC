@@ -1,11 +1,13 @@
-# 다산데이타 OpenHPC 1.3 (Centos 7.4) 셋업 표준안 (2018-02)
+# Dasandata OpenHPC (v1.3.3-CentOS7.4 Base OS) Cluster Building Recipes (2018.02)
 
 \# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인하여 설치를 시작 합니다.  
-
+![Cluster Architecture](https://image.slidesharecdn.com/schulz-mug-17-170930151325/95/openhpc-project-overview-and-updates-8-638.jpg?cb=1506784595)
 ***
 
-## # 1. 변수 정의 및 적용 (파일로 작성)
+## # 1 Introduction
+
+## # 1.3 Inputs - 변수 정의 및 적용 (파일로 작성)
 
 ```bash
 vi ~/dasan_ohpc_variable.sh
@@ -19,6 +21,9 @@ vi ~/dasan_ohpc_variable.sh
 # 클러스터 이름.
 export CLUSTER_NAME=OpenHPC-Dasandata # 변경 필요
 
+# 노드 배포 이미지 경로 (chroot)
+export CHROOT=/opt/ohpc/admin/images/centos7.4
+
 # MASTER 의 이름 과 IP.
 export MASTER_HOSTNAME=$(hostname)
 export MASTER_IP=10.1.1.1
@@ -31,19 +36,17 @@ export NODE_INT_NIC=p1p1  # node 들의 내부망 인터페이스 명.
 
 # NODE 의 이름, 수량, 사양.
 export NODE_NAME=node
-export NODE_NUM=${전체 노드 수}
+export NODE_NUM=<전체 노드 수>
 export NODE_RANGE="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
 
-# NODE 의 CPU 사양에 맞게 조정.
+# NODE 의 CPU 사양에 맞게 조정. - Slurm.conf 용
 # 물리 CPU가 2개 이고, CPU 당 코어가 10개, 하이퍼스레딩은 켜진(Enable) 상태 인 경우.  
 export SOCKETS=2          ## 물리 CPU 2개
 export CORESPERSOCKET=10  ## CPU 당 코어 10개
 export THREAD=2           ## 하이퍼스레딩 Enable
 
-# 노드 배포 이미지 경로.
-export CHROOT=/opt/ohpc/admin/images/centos7.4
-
 # end of file.
+
 ```
 
 ### # 변수 적용.
@@ -54,9 +57,9 @@ source  ~/dasan_ohpc_variable.sh
 
 ***
 
-## # 2. Network, Firewall Setup.
+## # 2 Network and Firewall Setup to Base Operating System (BOS)
 
-### # 2-1. 외부망 및 내부망 인터페이스 설정.
+### # 2.1 외부망 및 내부망 인터페이스 설정.
 
 ```bash
 ip a    # 인터페이스 목록 확인
@@ -82,7 +85,7 @@ ip a    # 인터페이스 목록 확인
 7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
     link/ether ================ brd ff:ff:ff:ff:ff:ff  
 
-### # 2-2. Master 의 외부/내부 인터페이스 설정내용 확인
+### # 2.2 Master 의 외부/내부 인터페이스 설정내용 확인
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 
@@ -109,20 +112,20 @@ ONBOOT=no
 BOOTPROTO=dhcp  
 <일부 값 생략>  
 
-### # 2-3. 가독성 향상을 위해, 불 필요한 IPV6 항목 삭제.
+### # 2.3 가독성 향상을 위해, 불 필요한 IPV6 항목 삭제.
 ```bash
 sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
 
-### # 2-4. Master 의 내부망 인터페이스의 설정 변경.
+### # 2.4 Master 의 내부망 인터페이스의 설정 변경.
 ```bash
 perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 
-### # 2-5. Master 의 내부망 ip 설정
+### # 2.5 Master 의 내부망 ip 설정
 ```bash
 echo "IPADDR=${MASTER_IP}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 echo "PREFIX=${MASTER_PREFIX}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
@@ -131,7 +134,7 @@ cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ```
 
-### # 2-6. ip 변경 설정 적용
+### # 2.6 ip 변경 설정 적용
 ```bash
 ifdown ${INT_NIC} && ifup ${INT_NIC}
 
@@ -160,7 +163,7 @@ ip a
 7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
     link/ether ================= brd ff:ff:ff:ff:ff:ff  
 
-### # 2-7. 방화벽 설정 변경
+### # 2.7 방화벽 설정 변경
 ```bash
 firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
@@ -184,11 +187,21 @@ firewall-cmd --list-all --zone=trusted
   icmp-block-inversion: no  
   interfaces: em1 *p1p1*  
 
+### # 2.8 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록.
+```bash
+echo "${MASTER_IP}     ${MASTER_HOSTNAME}"  >>  /etc/hosts
+cat /etc/hosts
+```
+출력 예)
+>127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
+::1          localhost localhost.localdomain localhost6 localhost6.localdomain6  
+*10.1.1.1    master*  
+
 ***
 
 ## # 3. Install OpenHPC Components
 
-### # 3-1. Enable OpenHPC repository for local use
+### # 3.1 Enable OpenHPC repository for local use
 #### # 현재 repolist 확인
 ```bash
 yum repolist
@@ -288,17 +301,8 @@ systemctl restart ntpd
 
 ```
 
-## # 4. OpenHPC base Install.
+## # 3.3 Add provisioning services on master node
 
-### # 4-1. 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록.
-```bash
-echo "${MASTER_IP}     ${MASTER_HOSTNAME}"  >>  /etc/hosts
-cat /etc/hosts
-```
-출력 예)
->127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
-::1          localhost localhost.localdomain localhost6 localhost6.localdomain6  
-*10.1.1.1    master*  
 
 ### # 4-2. Open-HPC Base 설치
 
@@ -882,7 +886,7 @@ grep 'host ='  /etc/ganglia/gmond.conf
 #### # Add configuration to compute image and provide gridname
 ```bash
 /usr/bin/cp   /etc/ganglia/gmond.conf  ${CHROOT}/etc/ganglia/gmond.conf
-echo "gridname MySite" >> /etc/ganglia/gmetad.conf
+echo "gridname ${CLUSTER_NAME}" >> /etc/ganglia/gmetad.conf
 
 ```
 #### # Start and enable Ganglia services
@@ -902,7 +906,16 @@ systemctl try-restart httpd
 
 ```
 
-\# Open to http://localhost/ganglia
+#### # (Optional) Change firewall settings to Allow ganglia access with external IP.
+```bash
+firewall-cmd --list-all
+
+firewall-cmd --add-port=80/tcp  --permanent
+firewall-cmd --reload
+
+```
+
+\# Open to http://localhost/ganglia or http://<expternal ip address>/ganglia
 
 ***
 
