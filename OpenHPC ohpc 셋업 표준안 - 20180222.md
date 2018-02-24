@@ -19,10 +19,10 @@ OpenHPC Cluster 의 설치 방법 입니다.
 편의상 필요한 부분들을 추가하거나 수정하였습니다.   
 
 자세한 내용은 공식 Install Recipe 를 참조 하시면 좋습니다 :)  
-http://openhpc.community/downloads/
+http://openhpc.community/downloads/  
 
 궁금하신 점이나 오류, 오탈자 등을 발견 하시면 아래 주소로 메일 부탁 드립니다 ^^;  
-mail@dasandata.co.kr
+mail@dasandata.co.kr  
 
 감사합니다.  
 
