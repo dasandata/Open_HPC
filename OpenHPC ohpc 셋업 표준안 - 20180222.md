@@ -1027,13 +1027,19 @@ systemctl restart dhcpd
 wwsh pxe update
 ```
 
+### # 노드를 더 추가할 경우 'Set New node Number 부터 반복 합니다.'
+
 ***
 
+## # 3.10 Boot compute nodes
 ### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
 ```bash
 ping -c 4 ${NODE_NAME}${NEW_NODE_NUM}
+
 ssh ${NODE_NAME}${NEW_NODE_NUM}
+
+df -hT
 ```
 
 *output example>*
@@ -1049,226 +1055,114 @@ rtt min/avg/max/mdev = 0.096/0.116/0.132/0.016 ms
 [root@master:\~]# ssh ${NODE_NAME}${NEW_NODE_NUM}  
 [root@node1 \~]#   
 [root@node1 \~]#   
+[root@node1 \~]# df -hT  
+Filesystem           Type      Size  Used Avail Use% Mounted on  
+tmpfs                tmpfs      55G  647M   55G   2% /  
+devtmpfs             devtmpfs   55G     0   55G   0% /dev  
+tmpfs                tmpfs      55G     0   55G   0% /dev/shm  
+tmpfs                tmpfs      55G  9.2M   55G   1% /run  
+tmpfs                tmpfs      55G     0   55G   0% /sys/fs/cgroup  
+master:/home         nfs        39T   55M   39T   1% /home  
+master:/opt/ohpc/pub nfs       898G   12G  886G   2% /opt/ohpc/pub  
+tmpfs                tmpfs      11G     0   11G   0% /run/user/0  
+[root@node1 \~]#   
 
 ***
 
 ### # Command List of Checking Warewulf configuration
 ```bash
-wwsh  node list
-wwsh  node print
-wwsh  object  print  -p :all
 wwsh  file list
+
 wwsh  bootstrap list
-wwsh  vnfs list
+
+wwsh  vnfs listwwsh  node list
+
+wwsh  node print
+
+wwsh  object  print  -p :all
 ```
 
-```bash
-wwsh  pxe  update
-wwsh  dhcp update
-wwsh  dhcp restart
-```
-
-### # node01 boot on pxe
-```bash
-ping node1
-ssh node1
-df -hT
-
-su - dasan
-ssh node1
-```
-
-## # 66. WOL - Wake UP Nodes
-
-`vi node_on_by_WOL.sh`
-`cat node_on_by_WOL.sh`
-
-============================
-
-# Node List Example
-```bash
-n0[1]=70:85:c2:4d:a8:9a
-n0[2]=70:85:c2:4d:a8:b7
-n0[3]=70:85:c2:4d:a7:d4
-n0[4]=70:85:c2:4d:a8:28
-n0[5]=70:85:c2:4d:a8:a7
-n0[6]=70:85:c2:4d:a8:b5
-n0[7]=70:85:c2:4d:a8:b1
-n0[8]=70:85:c2:4d:a7:ac
-```
-
-# Node Num + 1
-NODE_NUM=9
-
-# Wake On Command
-```bash
-for ((i=1 ; i<$NODE_NUM ; i++))
-do
-ether-wake -i em2 ${n0[$i]}
-done
-
-=============================
-
-sh node_on_by_WOL.sh
-
-pdsh -w n[01-08] date | sort
-```
-
-## # 64. OpenHPC - Add User
-```bash
-adduser test
-passwd test
-
-echo  “Y”  | wwsh file import /etc/passwd
-echo  “Y” |  wwsh file import /etc/group
-echo  “Y” |  wwsh file import /etc/shadow
-
-wwinit ssh_keys
-wwsh   file  resync  passwd  shadow  group
-
-pdsh -w n[01-02] /warewulf/bin/wwgetfiles
-
-su - test
-ssh compute01
-```
-
-## 65. OpenHPC - Node Boot Image Update (after add Program)
-```bash
-[root@ohpc-master:~]# # Define chroot location
-[root@ohpc-master:~]# export CHROOT=/opt/ohpc/admin/images/centos7.4
-[root@ohpc-master:~]# echo ${CHROOT}
-/opt/ohpc/admin/images/centos7.4
-[root@ohpc-master:~]#
-[root@ohpc-master:~]# yum -y --installroot=${CHROOT} install tmux
-Loaded plugins: fastestmirror, langpacks, priorities
-
-<생략>
-
-Complete!
-[root@ohpc-master:~]#
-[root@ohpc-master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
-<생략>
-
-[root@ohpc-master:~]#
-[root@ohpc-master:~]# ssh compute01
-Last login: Mon Aug 28 10:00:18 2017 from ohpc-master
-[root@compute01 ~]#
-[root@compute01 ~]# tmux
--bash: tmux: command not found
-[root@compute01 ~]#
-[root@compute01 ~]# reboot
-Connection to compute01 closed by remote host.
-Connection to compute01 closed.
-[root@ohpc-master:~]#
-[root@ohpc-master:~]#
-[root@ohpc-master:~]# ssh compute01
-[root@compute01 ~]#
-[root@compute01 ~]# tmux
-[exited]
-[root@compute01 ~]# [root@compute01 ~]# which tmux
-/usr/bin/tmux
-```
-
-
-### # Node Local Disk Mount (ex: /scratch)
-
-
-#### # Define chroot location
-```bash
-echo ${CHROOT}
-
-yum -y --installroot=${CHROOT} install parted xfsprogs
-mkdir ${CHROOT}/scratch
-
-wwvnfs --chroot=${CHROOT}
-
-pdsh -w node[1-x] reboot
-```
-
-===== node reboot ======
-
-```bash
-pdsh -w n[01-08] date
-
-pdsh -w n[01-08] parted  -s /dev/sda "mklabel  GPT "
-pdsh -w n[01-08] parted  -s /dev/sda "mkpart primary 0% 100%"
-pdsh -w n[01-08] mkfs.xfs  -f  -L SCRATCH   -i  size=1024  -s  size=4096   /dev/sda1
-```
-
-```bash
-export CHROOT=/opt/ohpc/admin/images/centos7.4
-echo "LABEL="SCRATCH"  /scratch   xfs  defaults  0 0 "  >>  ${CHROOT}/etc/fstab
-cat ${CHROOT}/etc/fstab
-
-vi ${CHROOT}/etc/rc.d/rc.local
-tail -3 ${CHROOT}/etc/rc.d/rc.local
-```
-
-# dasandata add
-chmod 1777 /scratch
-
-ll ${CHROOT}/etc/rc.d/rc.local
-chmod +x ${CHROOT}/etc/rc.d/rc.local
-
-ll ${CHROOT}/etc/rc.d/rc.local
-
-wwvnfs --chroot=${CHROOT}
-
-pdsh -w n[01-08] reboot
-
-===== reboot ======
-
-```bash
-pdsh -w n[01-08] date
-
-pdsh -w n[01-08] lsblk
-pdsh -w n[01-08] 'df -hT | grep -v tmpfs' | sort | grep -v Filesystem
-
-pdsh -w n[01-08] 'll / | grep scratch'
-
-```
-
+***
 
 ## # 4. Install OpenHPC Development Components
 
 ### # 4.1 Development Tools
 
-# Install autotools meta-package (Default)
+#### # Install autotools meta-package (Default)
 ```bash
-yum -y install ohpc-autotools EasyBuild-ohpc hwloc-ohpc spack-ohpc valgrind-ohpc
+yum -y install  ohpc-autotools EasyBuild-ohpc hwloc-ohpc spack-ohpc valgrind-ohpc
 ```
 
-# Compilers ## gcc ver 7 and 5.4
+### # 4.2 Compilers (gcc ver 7 and 5.4)
 ```bash
-yum -y  install gnu7-compilers-ohpc   gnu-compilers-ohpc
+yum -y install  gnu7-compilers-ohpc  gnu-compilers-ohpc
 ```
 
-# MPI Stacks
+### # 4.3 MPI Stacks
 ```bash
-yum -y  install openmpi-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc
+yum -y install  openmpi-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc
 ```
 
-# Install perf-tools meta-package
+### # 4.4 Performance Tools
+#### # Install perf-tools meta-package
 ```bash
-yum -y  install ohpc-gnu7-perf-tools
-yum -y  groupinstall  ohpc-perf-tools-gnu
+yum -y install ohpc-gnu7-perf-tools
+yum -y groupinstall  ohpc-perf-tools-gnu
 ```
 
-# Setup default development environment
-```bash
-yum -y  install lmod-defaults-gnu7-openmpi-ohpc
-```
-### yum -y install lmod-defaults-gnu-openmpi-ohpc
+
+***
 
 
-# Install 3rd party libraries/tools meta-packages built with GNU toolchain
+### # 4.5 Setup default development environment
 ```bash
-yum -y  install   ohpc-gnu7-serial-libs   ohpc-gnu7-io-libs   ohpc-gnu7-python-libs  ohpc-gnu7-runtimes
+yum -y install  lmod-defaults-gnu7-openmpi-ohpc
 ```
 
-# Install parallel lib meta-packages for all available MPI toolchains
-yum -y  install   ohpc-gnu7-mpich-parallel-libs   ohpc-gnu7-mvapich2-parallel-libs   ohpc-gnu7-openmpi-parallel-libs
+### # 4.6 3rd Party Libraries and Tools
+#### # Install 3rd party libraries/tools meta-packages built with GNU toolchain
+```bash
+yum -y install  ohpc-gnu7-serial-libs hpc-gnu7-io-libs ohpc-gnu7-python-libs ohpc-gnu7-runtimes
+```
 
-# Install gnu5  MPI Stacks & lib & meta-packages
-yum -y  groupinstall    ohpc-io-libs-gnu    ohpc-parallel-libs-gnu  ohpc-parallel-libs-gnu-mpich    \
-ohpc-python-libs-gnu  ohpc-runtimes-gnu    ohpc-serial-libs-gnu
+#### # Install parallel lib meta-packages for all available MPI toolchains
+```bash
+yum -y install  ohpc-gnu7-mpich-parallel-libs ohpc-gnu7-mvapich2-parallel-libs \
+ ohpc-gnu7-openmpi-parallel-libs
+````
+
+#### # Install gnu5 MPI Stacks & lib & meta-packages
+```bash
+yum -y groupinstall  ohpc-io-libs-gnu ohpc-parallel-libs-gnu ohpc-parallel-libs-gnu-mpich \
+ ohpc-python-libs-gnu ohpc-runtimes-gnu ohpc-serial-libs-gnu
+```
+
+
+***
+
+
+
+## # 5 Resource Manager Startup
+### # Start munge and slurm controller on master host
+```bash
+systemctl enable munge
+systemctl enable slurmctld
+systemctl start munge
+systemctl start slurmctld
+```
+
+## # 6 Run a Test Job
+```bash
+wwsh file resync passwd shadow group
+```
+
+```bash
+pdsh -w ${NODE_NAME}${NEW_NODE_NUM} /warewulf/bin/wwgetfiles
+```
+
+### # 6.1 Interactive execution
+
+<추가예정>
+
+
+# END.
