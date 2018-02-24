@@ -845,6 +845,7 @@ perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/secu
 
 tail /etc/security/limits.conf
 tail ${CHROOT}/etc/security/limits.conf
+
 ```
 
 ***
@@ -855,14 +856,14 @@ tail ${CHROOT}/etc/security/limits.conf
 #### # Install Ganglia meta-package on master
 ```bash
 yum -y install ohpc-ganglia >> ~/dasan_log_ohpc_ganglia.txt
-tail ~/dasan_log_ohpc_ganglia.txt  
+tail ~/dasan_log_ohpc_ganglia.txt
 
 ```
 
 #### # Install Ganglia compute node daemon
 ```bash
 yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc >> ~/dasan_log_ohpc_ganglia-node.txt
-tail ~/dasan_log_ohpc_ganglia-node.txt  
+tail ~/dasan_log_ohpc_ganglia-node.txt
 
 ```
 
@@ -872,14 +873,14 @@ tail ~/dasan_log_ohpc_ganglia-node.txt
 
 grep 'host =' /etc/ganglia/gmond.conf
 perl -pi -e "s/<sms>/${MASTER_HOSTNAME}/" /etc/ganglia/gmond.conf
-grep 'host ='  /etc/ganglia/gmond.conf  
+grep 'host ='  /etc/ganglia/gmond.conf
 
 ```
 
 #### # Add configuration to compute image and provide gridname
 ```bash
 /usr/bin/cp   /etc/ganglia/gmond.conf  ${CHROOT}/etc/ganglia/gmond.conf
-echo "gridname MySite" >> /etc/ganglia/gmetad.conf  
+echo "gridname MySite" >> /etc/ganglia/gmetad.conf
 
 ```
 #### # Start and enable Ganglia services
@@ -889,18 +890,23 @@ systemctl enable gmetad
 systemctl start gmond
 systemctl start gmetad
 
-chroot ${CHROOT} systemctl enable gmond  
-  
+chroot ${CHROOT} systemctl enable gmond
+
 ```
 
-# Restart web server
-`systemctl try-restart httpd`
+#### # Restart web server
+```bash
+systemctl try-restart httpd
+```
 
 \# Open to http://localhost/ganglia
 
 ***
 
-### # Import files
+## # 3.8.5 Import files
+The Warewulf system includes functionality to import arbitrary files from the provisioning server for distribution to managed hosts. This is one way to distribute user credentials to compute nodes.  
+To import local file-based credentials, issue the following:  
+
 ```bash
 wwsh file import /etc/passwd
 wwsh file import /etc/group
