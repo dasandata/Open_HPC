@@ -1,10 +1,8 @@
-# OpenHPC (v1.3.3-CentOS7.4 Base OS) Cluster Building Recipes
-# Dasandata (2018.02)
+# Dasandata OpenHPC (v1.3.3-CentOS7.4 Base OS) Cluster Building Recipes (2018.02)
 
 \# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인 하여 설치를 시작 합니다.  
-![Cluster Architecture]
-(https://image.slidesharecdn.com/schulz-mug-17-170930151325/95/openhpc-project-overview-and-updates-8-638.jpg?cb=1506784595)
+![Cluster Architecture](https://image.slidesharecdn.com/schulz-mug-17-170930151325/95/openhpc-project-overview-and-updates-8-638.jpg?cb=1506784595)
 
 ***
 
@@ -172,7 +170,7 @@ ip a
 7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
     link/ether ================= brd ff:ff:ff:ff:ff:ff  
 
-### # 2.7 방화벽 설정 변경
+### # 2.7 방화벽 zone 설정 변경
 ```bash
 firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
@@ -210,10 +208,9 @@ cat /etc/hosts
 ## # 3. Install OpenHPC Components
 
 ### # 3.1 Enable OpenHPC repository for local use
-#### # 현재 repolist 확인
+#### # Check current repolist
 ```bash
 yum repolist
-
 ```
 
 출력 예)  
@@ -250,7 +247,7 @@ Installed:
   ohpc-release.x86_64 0:1.3-1.el7                                               
 Complete!  
 
-#### # repolist 확인
+#### # Check added repolist
 
 ```bash
 yum repolist
@@ -280,11 +277,29 @@ updates/7/x86_64    CentOS-7 - Updates                                     1,929
 repolist: 24,839  
 
 
-### # 3-2. NTP Server 설정
+### # 3.3 Add provisioning services on master node
+
+#### # Install base meta-packages
+
+```bash
+yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt
+tail ~/dasan_log_ohpc_base,warewulf.txt  
+```
+출력 예)  
+>  tftp-server.x86_64 0:5.2-13.el7                     
+  warewulf-cluster-ohpc.x86_64 0:3.8pre-9.2                                     
+  warewulf-common-ohpc.x86_64 0:3.8pre-11.1                                     
+  warewulf-ipmi-ohpc.x86_64 0:3.8pre-9.1                                        
+  warewulf-provision-ohpc.x86_64 0:3.8pre-28.1                                  
+  warewulf-provision-server-ohpc.x86_64 0:3.8pre-28.1                           
+  warewulf-vnfs-ohpc.x86_64 0:3.8pre-19.1                                       
+  xinetd.x86_64 2:2.3.15-13.el7                                                 
+Complete!  
+
+#### # NTP Server 설정
 
 ```bash
 cat /etc/ntp.conf | grep -v "#\|^$"
-
 ```
 출력 예)
 >driftfile /var/lib/ntp/drift  
@@ -306,37 +321,15 @@ cat /etc/ntp.conf | grep -v "#\|^$"
 
 systemctl enable ntpd.service
 systemctl restart ntpd
-
 ```
 
-## # 3.3 Add provisioning services on master node
 
-
-### # 4-2. Open-HPC Base 설치
-
-```bash
-yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt
-tail ~/dasan_log_ohpc_base,warewulf.txt  
-```
-출력 예)  
->  tftp-server.x86_64 0:5.2-13.el7                     
-  warewulf-cluster-ohpc.x86_64 0:3.8pre-9.2                                     
-  warewulf-common-ohpc.x86_64 0:3.8pre-11.1                                     
-  warewulf-ipmi-ohpc.x86_64 0:3.8pre-9.1                                        
-  warewulf-provision-ohpc.x86_64 0:3.8pre-28.1                                  
-  warewulf-provision-server-ohpc.x86_64 0:3.8pre-28.1                           
-  warewulf-vnfs-ohpc.x86_64 0:3.8pre-19.1                                       
-  xinetd.x86_64 2:2.3.15-13.el7                                                 
-Complete!  
-
-***
-
-## # 5. Resource Management Services Install.
+### # 3.4 Add resource management services on master node
 \# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
 \# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.  
 
-## # 5-A. (Slurm) Resource Management Services Install.
-### # 5-A-1. Install to ohpc-slurm-server.
+### # 3.4-A (Slurm) Resource Management Services Install.
+#### # Install slurm server meta-package
 ```bash
 yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
@@ -352,9 +345,9 @@ tail ~/dasan_log_ohpc_resourcemanager_slurm.txt
   slurm-sql-ohpc.x86_64 0:17.02.9-69.2                                          
 Complete!  
 
-### # 5-A-2. Slurm config file 설정 (/etc/slurm/slurm.conf)
+#### # Identify resource manager hostname on master host
 
-#### # ClusterName 과 ControlMachine 변경
+\# ClusterName 과 ControlMachine 변경
 ```bash
 grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 
@@ -374,7 +367,6 @@ grep ClusterName /etc/slurm/slurm.conf
 ControlMachine=*master*  
 
 #### # NodeName, CPU & Memory 속성 설정
-
 \# slurm.conf 파일의 NodeName을 클러스터 노드의 Hostname 과 동일하게 변경하고,  
 \# 사양에 맞추어 Sockets, Cores, Thread, RealMemory 값을 변경 합니다.  
 \# Sockets = 노드의 물리적인 CPU 갯수.  
@@ -425,9 +417,9 @@ grep NodeName= /etc/slurm/slurm.conf
 >NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
-## # 5-B. (PBS Pro) Resource Management Services Install
+### # 3.4-B (PBS Pro) Resource Management Services Install
 
-### # 5-B-1. Install to pbspro-server-ohpc
+#### # Install to pbspro-server-ohpc
 ```bash
 yum -y install pbspro-server-ohpc >> ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 tail ~/dasan_log_ohpc_resourcemanager_pbspro.txt
@@ -435,21 +427,24 @@ tail ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 
 ***
 
-## # 6. (Optional) Add InfiniBand support services on master node
+## # (Optional) 3.5 Optionally add InfiniBand support services on master node
 
 ```bash
 yum -y groupinstall "InfiniBand Support"
 yum -y install infinipath-psm
 ```
 
-### # 6-1. (Optional) Load InfiniBand drivers
+#### (Optional) Load InfiniBand drivers
 ```bash
 systemctl start rdma
+```
 
+#### (Optional) Copy ib0 template to master
+```bash
 cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-scripts
 ```
 
-### # 6-2. (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
+#### (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
 ```bash
 perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
@@ -457,7 +452,7 @@ perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/i
 echo  “MTU=4096”  >>  /
 ```
 
-### # 6-3. (Optional) Initiate ib0 (InfiniBand Interface 0)
+#### (Optional) Initiate ib0 (InfiniBand Interface 0)
 ```bash
 ifup ib0
 
@@ -468,9 +463,9 @@ udaddy -s  10.1.1.1
 ```
 ***
 
-## # 7. Complete basic Warewulf setup for master node
+## # 3.7 Complete basic Warewulf setup for master node
 
-### # 7-1. 클러스터 내부망 인터페이스 변경.
+### # Configure Warewulf provisioning to use desired internal interface
 \# 내부망 인터페이스 설정 내용 확인.  
 ```bash
 echo ${INT_NIC}
@@ -505,7 +500,7 @@ grep device /etc/warewulf/provision.conf
 >\# What is the default network device that the master will use to  
 network device = **p1p1**  
 
-### # 7-2. tftp 서비스 Enable.
+### # Enable tftp service for compute node image distribution
 ```bash
 grep disable /etc/xinetd.d/tftp
 perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
@@ -520,7 +515,7 @@ grep disable /etc/xinetd.d/tftp
  disable = no  
 [root@master:\~]#   
 
-### # 7-3. 관련 서비스 부팅시 시작 되도록 변경(enable) 및 Restarting.
+### # Restart/enable relevant services to support provisioning
 ```bash
 systemctl enable dhcpd
 systemctl restart xinetd
@@ -532,16 +527,17 @@ systemctl enable httpd.service
 systemctl restart httpd
 ```
 
-### # 7-4. Define NODE image for provisioning.
+## # 3.8 Define compute image for provisioning
 
 #### # Check chroot location.
+\# chroot 작업을 하기 전에 항상, ${CHROOT} 변수가 알맞게 선언 되어 있는지 확인하는 것을 권장합니다.
 ```bash
 echo ${CHROOT}
 ```
 출력 예)
 >/opt/ohpc/admin/images/centos7.4
 
-#### # Build initial node image.
+#### # Build initial BOS image
 ```bash
 wwmkchroot centos-7 ${CHROOT}
 ```
@@ -600,9 +596,9 @@ chroot ${CHROOT} rpm -qa | grep glibc-common
 ```
 
 출력 예)
->[root@master:~]# rpm -qa | grep glibc-common  
+>[root@master:\~]# rpm -qa | grep glibc-common  
 **glibc-2.17-196.el7_4.2.x86_64**  
-[root@master:~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
+[root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
 **glibc-2.17-196.el7.x86_64**  
 
 \# 업데이트
@@ -651,8 +647,8 @@ chroot ${CHROOT} rpm -qa | grep glibc-common
 [root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
 **glibc-common-2.17-196.el7_4.2.x86_64**  
 
-
-#### # Install compute node base meta-package.
+## # 3.8.2 Add OpenHPC components
+### # Install compute node base meta-package.
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
@@ -671,26 +667,24 @@ tail ~/dasan_log_ohpc_meta-package.txt
   zlib-devel.x86_64 0:1.2.7-17.el7                                              
 Complete!  
 
-#### # node image 에 dns 설정 (master 와 동일하게).
+### # updated to enable DNS resolution.
 ```bash
 cat /etc/resolv.conf
 cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf  
-
 ```
 
 ***
 
-#### # Add Slurm client support meta-package
+### # Add Slurm client support meta-package
 \# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt
 tail ~/dasan_log_ohpc_slurmclient.txt
-
 ```
 
 ***
 
-#### # Add PBS Professional client support
+### # Add PBS Professional client support
 \# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install pbspro-execution-ohpc
@@ -713,7 +707,7 @@ chroot ${CHROOT} systemctl enable pbs
 
 ***
 
-#### # (Optional) Add IB support and enable
+### # (Optional) Add IB support and enable
 \# 인피니밴드(InfiniBand) 를 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support"
@@ -723,21 +717,18 @@ chroot ${CHROOT} systemctl enable rdma
 
 ***
 
-#### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
+### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
 yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt
 tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
-
 ```
 
-## # 8. Customize system configuration.
+## # 3.8.3 Customize system configuration
 
-### # 8-1. Initialize warewulf database and add new cluster key to base image.
+### # Initialize warewulf database and ssh_keys
 ```bash
 wwinit database
 wwinit ssh_keys
-cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
-
 ```
 출력 예)
 >[root@master:\~]# wwinit database  
@@ -769,10 +760,13 @@ ssh_keys:     Checking for default ECDSA host key for nodes                  NO
 ssh_keys:     Creating default node ssh_host_ecdsa_key:  
                                                                              OK  
 Done.  
-[root@master:\~]# cat \~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys  
-[root@master:\~]#   
 
-### # 8-2. Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image.
+### # 추후 node 에 root 가 자동으로 로그인 할 수 있도록 sshkey 를 복사 합니다.
+```bash
+cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
+```
+
+### # Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image.
 
 ```bash
 df -hT | grep -v tmpfs
@@ -785,8 +779,8 @@ echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHR
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.
 #echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
 cat  ${CHROOT}/etc/fstab  
-
 ```
+
 출력 예)
 >[root@master:\~]# df -hT | grep -v tmpfs  
 Filesystem                     Type      Size  Used Avail Use% Mounted on  
@@ -805,7 +799,7 @@ master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0
 [root@master:\~]#  
 
 
-### # 8-3. Export /home and OpenHPC public packages from master server.
+### # Export /home and OpenHPC public packages from master server.
 
 ```bash
 cat /etc/exports
@@ -818,6 +812,7 @@ echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
 
 cat /etc/exports
 ```
+
 출력 예)
 >/home \*(rw,no_subtree_check,fsid=10,no_root_squash)
 /opt/ohpc/pub \*(ro,no_subtree_check,fsid=11)
@@ -830,72 +825,62 @@ systemctl enable nfs-server
 systemctl restart nfs-server
 
 exportfs
-
 ```
+
 출력 예)
 >/home         	<world>
 /opt/ohpc/pub 	<world>
 
-
-### # 8-4. Enable NTP time service on computes and identify master host as local NTP server.
+### # Enable NTP time service on computes and identify master host as local NTP server.
 
 ```bash
 chroot ${CHROOT} systemctl enable ntpd
 echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
-
 ```
 
 ***
 
-### # 8-5. (Optional Custom) Increase locked memory limits
+## # 3.8.4 Additional Customization (optional)
+
+### # 3.8.4.3 Increase locked memory limits
 \# 기본 네트워크 구성이 InfiniBand 또는 Omni-Path를 로 되어 있을 경우에만 수행 합니다.
 
 \# Update memlock settings on master and compute
 ```bash
 perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
 perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
+
 perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
 perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
 
 tail /etc/security/limits.conf
 tail ${CHROOT}/etc/security/limits.conf
-
 ```
 
-***
-
-### # 8-6. Add Ganglia monitoring.
+### # 3.8.4.9 Add Ganglia monitoring
 \# Ganglia Monitoring System : https://en.wikipedia.org/wiki/Ganglia_(software)
 
 #### # Install Ganglia meta-package on master
 ```bash
 yum -y install ohpc-ganglia >> ~/dasan_log_ohpc_ganglia.txt
 tail ~/dasan_log_ohpc_ganglia.txt
-
 ```
-
 #### # Install Ganglia compute node daemon
 ```bash
 yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc >> ~/dasan_log_ohpc_ganglia-node.txt
 tail ~/dasan_log_ohpc_ganglia-node.txt
-
 ```
-
 #### # Use example configuration script to enable unicast receiver on master host
 ```bash
 /usr/bin/cp  /opt/ohpc/pub/examples/ganglia/gmond.conf  /etc/ganglia/gmond.conf
-
 grep 'host =' /etc/ganglia/gmond.conf
 perl -pi -e "s/<sms>/${MASTER_HOSTNAME}/" /etc/ganglia/gmond.conf
 grep 'host ='  /etc/ganglia/gmond.conf
-
 ```
-
 #### # Add configuration to compute image and provide gridname
 ```bash
 /usr/bin/cp   /etc/ganglia/gmond.conf  ${CHROOT}/etc/ganglia/gmond.conf
 echo "gridname ${CLUSTER_NAME}" >> /etc/ganglia/gmetad.conf
-
 ```
 #### # Start and enable Ganglia services
 ```bash
@@ -903,40 +888,38 @@ systemctl enable gmond
 systemctl enable gmetad
 systemctl start gmond
 systemctl start gmetad
-
 chroot ${CHROOT} systemctl enable gmond
-
 ```
-
 #### # Restart web server
 ```bash
 systemctl try-restart httpd
-
 ```
-
 #### # (Optional) Change firewall settings to Allow ganglia access with external IP.
 ```bash
 firewall-cmd --list-all
 
 firewall-cmd --add-port=80/tcp  --permanent
 firewall-cmd --reload
-
 ```
-
 \# Open to http://localhost/ganglia or http://<expternal ip address>/ganglia
-
-***
 
 ## # 3.8.5 Import files
 The Warewulf system includes functionality to import arbitrary files from the provisioning server for distribution to managed hosts. This is one way to distribute user credentials to compute nodes.  
 To import local file-based credentials, issue the following:  
 
+### # Default files
 ```bash
 wwsh file import /etc/passwd
 wwsh file import /etc/group
 wwsh file import /etc/shadow
-
 ```
+
+### # Files for Slurm Resource Manager
+```bash
+wwsh file import /etc/slurm/slurm.conf
+wwsh file import /etc/munge/munge.key
+```
+
 ### # (Optional) Support for Controlling IPoIB Interfaces
 \# 인피니밴드 (InfiniBand) 사용시에만 수행.
 ```bash
@@ -945,40 +928,39 @@ wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 
 ```
 
-## # Finalizing provisioning configuration
+## # 3.9 Finalizing provisioning configuration
 
-# Assemble bootstrap image
-```bash
-wwbootstrap  `uname -r`
+### # 3.9.1 Assemble bootstrap image
 
-```
-
-# (Optional) Include BeeGFS/Lustre drivers; needed if enabling additional kernel modules on computes
+#### # (Optional) Include Lustre/BeeGFS drivers; needed if enabling additional kernel modules on computes
 ```bash
 export WW_CONF=/etc/warewulf/bootstrap.conf
 echo "drivers += updates/kernel/" >> $WW_CONF
-
 ```
 
-# (Optional) Include overlayfs drivers; needed by Singularity
+#### # (Optional) Include overlayfs drivers; needed by Singularity
 ```bash
 echo "drivers += overlay" >> $WW_CONF
-
 ```
 
-## Assemble Virtual Node File System (VNFS) image
+#### # Build bootstrap image
+```bash
+wwbootstrap  `uname -r`
+```
 
-### # Assemble Virtual Node File System (VNFS) image
+## # 3.9.2 Assemble Virtual Node File System (VNFS) image
 
 ```bash
-export CHROOT=/opt/ohpc/admin/images/centos7.4
-wwvnfs --chroot ${CHROOT}
+echo ${CHROOT}
+```
+출력 예)
+>/opt/ohpc/admin/images/centos7.4
 
+```bash
+wwvnfs --chroot ${CHROOT}
 ```
 
-***
-
-## # 64. Register nodes for provisioning
+## # 3.9.3 Register nodes for provisioning
 
 ### # Set provisioning interface as the default networking device
 ```bash
