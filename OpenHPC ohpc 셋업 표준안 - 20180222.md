@@ -975,6 +975,25 @@ output example>
 wwvnfs --chroot ${CHROOT}
 ```
 
+output example>
+>Using 'centos7.4' as the VNFS name  
+Creating VNFS image from centos7.4
+Compiling hybridization link tree                           : 0.12 s  
+Building file list                                          : 0.24 s  
+Compiling and compressing VNFS                              : 6.03 s  
+Adding image to datastore                                   : 51.45 s  
+Wrote a new configuration file at: /etc/warewulf/vnfs/centos7.4.conf  
+Total elapsed time   
+
+### # Check vnfs List
+```bash
+wwsh vnfs list
+```
+output example>
+>VNFS NAME            SIZE (M)   ARCH       CHROOT LOCATION  
+centos7.4            268.5      x86_64     /opt/ohpc/admin/images/centos7.4  
+
+
 ## # 3.9.3 Register nodes for provisioning
 
 ### # Set provisioning interface as the default networking device
@@ -983,16 +1002,33 @@ echo "GATEWAYDEV=${NODE_INT_NIC}" > /tmp/network.$$
 wwsh -y file import /tmp/network.$$ --name network
 wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
 ```
-
-### Add new nodes to Warewulf data store
+### # Set New node Number
 ```bash
-wwsh node new ${NODE_NAME}<노드번호> --netdev ${NODE_INT_NIC} --ipaddr=10.1.1.11 --hwaddr=<기입> --gateway ${MASTER_IP} --netmask=255.255.255.0
+export NEW_NODE_NUM=1
+```
+
+### # Add new nodes to Warewulf data store
+```bash
+wwsh node new ${NODE_NAME}${NEW_NODE_NUM}--netdev ${NODE_INT_NIC} \
+--ipaddr=10.1.1.11 --hwaddr=<기입> --gateway ${MASTER_IP} --netmask=255.255.255.0
 ```
 
 ### # Define provisioning image for hosts
 ```bash
-wwsh -y provision set "${NODE_NAME}<노드번호>" --vnfs=centos7.4 --bootstrap=`uname -r ` --files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
+wwsh -y provision set "${NODE_NAME}${NEW_NODE_NUM}" --vnfs=centos7.4 \
+--bootstrap=`uname -r ` \
+--files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
 ```
+
+***
+
+### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
+
+```bash
+ssh ${NODE_NAME}${NEW_NODE_NUM}
+```
+
+***
 
 ### # Command List of Checking node configuration
 ```bash
