@@ -890,7 +890,7 @@ systemctl start gmond
 systemctl start gmetad
 
 chroot ${CHROOT} systemctl enable gmond  
-
+  
 ```
 
 # Restart web server
