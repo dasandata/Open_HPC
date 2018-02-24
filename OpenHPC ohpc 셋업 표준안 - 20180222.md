@@ -197,10 +197,10 @@ yum repolist
 출력 예)  
 >Loaded plugins: fastestmirror, langpacks, priorities  
 Loading mirror speeds from cached hostfile  
- * base: data.nicehosting.co.kr  
- * epel: mirror01.idc.hinet.net  
- * extras: data.nicehosting.co.kr  
- * updates: data.nicehosting.co.kr  
+ \* base: data.nicehosting.co.kr  
+ \* epel: mirror01.idc.hinet.net  
+ \* extras: data.nicehosting.co.kr  
+ \* updates: data.nicehosting.co.kr  
 116 packages excluded due to repository priority protections  
 repo id             repo name                                         status  
 !base/7/x86_64      CentOS-7 - Base                                        9,591  
@@ -229,11 +229,9 @@ Installed:
 Complete!  
 
 #### # repolist 확인
-```
 
 ```bash
 yum repolist
-
 ```
 출력 예)
 >Loaded plugins: fastestmirror, langpacks, priorities  
@@ -243,10 +241,10 @@ OpenHPC-updates                                          | 1.2 kB     00:00
 (2/3): OpenHPC/primary                                     | 155 kB   00:01     
 (3/3): OpenHPC-updates/primary                             | 192 kB   00:01     
 Loading mirror speeds from cached hostfile  
- * base: data.nicehosting.co.kr  
- * epel: mirror.rise.ph  
- * extras: data.nicehosting.co.kr  
- * updates: data.nicehosting.co.kr  
+ \* base: data.nicehosting.co.kr  
+ \* epel: mirror.rise.ph  
+ \* extras: data.nicehosting.co.kr  
+ \* updates: data.nicehosting.co.kr  
 OpenHPC                                                                 821/821  
 OpenHPC-updates                                                       1010/1010  
 139 packages excluded due to repository priority protections  
@@ -298,15 +296,14 @@ cat /etc/hosts
 ```
 출력 예)
 >127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
-::1         localhost localhost.localdomain localhost6 localhost6.localdomain6  
+::1          localhost localhost.localdomain localhost6 localhost6.localdomain6  
 *10.1.1.1    master*  
 
-### # 4-2. Openhpc Base 설치
+### # 4-2. Open-HPC Base 설치
 
 ```bash
 yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt
-tail ~/dasan_log_ohpc_base,warewulf.txt
-
+tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
 출력 예)  
 >  tftp-server.x86_64 0:5.2-13.el7                     
@@ -321,15 +318,15 @@ Complete!
 
 ***
 
-## # 5.Resource Management Services Install.
+## # 5. Resource Management Services Install.
 \# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
 \# GPU Cluster 의 경우 63-A. Slurm 을 설치해야 합니다.  
 
-## # 5-A. (Slurm) Resource Management Services Install
-### # 5-A-1. Install to ohpc-slurm-server
+## # 5-A. (Slurm) Resource Management Services Install.
+### # 5-A-1. Install to ohpc-slurm-server.
 ```bash
 yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
-tail ~/dasan_log_ohpc_resourcemanager_slurm.txt
+tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
 출력 예)
 >  pmix-ohpc.x86_64 0:1.2.3-20.1                                                 
@@ -360,22 +357,23 @@ grep ClusterName /etc/slurm/slurm.conf
 
 ```
 출력 예)
->ClusterName=*OpenHPC-Dasandata*
-ControlMachine=*master*
+>ClusterName=*OpenHPC-Dasandata*  
+ControlMachine=*master*  
 
 #### # NodeName, CPU & Memory 속성 설정
 
-\# slurm.conf 파일의 NodeName을 클러스터 노드의 Hostname 과 동일하게 변경하고,
-\# 사양에 맞추어 Sockets, Cores, Thread, RealMemory 값을 변경 합니다.
-\# Sockets = 노드의 물리적인 CPU 갯수.
-\# CoresPerSocket = 각 물리 CPU의 논리적 코어 갯수.
-\# Thread = 하이퍼스레딩 사용 여부. (사용시 2, 미사용시 1)
-\# RealMemory = 노드의 실제 메모리 보다 약간 작게 합니다. 단위는 megabyte (예를 들어 64GB 라면 60GB = 60000)
+\# slurm.conf 파일의 NodeName을 클러스터 노드의 Hostname 과 동일하게 변경하고,  
+\# 사양에 맞추어 Sockets, Cores, Thread, RealMemory 값을 변경 합니다.  
+\# Sockets = 노드의 물리적인 CPU 갯수.  
+\# CoresPerSocket = 각 물리 CPU의 논리적 코어 갯수.  
+\# Thread = 하이퍼스레딩 사용 여부. (사용시 2, 미사용시 1)  
+\# RealMemory = 노드의 실제 메모리 보다 약간 작게 합니다.
+\# 메모리 단위는 megabyte (예를 들어 64GB 라면 60GB = 60000)  
 
 #### # NodeName 설정
 ```bash
 echo "NodeName="${NODE_NAME}${NODE_RANGE} &&  # 선언 되어 있는 변수 확인
-grep NodeName= /etc/slurm/slurm.conf  # slurm 설정 파일의 기본 값 확인.
+grep NodeName= /etc/slurm/slurm.conf          # slurm 설정 파일의 기본 값 확인.
 ```
 출력 예)
 >NodeName=node[1-3]  
@@ -393,6 +391,7 @@ grep NodeName= /etc/slurm/slurm.conf
 \# 앞서 정의한 변수 값을 다시 한번 검토 한 후 진행 합니다.
 ```bash
 cat ~/dasan_ohpc_variable.sh
+bash ~/dasan_ohpc_variable.sh
 ```
 
 \# slurm 설정파일(slurm.conf)의  기존 설정 값 확인.
@@ -407,13 +406,13 @@ perl -pi -e "s/Sockets=\S+/Sockets=${SOCKETS}/"  /etc/slurm/slurm.conf
 perl -pi -e "s/CoresPerSocket=\S+/CoresPerSocket=${CORESPERSOCKET}/"  /etc/slurm/slurm.conf
 perl -pi -e "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.conf
 
-grep NodeName= /etc/slurm/slurm.conf
+grep NodeName= /etc/slurm/slurm.conf  
 ```
 출력 예)
 >NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
-## # 5-B. (PBS Pro) resource management services Install
+## # 5-B. (PBS Pro) Resource Management Services Install
 
 ### # 5-B-1. Install to pbspro-server-ohpc
 ```bash
@@ -478,7 +477,7 @@ ifconfig ${INT_NIC}
 ```bash
 grep device /etc/warewulf/provision.conf
 ```
-출력 얘)
+출력 예)
 >\# What is the default network device that the master will use to  
 network device = **eth1**  
 
@@ -489,7 +488,7 @@ perl -pi -e "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
 grep device /etc/warewulf/provision.conf
 ```
 
-출력 얘)
+출력 예)
 >\# What is the default network device that the master will use to  
 network device = **p1p1**  
 
@@ -501,12 +500,12 @@ grep disable /etc/xinetd.d/tftp
 ```
 
 출력 예)
->[root@master:~]# grep disable /etc/xinetd.d/tftp  
+>[root@master:\~]# grep disable /etc/xinetd.d/tftp  
 	disable			= yes  
-[root@master:~]# perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
-[root@master:~]# grep disable /etc/xinetd.d/tftp  
+[root@master:\~]# perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
+[root@master:\~]# grep disable /etc/xinetd.d/tftp  
  disable = no  
-[root@master:~]#   
+[root@master:\~]#   
 
 ### # 7-3. 관련 서비스 부팅시 시작 되도록 변경(enable) 및 Restarting.
 ```bash
