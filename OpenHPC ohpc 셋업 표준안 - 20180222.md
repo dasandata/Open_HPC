@@ -1337,6 +1337,7 @@ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
 grep '#SBATCH -N'  job.mpi
 ```
 *output example>*
+>[user@master:\~]$ cat job.mpi
 >#!/bin/bash  
 >  
 >#SBATCH -J test               # Job name  
@@ -1348,22 +1349,24 @@ grep '#SBATCH -N'  job.mpi
 ># Launch MPI-based executable  
 >  
 >prun ./a.out  
->[user@master:~]$  
->[user@master:~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi  
->[user@master:~]$ grep '#SBATCH -N'  job.mpi
->#SBATCH -N 1                  # Total number of nodes requested
+>[user@master:\~]$  
+>[user@master:\~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi    
+>[user@master:\~]$ grep '#SBATCH -N'  job.mpi  
+>#SBATCH -N 1                  # Total number of nodes requested  
 
-#### # Launch MPI-based executable
+
+#### # Launch MPI-based executable  
 
 ```bash
 prun ./a.out
 ```
+
 *output example>*
 >[prun] Master compute host = master  
 [prun] Resource manager = slurm  
 [prun] Launch cmd = mpirun ./a.out (family=openmpi)  
 >  
- Hello, world (20 procs total)  
+> Hello, world (20 procs total)  
     --> Process #   0 of  20 is alive. -> master  
     --> Process #   1 of  20 is alive. -> master  
     --> Process #   2 of  20 is alive. -> master  
@@ -1385,7 +1388,7 @@ prun ./a.out
     --> Process #  18 of  20 is alive. -> master  
     --> Process #  19 of  20 is alive. -> master  
 
-#### # Submit job for batch execution
+#### # Submit job for batch execution Example
 ```bash
 [user@master:~]$ sbatch job.mpi
 Submitted batch job 6
