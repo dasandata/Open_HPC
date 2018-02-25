@@ -1176,7 +1176,7 @@ sinfo -R
 ```
 *output example>*
 >PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST  
-normal*      up 1-00:00:00      1  drain node1  
+normal*      up 1-00:00:00      1  **drain** node1  
 ==========   
 REASON               USER      TIMESTAMP           NODELIST  
 Low socket*core*thre slurm     2018-02-25T11:45:44 node1  
@@ -1199,7 +1199,9 @@ pdsh -w ${NODE_NAME}${NEW_NODE_NUM} /warewulf/bin/wwgetfiles
 
 ### # 6.1 Interactive execution
 #### # Switch to "user"
-`su - user`
+```bash
+su - user
+```
 *output example>*
 >[root@master:\~]#  
 [root@master:\~]# su - user  
@@ -1208,7 +1210,8 @@ Last login: Sun Feb 25 11:28:01 KST 2018 from 192.168.0.152 on pts/0
 [user@master:\~]$  
 
 #### # Compile MPI "hello world" example
-```mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c
+```bash
+mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c
 ls
 ```
 *output example>*
@@ -1217,16 +1220,87 @@ ls
 **a.out**  Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos  
 
 #### # Submit interactive job request and use prun to launch executable
-`srun -n 8 -N 1 --pty /bin/bash`
+```bash
+srun --help | grep 'ntasks\|nodes=N'
+
+srun -n 8 -N 1 --pty /bin/bash
+```
 *output example>*
->
+>[user@master:\~]$
+[user@master:\~]$ srun -n 8 -N 1 --pty /bin/bash
+[user@node1:\~]$
+[user@node1:\~]$
 
-`prun ./a.out`
+
+```bash
+prun ./a.out
+```
+
+*output example>*
+>[prun] Master compute host = node1  
+[prun] Resource manager = slurm  
+[prun] Launch cmd = mpirun ./a.out (family=openmpi)  
+ Hello, world (8 procs total)  
+    --> Process #   0 of   8 is alive. -> node1  
+    --> Process #   2 of   8 is alive. -> node1  
+    --> Process #   3 of   8 is alive. -> node1  
+    --> Process #   4 of   8 is alive. -> node1  
+    --> Process #   5 of   8 is alive. -> node1  
+    --> Process #   6 of   8 is alive. -> node1  
+    --> Process #   7 of   8 is alive. -> node1  
+    --> Process #   1 of   8 is alive. -> node1  
+
+```bash
+exit
+
+srun -n 32 -N 1 --pty /bin/bash
+
+prun ./a.out
+```
+
+*output example>*
+>[prun] Master compute host = node1  
+[prun] Resource manager = slurm  
+[prun] Launch cmd = mpirun ./a.out (family=openmpi)  
+ Hello, world (32 procs total)  
+    --> Process #   0 of  32 is alive. -> node1  
+    --> Process #   7 of  32 is alive. -> node1  
+    --> Process #   8 of  32 is alive. -> node1  
+    --> Process #   9 of  32 is alive. -> node1  
+    --> Process #  10 of  32 is alive. -> node1  
+    --> Process #  11 of  32 is alive. -> node1  
+    --> Process #  12 of  32 is alive. -> node1  
+    --> Process #  13 of  32 is alive. -> node1  
+    --> Process #  14 of  32 is alive. -> node1  
+    --> Process #  15 of  32 is alive. -> node1  
+    --> Process #  16 of  32 is alive. -> node1  
+    --> Process #  17 of  32 is alive. -> node1  
+    --> Process #  18 of  32 is alive. -> node1  
+    --> Process #  19 of  32 is alive. -> node1  
+    --> Process #  20 of  32 is alive. -> node1  
+    --> Process #  21 of  32 is alive. -> node1  
+    --> Process #  22 of  32 is alive. -> node1  
+    --> Process #  23 of  32 is alive. -> node1  
+    --> Process #  24 of  32 is alive. -> node1  
+    --> Process #  25 of  32 is alive. -> node1  
+    --> Process #  26 of  32 is alive. -> node1  
+    --> Process #  27 of  32 is alive. -> node1  
+    --> Process #  28 of  32 is alive. -> node1  
+    --> Process #  29 of  32 is alive. -> node1  
+    --> Process #  30 of  32 is alive. -> node1  
+    --> Process #  31 of  32 is alive. -> node1  
+    --> Process #   1 of  32 is alive. -> node1  
+    --> Process #   2 of  32 is alive. -> node1  
+    --> Process #   3 of  32 is alive. -> node1  
+    --> Process #   4 of  32 is alive. -> node1  
+    --> Process #   5 of  32 is alive. -> node1  
+    --> Process #   6 of  32 is alive. -> node1  
 
 
 
 
-<추가예정>
+
+
 
 
 # END.
