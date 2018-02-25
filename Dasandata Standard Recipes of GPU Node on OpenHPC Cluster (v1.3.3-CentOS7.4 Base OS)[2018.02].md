@@ -368,7 +368,7 @@ rm -rf ~/Python-3.5.4-gnu7
 ### # Download Module Template of Python
 ```bash
 cd ~
-git clone https://github.com/dasandata/open_hpc 
+git clone https://github.com/dasandata/open_hpc
 GIT_CLONE_DIR="$(pwd)/open_hpc"
 echo ${GIT_CLONE_DIR}
 
@@ -383,24 +383,24 @@ VERSION=3.4.5
 
 ### # Add Python Module File by each version
 ```bash
-GNU-VERSION=4
+GNU_VERSION=4
 cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULES_DIR}/python3/${VERSION}.lua
 sed -i "s/{version}/${VERSION}/"          ${MODULES_DIR}/python3/${VERSION}.lua
-sed -i "s/{GNU-VERSION}/${GNU-VERSION}/"  ${MODULES_DIR}/python3/${VERSION}.lua
+sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULES_DIR}/python3/${VERSION}.lua
 ```
 
 ```bash
-GNU-VERSION=5
+GNU_VERSION=5
 cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}.lua
 sed -i "s/{version}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}.lua
-sed -i "s/{GNU-VERSION}/${GNU-VERSION}/"  ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}.lua
+sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}.lua
 ```
 
 ```bash
-GNU-VERSION=7
+GNU_VERSION=7
 cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}.lua
 sed -i "s/{version}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}.lua
-sed -i "s/{GNU-VERSION}/${GNU-VERSION}/"  ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}.lua
+sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}.lua
 ```
 
 ### # Refresh modules
