@@ -976,7 +976,7 @@ wwvnfs --chroot ${CHROOT}
 
 *output example>*
 >Using 'centos7.4' as the VNFS name  
-Creating VNFS image from centos7.4
+Creating VNFS image from centos7.4  
 Compiling hybridization link tree                           : 0.12 s  
 Building file list                                          : 0.24 s  
 Compiling and compressing VNFS                              : 6.03 s  
@@ -1074,7 +1074,9 @@ wwsh  file list
 
 wwsh  bootstrap list
 
-wwsh  vnfs listwwsh  node list
+wwsh  vnfs list
+
+wwsh  node list
 
 wwsh  node print
 
@@ -1158,9 +1160,33 @@ tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 ```bash
 systemctl enable munge
 systemctl enable slurmctld
+
 systemctl start munge
 systemctl start slurmctld
+
+systemctl status munge
+systemctl status slurmctld
 ```
+\# slurmctld 의 상태가 failed 인 경우 /etc/slurm/slurm.conf 파일 설정상태를 점검해야 합니다.
+
+#### #
+```bash
+sinfo --long
+sinfo -R
+```
+*output example>*
+>PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST  
+normal*      up 1-00:00:00      1  drain node1  
+==========   
+REASON               USER      TIMESTAMP           NODELIST  
+Low socket*core*thre slurm     2018-02-25T11:45:44 node1  
+
+\# 위와같이 PARTITION 의 STATE 가 drain 상태 일 경우 scontrol 명령을 사용해 node 의 상태를 resume 로 변경합니다.
+```bash
+scontrol  update  nodename=node1 state=resume
+sinfo --long
+```
+
 
 ## # 6 Run a Test Job
 ```bash
@@ -1172,6 +1198,33 @@ pdsh -w ${NODE_NAME}${NEW_NODE_NUM} /warewulf/bin/wwgetfiles
 ```
 
 ### # 6.1 Interactive execution
+#### # Switch to "user"
+`su - user`
+*output example>*
+>[root@master:\~]#  
+[root@master:\~]# su - user  
+Last login: Sun Feb 25 11:28:01 KST 2018 from 192.168.0.152 on pts/0  
+[user@master:\~]$  
+[user@master:\~]$  
+
+#### # Compile MPI "hello world" example
+```mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c
+ls
+```
+*output example>*
+>[user@master:\~]$ mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c  
+[user@master:\~]$ ls  
+**a.out**  Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos  
+
+#### # Submit interactive job request and use prun to launch executable
+`srun -n 8 -N 1 --pty /bin/bash`
+*output example>*
+>
+
+`prun ./a.out`
+
+
+
 
 <추가예정>
 
