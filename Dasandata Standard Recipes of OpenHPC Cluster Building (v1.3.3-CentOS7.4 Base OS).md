@@ -601,7 +601,7 @@ yum -y --installroot=${CHROOT} update
 ```bash
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel-headers kernel-devel parted xfsprogs python-devel \
- yum htop ipmitool glibc >> ~/dasan_log_ohpc_meta-package.txt
+ yum htop ipmitool glibc* >> ~/dasan_log_ohpc_meta-package.txt
 tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```

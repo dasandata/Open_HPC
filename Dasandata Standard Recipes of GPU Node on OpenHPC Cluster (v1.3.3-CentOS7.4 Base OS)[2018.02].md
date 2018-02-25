@@ -252,44 +252,12 @@ Use "module spider" to find all possible modules.
 Use "module keyword key1 key2 ..." to search for all possible modules matching
 any of the "keys".
 ```
-### # (미완성) CUDA Sample Compile
-
-master 에는 nvidia gpu 가 없기 때문에 cuda 가 설치 안되어
-node 에서 sample 컴파일을 시도 했으나 진행되지 않음
-```bash
-[root@node1 deviceQuery]#
-[root@node1 deviceQuery]# ml load cuda/8.0
-[root@node1 deviceQuery]# pwd
-/home/cuda-8.0/1_Utilities/deviceQuery
-[root@node1 deviceQuery]# make
-/usr/local/cuda-8.0/bin/nvcc -ccbin g++ -I../../common/inc  -m64    -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_60,code=compute_60 -o deviceQuery.o -c deviceQuery.cpp
-nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
-deviceQuery.cpp:16:18: fatal error: memory: No such file or directory
- #include <memory>
-                  ^
-compilation terminated.
-make: *** [deviceQuery.o] Error 1
-[root@node1 deviceQuery]#
-[root@node1 deviceQuery]# ml load gnu  
-[root@node1 deviceQuery]# ml
-
-Currently Loaded Modules:
-  1) cuda/8.0   2) gnu/5.4.0
+### # CUDA Sample Compile
+\# Master 에서 Sample 을 Compile 한 후 실행은 node 에서 합니다.
 
 
-[root@node1 deviceQuery]#
-[root@node1 deviceQuery]# make
-/usr/local/cuda-8.0/bin/nvcc -ccbin g++ -I../../common/inc  -m64    -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_37,code=sm_37 -gencode arch=compute_50,code=sm_50 -gencode arch=compute_52,code=sm_52 -gencode arch=compute_60,code=sm_60 -gencode arch=compute_60,code=compute_60 -o deviceQuery.o -c deviceQuery.cpp
-nvcc warning : The 'compute_20', 'sm_20', and 'sm_21' architectures are deprecated, and may be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
-In file included from /opt/ohpc/pub/compiler/gcc/5.4.0/include/c++/5.4.0/x86_64-unknown-linux-gnu/bits/c++config.h:482:0,
-                 from /opt/ohpc/pub/compiler/gcc/5.4.0/include/c++/5.4.0/bits/stl_algobase.h:59,
-                 from /opt/ohpc/pub/compiler/gcc/5.4.0/include/c++/5.4.0/memory:62,
-                 from deviceQuery.cpp:16:
-/opt/ohpc/pub/compiler/gcc/5.4.0/include/c++/5.4.0/x86_64-unknown-linux-gnu/bits/os_defines.h:39:22: fatal error:features.h: No such file or directory
-compilation terminated.
-make: *** [deviceQuery.o] Error 1
-[root@node1 deviceQuery]#
-```
+
+
 
 ## # Install Python 3.5.4 to Master
 
@@ -303,15 +271,15 @@ yum -y install zlib-devel bzip2-devel sqlite sqlite-devel openssl-devel
 wget https://www.python.org/ftp/python/3.5.4/Python-3.5.4.tgz
 tar  xvzf  Python-3.5.4.tgz
 mv ~/Python-3.5.4 ~/Python-3.5.4-gnu4
-cp -r ~/Python-3.5.4 ~/Python-3.5.4-gnu5
-cp -r ~/Python-3.5.4 ~/Python-3.5.4-gnu7
+cp -r ~/Python-3.5.4-gnu4 ~/Python-3.5.4-gnu5
+cp -r ~/Python-3.5.4-gnu4 ~/Python-3.5.4-gnu7
 ```
 ### # Install Python For each compiler version
 
 #### # For gnu4
 ```bash
 module purge
-gcc -v
+gcc --version
 
 cd ~/Python-3.5.4-gnu4
 ./configure \
@@ -330,9 +298,9 @@ rm -rf ~/Python-3.5.4-gnu4
 ```bash
 module purge
 module load gnu
-gcc -v
+gcc --version
 
-~/Python-3.5.4-gnu5
+cd ~/Python-3.5.4-gnu5
 ./configure \
 --enable-optimizations \
 --with-ensurepip=install \
@@ -349,9 +317,9 @@ rm -rf ~/Python-3.5.4-gnu5
 ```bash
 module purge
 module load gnu7
-gcc -v
+gcc --version
 
-~/Python-3.5.4-gnu7
+cd ~/Python-3.5.4-gnu7
 ./configure \
 --enable-optimizations \
 --with-ensurepip=install \
@@ -378,7 +346,7 @@ mkdir -p ${MODULES_DIR}/python3
 MODULE_DEPS_DIR="/opt/ohpc/pub/moduledeps"
 mkdir -p ${MODULE_DEPS_DIR}/gnu/python3
 mkdir -p ${MODULE_DEPS_DIR}/gnu7/python3
-VERSION=3.4.5
+VERSION=3.5.4
 ```
 
 ### # Add Python Module File by each version
