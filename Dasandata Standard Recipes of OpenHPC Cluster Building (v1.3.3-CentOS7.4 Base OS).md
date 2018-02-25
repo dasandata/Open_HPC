@@ -328,6 +328,8 @@ systemctl restart ntpd
 \# GPU Cluster 의 경우 3.4-A. Slurm 을 설치해야 합니다.  
 
 ### # 3.4-A (Slurm) Resource Management Services Install.
+\# 참조 링크: https://slurm.schedmd.com/
+
 #### # Install slurm server meta-package
 ```bash
 yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
@@ -651,7 +653,7 @@ chroot ${CHROOT} rpm -qa | grep glibc-common
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
- ohpc-base-compute  parted  xfsprogs  python-devel  yum  htop >> ~/dasan_log_ohpc_meta-package.txt
+ ohpc-base-compute parted xfsprogs  python-devel yum htop ipmitool >> ~/dasan_log_ohpc_meta-package.txt
 tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```
@@ -1156,6 +1158,7 @@ tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 
 
 ## # 5 Resource Manager Startup
+\# 참조 링크: https://slurm.schedmd.com/
 ### # Start munge and slurm controller on master host
 ```bash
 systemctl enable munge
