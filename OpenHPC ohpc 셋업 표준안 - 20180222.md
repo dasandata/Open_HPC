@@ -1348,13 +1348,13 @@ grep '#SBATCH -N'  job.mpi
 >
 >\# Launch MPI-based executable
 >
-prun ./a.out
-[user@master:\~]$  
-[user@master:\~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi    
-[user@master:\~]$ grep '#SBATCH -N'  job.mpi  
-\#SBATCH -N 1                  # Total number of nodes requested  
+>prun ./a.out
+>[user@master:\~]$  
+>[user@master:\~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi    
+>[user@master:\~]$ grep '#SBATCH -N'  job.mpi  
+>\#SBATCH -N 1                  # Total number of nodes requested  
 
-
+***
 #### # Launch MPI-based executable  
 
 ```bash
