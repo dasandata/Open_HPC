@@ -1226,11 +1226,17 @@ srun --help | grep 'ntasks\|nodes=N'
 srun -n 8 -N 1 --pty /bin/bash
 ```
 *output example>*
->[user@master:\~]$
-[user@master:\~]$ srun -n 8 -N 1 --pty /bin/bash
-[user@node1:\~]$
-[user@node1:\~]$
+>[user@master:\~]$  
+[user@master:\~]$ srun -n 8 -N 1 --pty /bin/bash  
+[user@node1:\~]$  
+[user@node1:\~]$  
 
+```bash
+squeue
+```
+*output example>*
+>             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)  
+                 5    normal     bash     user  R       3:58      1 node1  
 
 ```bash
 prun ./a.out
@@ -1296,9 +1302,124 @@ prun ./a.out
     --> Process #   5 of  32 is alive. -> node1  
     --> Process #   6 of  32 is alive. -> node1  
 
+```bash
+squeue
+
+exit
+
+squeue
+```
+*output example>*
+>[user@node1:\~]$ squeue   
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)  
+                 5    normal     bash     user  R       3:58      1 node1  
+[user@node1:\~]$   
+[user@node1:\~]$ exit  
+exit  
+[user@master:\~]$   
+[user@master:\~]$ squeue   
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)  
+[user@master:\~]$   
 
 
+### # 6.2 Batch execution
+#### # Copy example job script
+```bssh
+cd ~
+pwd
+cp /opt/ohpc/pub/examples/slurm/job.mpi .
+```
+#### # Examine contents (and edit to set desired job sizing characteristics)
+```bash
+cat job.mpi
 
+perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
+grep '#SBATCH -N'  job.mpi
+```
+*output example>*
+>#!/bin/bash  
+>  
+>#SBATCH -J test               # Job name  
+>#SBATCH -o job.%j.out         # Name of stdout output file (%j expands to jobId)  
+>#SBATCH -N 2                  # Total number of nodes requested  
+>#SBATCH -n 16                 # Total number of mpi tasks requested  
+>#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours  
+>  
+># Launch MPI-based executable  
+>  
+>prun ./a.out  
+>[user@master:~]$  
+>[user@master:~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi  
+>[user@master:~]$ grep '#SBATCH -N'  job.mpi
+>#SBATCH -N 1                  # Total number of nodes requested
+
+#### # Launch MPI-based executable
+
+```bash
+prun ./a.out
+```
+*output example>*
+>[prun] Master compute host = master  
+[prun] Resource manager = slurm  
+[prun] Launch cmd = mpirun ./a.out (family=openmpi)  
+>  
+ Hello, world (20 procs total)  
+    --> Process #   0 of  20 is alive. -> master  
+    --> Process #   1 of  20 is alive. -> master  
+    --> Process #   2 of  20 is alive. -> master  
+    --> Process #   3 of  20 is alive. -> master  
+    --> Process #   4 of  20 is alive. -> master  
+    --> Process #   5 of  20 is alive. -> master  
+    --> Process #   6 of  20 is alive. -> master  
+    --> Process #   7 of  20 is alive. -> master  
+    --> Process #   8 of  20 is alive. -> master  
+    --> Process #   9 of  20 is alive. -> master  
+    --> Process #  10 of  20 is alive. -> master  
+    --> Process #  11 of  20 is alive. -> master  
+    --> Process #  12 of  20 is alive. -> master  
+    --> Process #  13 of  20 is alive. -> master  
+    --> Process #  14 of  20 is alive. -> master  
+    --> Process #  15 of  20 is alive. -> master  
+    --> Process #  16 of  20 is alive. -> master  
+    --> Process #  17 of  20 is alive. -> master  
+    --> Process #  18 of  20 is alive. -> master  
+    --> Process #  19 of  20 is alive. -> master  
+
+#### # Submit job for batch execution
+```bash
+[user@master:~]$ sbatch job.mpi
+Submitted batch job 6
+[user@master:~]$
+[user@master:~]$ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+[user@master:~]$
+[user@master:~]$ ls
+a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Public  Templates  Videos
+[user@master:~]$
+[user@master:~]$ cat job.6.out
+[prun] Master compute host = node1
+[prun] Resource manager = slurm
+[prun] Launch cmd = mpirun ./a.out (family=openmpi)
+
+ Hello, world (16 procs total)
+    --> Process #   0 of  16 is alive. -> node1
+    --> Process #   1 of  16 is alive. -> node1
+    --> Process #   2 of  16 is alive. -> node1
+    --> Process #   3 of  16 is alive. -> node1
+    --> Process #   4 of  16 is alive. -> node1
+    --> Process #   5 of  16 is alive. -> node1
+    --> Process #   6 of  16 is alive. -> node1
+    --> Process #   7 of  16 is alive. -> node1
+    --> Process #   8 of  16 is alive. -> node1
+    --> Process #   9 of  16 is alive. -> node1
+    --> Process #  10 of  16 is alive. -> node1
+    --> Process #  11 of  16 is alive. -> node1
+    --> Process #  12 of  16 is alive. -> node1
+    --> Process #  13 of  16 is alive. -> node1
+    --> Process #  14 of  16 is alive. -> node1
+    --> Process #  15 of  16 is alive. -> node1
+[user@master:~]$
+```
 
 
 
