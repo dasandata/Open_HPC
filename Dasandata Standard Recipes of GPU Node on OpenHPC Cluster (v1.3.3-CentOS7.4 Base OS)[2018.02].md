@@ -367,15 +367,15 @@ rm -rf ~/Python-3.5.4-gnu7
 ## # Add Python Module for GPU Node
 ### # Download Module Template of Python
 ```bash
-cd ~
+cd /root/
 git clone https://github.com/dasandata/open_hpc
-GIT_CLONE_DIR="$(pwd)/open_hpc"
+GIT_CLONE_DIR="/root/open_hpc"
 echo ${GIT_CLONE_DIR}
 
 MODULES_DIR="/opt/ohpc/pub/modulefiles"
 mkdir -p ${MODULES_DIR}/python3
 
-MODULE_DEPS_DIR="/opt/ohpc/pub/modulefiles"
+MODULE_DEPS_DIR="/opt/ohpc/pub/moduledeps"
 mkdir -p ${MODULE_DEPS_DIR}/gnu/python3
 mkdir -p ${MODULE_DEPS_DIR}/gnu7/python3
 VERSION=3.4.5
@@ -384,23 +384,23 @@ VERSION=3.4.5
 ### # Add Python Module File by each version
 ```bash
 GNU_VERSION=4
-cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULES_DIR}/python3/${VERSION}.lua
-sed -i "s/{version}/${VERSION}/"          ${MODULES_DIR}/python3/${VERSION}.lua
-sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULES_DIR}/python3/${VERSION}.lua
+cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULES_DIR}/python3/${VERSION}
+sed -i "s/{VERSION}/${VERSION}/"          ${MODULES_DIR}/python3/${VERSION}
+sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULES_DIR}/python3/${VERSION}
 ```
 
 ```bash
 GNU_VERSION=5
-cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}.lua
-sed -i "s/{version}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}.lua
-sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}.lua
+cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
+sed -i "s/{VERSION}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
+sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
 ```
 
 ```bash
 GNU_VERSION=7
-cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}.lua
-sed -i "s/{version}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}.lua
-sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}.lua
+cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
+sed -i "s/{VERSION}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
+sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
 ```
 
 ### # Refresh modules
@@ -410,8 +410,89 @@ rm -rf  ~/.lmod.d/.cache
 module av
 ```
 *output example>*
+```bash
+------------------------ /opt/ohpc/pub/moduledeps/gnu7 -------------------------
+   R/3.4.2        mvapich2/2.2       openmpi/1.10.7 (L)    python3/3.4.5 (D)
+   gsl/2.4        numpy/1.13.1       openmpi3/3.0.0        scotch/6.0.4
+   metis/5.1.0    ocr/1.0.1          pdtoolkit/3.24        superlu/5.2.1
+   mpich/3.2      openblas/0.2.20    plasma/2.8.0
 
+------------------------- /opt/ohpc/admin/modulefiles --------------------------
+   spack/0.10.0
 
+-------------------------- /opt/ohpc/pub/modulefiles ---------------------------
+   EasyBuild/3.4.1        cuda/9.0            papi/5.5.1
+   autotools       (L)    cuda/9.1     (D)    pmix/1.2.3
+   cmake/3.9.2            gnu/5.4.0           prun/1.2        (L)
+   cuda/7.0               gnu7/7.2.0   (L)    python3/3.4.5
+   cuda/7.5               hwloc/1.11.8        singularity/2.4
+   cuda/8.0               ohpc         (L)    valgrind/3.13.0
+
+  Where:
+   D:  Default Module
+   L:  Module is loaded
+
+Use "module spider" to find all possible modules.
+Use "module keyword key1 key2 ..." to search for all possible modules matching
+any of the "keys".
+```
+### # Test of Python Module
+```bash
+[root@master:~]# ml purge
+[root@master:~]# ml list
+No modules loaded
+[root@master:~]#
+[root@master:~]# gcc --version | head -1
+gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-16)
+[root@master:~]#
+[root@master:~]# which python3
+/usr/bin/which: no python3 in (/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin:/root/bin)
+[root@master:~]#
+[root@master:~]# ml load python3
+[root@master:~]#
+[root@master:~]# which python3
+/opt/ohpc/pub/apps/python3/gnu4/bin/python3
+[root@master:~]#
+[root@master:~]# python3 -V
+Python 3.5.4
+[root@master:~]#
+```
+
+```bash
+[root@master:~]# ml purge
+[root@master:~]#
+[root@master:~]# ml load gnu
+[root@master:~]#
+[root@master:~]# gcc --version | head -1
+gcc (GCC) 5.4.0
+[root@master:~]#
+[root@master:~]# ml load python3
+[root@master:~]#
+[root@master:~]# which python3
+/opt/ohpc/pub/apps/python3/gnu5/bin/python3
+[root@master:~]#
+[root@master:~]# python3 -V
+Python 3.5.4
+[root@master:~]#
+```
+
+```bash
+[root@master:~]# ml purge
+[root@master:~]#
+[root@master:~]# ml load gnu7
+[root@master:~]#
+[root@master:~]# gcc --version | head -1
+gcc (GCC) 7.2.0
+[root@master:~]#
+[root@master:~]# ml load python3
+[root@master:~]#
+[root@master:~]# which python3
+/opt/ohpc/pub/apps/python3/gnu7/bin/python3
+[root@master:~]#
+[root@master:~]# python3 -V
+Python 3.5.4
+[root@master:~]#
+```
 
 
 # END.
