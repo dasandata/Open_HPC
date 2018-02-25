@@ -1324,36 +1324,36 @@ exit
 
 ### # 6.2 Batch execution
 #### # Copy example job script
-```bssh
-cd ~
-pwd
-cp /opt/ohpc/pub/examples/slurm/job.mpi .
+```bash
+[user@master:~]$ cd ~
+[user@master:~]$ pwd
+/home/user
+[user@master:~]$ cp /opt/ohpc/pub/examples/slurm/job.mpi .
+[user@master:~]$ cat job.mpi
+#!/bin/bash
+
+#SBATCH -J test               # Job name
+#SBATCH -o job.%j.out         # Name of stdout output file (%j expands to jobId)
+#SBATCH -N 2                  # Total number of nodes requested
+#SBATCH -n 16                 # Total number of mpi tasks requested
+#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours
+
+# Launch MPI-based executable
+
+prun ./a.out
+[user@master:~]$
+[user@master:~]$
 ```
+
 #### # Examine contents (and edit to set desired job sizing characteristics)
 ```bash
-cat job.mpi
-
-perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
-grep '#SBATCH -N'  job.mpi
+[user@master:~]$
+[user@master:~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
+[user@master:~]$
+[user@master:~]$ grep '#SBATCH -N'  job.mpi
+#SBATCH -N 1                  # Total number of nodes requested
+[user@master:~]$
 ```
-*output example>*
->[user@master:\~]$ cat job.mpi
->#!/bin/bash  
->  
->#SBATCH -J test               # Job name  
->#SBATCH -o job.%j.out         # Name of stdout output file (%j expands to jobId)  
->#SBATCH -N 2                  # Total number of nodes requested  
->#SBATCH -n 16                 # Total number of mpi tasks requested  
->#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours  
->  
->\# Launch MPI-based executable  
->  
->prun ./a.out  
->  
->[user@master:\~]$  
->[user@master:\~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi    
->[user@master:\~]$ grep '#SBATCH -N'  job.mpi  
->\#SBATCH -N 1                  # Total number of nodes requested  
 
 #### # Submit job for batch execution Example
 ```bash
