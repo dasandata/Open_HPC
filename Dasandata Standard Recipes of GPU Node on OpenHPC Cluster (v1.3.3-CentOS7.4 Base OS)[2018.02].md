@@ -462,5 +462,101 @@ Python 3.5.4
 [root@master:~]#
 ```
 
+## # Install pip for Python 2.7.5 to Master
+```bash
+which  python
+rpm -qa  |  grep ^python-2.7
+python -V
+rpm -ql  python-2.7.5
+
+easy_install pip
+rpm -qa | grep  setuptools
+
+pip -V
+```
+*output example>*
+```bash
+[root@master:~]# which  python
+/bin/python
+[root@master:~]# rpm -qa  |  grep ^python-2.7
+python-2.7.5-58.el7.x86_64
+[root@master:~]# python -V
+Python 2.7.5
+[root@master:~]#
+[root@master:~]# rpm -ql  python-2.7.5
+/usr/bin/pydoc
+/usr/bin/python
+/usr/bin/python2
+/usr/bin/python2.7
+/usr/share/doc/python-2.7.5
+/usr/share/doc/python-2.7.5/LICENSE
+/usr/share/doc/python-2.7.5/README
+/usr/share/man/man1/python.1.gz
+/usr/share/man/man1/python2.1.gz
+/usr/share/man/man1/python2.7.1.gz
+[root@master:~]#
+[root@master:~]# easy_install pip
+Searching for pip
+Reading https://pypi.python.org/simple/pip/
+Best match: pip 9.0.1
+Downloading https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447/pip-9.0.1.tar.gz#md5=35f01da33009719497f01a4ba69d63c9
+
+<일부 생략>
+
+Installed /usr/lib/python2.7/site-packages/pip-9.0.1-py2.7.egg
+Processing dependencies for pip
+Finished processing dependencies for pip
+[root@master:~]# rpm -qa | grep  setuptools
+python-setuptools-0.9.8-7.el7.noarch
+[root@master:~]#
+[root@master:~]# pip -V
+pip 9.0.1 from /usr/lib/python2.7/site-packages/pip-9.0.1-py2.7.egg (python 2.7)
+[root@master:~]#
+```
+
+
+## # Install pip for Python 2.7.5 to node vnfs imgae
+
+```bash
+echo ${CHROOT}
+
+wget https://pypi.python.org/packages/5f/ad/1fde06877a8d7d5c9b60eff7de2d452f639916ae1d48f0b8f97bf97e570a/distribute-0.7.3.zip#md5=c6c59594a7b180af57af8a0cc0cf5b4a
+
+mv ~/distribute-0.7.3.zip  ${CHROOT}/root/
+
+cd ${CHROOT}/root/
+unzip distribute-0.7.3.zip
+
+cd
+chroot ${CHROOT}
+```
+
+*output example>*
+```bash
+[root@master:~]# echo $CHROOT
+/opt/ohpc/admin/images/centos7.4
+[root@master:~]#
+[root@master:~]# mv ~/distribute-0.7.3.zip  ${CHROOT}/root/
+[root@master:~]# cd ${CHROOT}/root/
+[root@master:root]# unzip distribute-0.7.3.zip
+[root@master:root]# cd
+[root@master:~]# chroot $CHROOT
+[root@master:/]#
+```
+
+```bash
+cd ~
+cd distribute-0.7.3
+python setup.py install
+
+```
+
+
+
+## # Install to TensorFlow
+
+
+
+
 
 # END.
