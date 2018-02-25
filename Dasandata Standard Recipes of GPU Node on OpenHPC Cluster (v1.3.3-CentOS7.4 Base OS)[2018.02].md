@@ -96,6 +96,30 @@ gpgcheck=1
 gpgkey=http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/7fa2af80.pub
 [root@master:~]#
 ```
+## # Check to available list cuda repo on node vnfs image
+```bash
+chroot ${CHROOT} yum --disablerepo="*" --enablerepo="cuda" list available
+```
+*output example>*
+```bash
+[root@master:~]# chroot ${CHROOT} yum --disablerepo="*" --enablerepo="cuda" list available
+Loaded plugins: fastestmirror
+cuda                                                     | 2.5 kB     00:00     
+cuda/primary_db                                            | 125 kB   00:00     
+Loading mirror speeds from cached hostfile
+Available Packages
+cuda.x86_64                                      9.1.85-1                   cuda
+cuda-7-0.x86_64                                  7.0-28                     cuda
+cuda-7-5.x86_64                                  7.5-18                     cuda
+cuda-8-0.x86_64                                  8.0.61-1                   cuda
+cuda-9-0.x86_64                                  9.0.176-1                  cuda
+cuda-9-1.x86_64                                  9.1.85-1                   cuda
+cuda-command-line-tools-7-0.x86_64               7.0-28                     cuda
+cuda-command-line-tools-7-5.x86_64   
+<일부 생략>
+```
+
+
 
 
 

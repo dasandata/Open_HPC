@@ -578,14 +578,25 @@ Complete!
 ```bash
 uname -r
 
-chroot ${CHROOT} uname -r
+chroot ${CHROOT}
+
+uname -r
+exit
 ```
 *output example>*
->[root@master:~]# uname -r  
-3.10.0-693.17.1.el7.x86_64  
-[root@master:~]#   
-[root@master:~]# chroot ${CHROOT} uname -r  
-3.10.0-693.17.1.el7.x86_64  
+```bash
+[root@master:~]#
+[root@master:~]# uname -r
+3.10.0-693.17.1.el7.x86_64
+[root@master:~]#
+[root@master:~]# chroot ${CHROOT}
+[root@master:/]#
+[root@master:/]# uname -r
+3.10.0-693.17.1.el7.x86_64
+[root@master:/]#
+[root@master:/]# exit
+[root@master:~]# 
+```
 
 #### # Build 된 node provision image 의 기본 glibc 라이브러리 업데이트.  
 \# glibc 라이브러리 버젼 차이에 의한 locale 오류를 방지하기 위해 업데이트를 실행 합니다.  
@@ -638,22 +649,40 @@ Complete!
 
 \# 업데이트 후 버젼 확인 및 비교.
 ```bash
-rpm -qa | grep glibc-common
-chroot ${CHROOT} rpm -qa | grep glibc-common
+rpm -qa | grep glibc
+chroot ${CHROOT}
+rpm -qa | grep glibc
 ```
 
 *output example>*
->[root@master:\~]# rpm -qa | grep glibc-common  
-**glibc-common-2.17-196.el7_4.2.x86_64**  
-[root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
-**glibc-common-2.17-196.el7_4.2.x86_64**  
+```bash
+[root@master:~]# rpm -qa | grep glibc
+glibc-devel-2.17-196.el7_4.2.x86_64
+glibc-2.17-196.el7_4.2.i686
+glibc-headers-2.17-196.el7_4.2.x86_64
+glibc-common-2.17-196.el7_4.2.x86_64
+glibc-2.17-196.el7_4.2.x86_64
+[root@master:~]#
+[root@master:~]# chroot ${CHROOT}
+[root@master:/]#
+[root@master:/]# rpm -qa | grep glibc
+glibc-devel-2.17-196.el7_4.2.x86_64
+glibc-2.17-196.el7_4.2.x86_64
+glibc-headers-2.17-196.el7_4.2.x86_64
+glibc-common-2.17-196.el7_4.2.x86_64
+[root@master:/]#
+[root@master:/]# exit
+exit
+[root@master:~]#
+```
 
 ## # 3.8.2 Add OpenHPC components
 ### # Install compute node base meta-package.
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
- ohpc-base-compute parted xfsprogs  python-devel yum htop ipmitool >> ~/dasan_log_ohpc_meta-package.txt
+ ohpc-base-compute kernel-headers kernel-devel parted xfsprogs python-devel \
+ yum htop ipmitool glibc >> ~/dasan_log_ohpc_meta-package.txt
 tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```
