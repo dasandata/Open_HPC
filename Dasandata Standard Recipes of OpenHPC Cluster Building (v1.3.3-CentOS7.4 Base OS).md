@@ -578,10 +578,7 @@ Complete!
 ```bash
 uname -r
 
-chroot ${CHROOT}
-
-uname -r
-exit
+chroot ${CHROOT} uname -r
 ```
 *output example>*
 ```bash
@@ -589,91 +586,13 @@ exit
 [root@master:~]# uname -r
 3.10.0-693.17.1.el7.x86_64
 [root@master:~]#
-[root@master:~]# chroot ${CHROOT}
-[root@master:/]#
-[root@master:/]# uname -r
+[root@master:~]# chroot ${CHROOT}  uname -r
 3.10.0-693.17.1.el7.x86_64
-[root@master:/]#
-[root@master:/]# exit
-[root@master:~]# 
 ```
 
-#### # Build 된 node provision image 의 기본 glibc 라이브러리 업데이트.  
-\# glibc 라이브러리 버젼 차이에 의한 locale 오류를 방지하기 위해 업데이트를 실행 합니다.  
-\# 업데이트 전 버젼 확인 및 비교.  
-
-```bash
-rpm -qa | grep glibc-common
-chroot ${CHROOT} rpm -qa | grep glibc-common
-```
-
-*output example>*
->[root@master:\~]# rpm -qa | grep glibc-common  
-**glibc-2.17-196.el7_4.2.x86_64**  
-[root@master:\~]# chroot ${CHROOT} rpm -qa | grep glibc-common  
-**glibc-2.17-196.el7.x86_64**  
-
-\# 업데이트
+#### # Build 된 node provision image 의 업데이트
 ```bash
 yum -y --installroot=${CHROOT} update
-```
-
-*output example>*
->Loaded plugins: fastestmirror, langpacks, priorities  
-OpenHPC                                                  | 1.6 kB     00:00     
-OpenHPC-updates                                          | 1.2 kB     00:00     
-base                                                     | 3.6 kB     00:00     
-epel/x86_64/metalink                                     | 7.0 kB     00:00     
-epel                                                     | 4.7 kB     00:00     
-extras                                                   | 3.4 kB     00:00     
-updates                                                  | 3.4 kB     00:00     
-(1/2): epel/x86_64/updateinfo                              | 892 kB   00:02     
-(2/2): epel/x86_64/primary_db                              | 6.2 MB   00:11     
-Determining fastest mirrors  
- \* base: ftp.daumkakao.com  
- \* epel: mirror01.idc.hinet.net  
- \* extras: ftp.daumkakao.com  
- \* updates: ftp.daumkakao.com  
-OpenHPC                                                                 821/821  
-OpenHPC-updates                                                       1010/1010  
-139 packages excluded due to repository priority protections  
-Resolving Dependencies  
---> Running transaction check  
-<일부 생략>  
----> Package glibc.x86_64 0:2.17-196.el7 will be updated  
----> Package glibc.x86_64 0:2.17-196.el7_4.2 will be an update  
----> Package glibc-common.x86_64 0:2.17-196.el7 will be updated  
----> Package glibc-common.x86_64 0:2.17-196.el7_4.2 will be an update  
-<일부 생략>  
-Complete!  
-
-\# 업데이트 후 버젼 확인 및 비교.
-```bash
-rpm -qa | grep glibc
-chroot ${CHROOT}
-rpm -qa | grep glibc
-```
-
-*output example>*
-```bash
-[root@master:~]# rpm -qa | grep glibc
-glibc-devel-2.17-196.el7_4.2.x86_64
-glibc-2.17-196.el7_4.2.i686
-glibc-headers-2.17-196.el7_4.2.x86_64
-glibc-common-2.17-196.el7_4.2.x86_64
-glibc-2.17-196.el7_4.2.x86_64
-[root@master:~]#
-[root@master:~]# chroot ${CHROOT}
-[root@master:/]#
-[root@master:/]# rpm -qa | grep glibc
-glibc-devel-2.17-196.el7_4.2.x86_64
-glibc-2.17-196.el7_4.2.x86_64
-glibc-headers-2.17-196.el7_4.2.x86_64
-glibc-common-2.17-196.el7_4.2.x86_64
-[root@master:/]#
-[root@master:/]# exit
-exit
-[root@master:~]#
 ```
 
 ## # 3.8.2 Add OpenHPC components
@@ -696,6 +615,47 @@ tail ~/dasan_log_ohpc_meta-package.txt
   yum-plugin-fastestmirror.noarch 0:1.1.31-42.el7                               
   zlib-devel.x86_64 0:1.2.7-17.el7                                              
 Complete!  
+
+### # master 와 node vnfs 이미지의 kernel 과 glibc 의 구성 과 버젼이 동일한지 확인.
+```bash
+rpm -qa | grep kernel
+chroot ${CHROOT} rpm -qa | grep kernel
+
+rpm -qa | grep glibc
+chroot ${CHROOT} rpm -qa | grep glibc
+```
+
+```bash
+[root@master:~]#
+[root@master:~]#
+[root@master:~]# rpm -qa | grep kernel
+abrt-addon-kerneloops-2.1.11-48.el7.centos.x86_64
+kernel-3.10.0-693.el7.x86_64
+kernel-devel-3.10.0-693.17.1.el7.x86_64
+kernel-tools-libs-3.10.0-693.17.1.el7.x86_64
+kernel-tools-3.10.0-693.17.1.el7.x86_64
+kernel-3.10.0-693.17.1.el7.x86_64
+kernel-headers-3.10.0-693.17.1.el7.x86_64
+[root@master:~]# chroot ${CHROOT} rpm -qa | grep kernel
+kernel-devel-3.10.0-693.17.1.el7.x86_64
+kernel-headers-3.10.0-693.17.1.el7.x86_64
+kernel-3.10.0-693.17.1.el7.x86_64
+[root@master:~]#
+[root@master:~]# rpm -qa | grep glibc
+glibc-devel-2.17-196.el7_4.2.x86_64
+glibc-2.17-196.el7_4.2.i686
+glibc-headers-2.17-196.el7_4.2.x86_64
+glibc-common-2.17-196.el7_4.2.x86_64
+glibc-2.17-196.el7_4.2.x86_64
+[root@master:~]# chroot ${CHROOT} rpm -qa | grep glibc
+glibc-devel-2.17-196.el7_4.2.x86_64
+glibc-2.17-196.el7_4.2.x86_64
+
+glibc-headers-2.17-196.el7_4.2.x86_64
+glibc-common-2.17-196.el7_4.2.x86_64
+[root@master:~]#
+[root@master:~]#
+```
 
 ### # updated to enable DNS resolution.
 ```bash
