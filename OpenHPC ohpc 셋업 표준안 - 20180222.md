@@ -1345,48 +1345,15 @@ grep '#SBATCH -N'  job.mpi
 >#SBATCH -N 2                  # Total number of nodes requested  
 >#SBATCH -n 16                 # Total number of mpi tasks requested  
 >#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours  
->
->\# Launch MPI-based executable
->
->prun ./a.out
+>  
+>\# Launch MPI-based executable  
+>  
+>prun ./a.out  
+>  
 >[user@master:\~]$  
 >[user@master:\~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi    
 >[user@master:\~]$ grep '#SBATCH -N'  job.mpi  
 >\#SBATCH -N 1                  # Total number of nodes requested  
-
-***
-#### # Launch MPI-based executable  
-
-```bash
-prun ./a.out
-```
-
-*output example>*
->[prun] Master compute host = master  
-[prun] Resource manager = slurm  
-[prun] Launch cmd = mpirun ./a.out (family=openmpi)  
->  
-> Hello, world (20 procs total)  
-    --> Process #   0 of  20 is alive. -> master  
-    --> Process #   1 of  20 is alive. -> master  
-    --> Process #   2 of  20 is alive. -> master  
-    --> Process #   3 of  20 is alive. -> master  
-    --> Process #   4 of  20 is alive. -> master  
-    --> Process #   5 of  20 is alive. -> master  
-    --> Process #   6 of  20 is alive. -> master  
-    --> Process #   7 of  20 is alive. -> master  
-    --> Process #   8 of  20 is alive. -> master  
-    --> Process #   9 of  20 is alive. -> master  
-    --> Process #  10 of  20 is alive. -> master  
-    --> Process #  11 of  20 is alive. -> master  
-    --> Process #  12 of  20 is alive. -> master  
-    --> Process #  13 of  20 is alive. -> master  
-    --> Process #  14 of  20 is alive. -> master  
-    --> Process #  15 of  20 is alive. -> master  
-    --> Process #  16 of  20 is alive. -> master  
-    --> Process #  17 of  20 is alive. -> master  
-    --> Process #  18 of  20 is alive. -> master  
-    --> Process #  19 of  20 is alive. -> master  
 
 #### # Submit job for batch execution Example
 ```bash
