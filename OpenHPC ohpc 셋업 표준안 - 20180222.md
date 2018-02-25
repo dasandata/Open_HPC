@@ -1345,14 +1345,14 @@ grep '#SBATCH -N'  job.mpi
 >#SBATCH -N 2                  # Total number of nodes requested  
 >#SBATCH -n 16                 # Total number of mpi tasks requested  
 >#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours  
->  
-># Launch MPI-based executable  
->  
->prun ./a.out  
->[user@master:\~]$  
->[user@master:\~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi    
->[user@master:\~]$ grep '#SBATCH -N'  job.mpi  
->#SBATCH -N 1                  # Total number of nodes requested  
+>
+>\# Launch MPI-based executable
+>
+prun ./a.out
+[user@master:\~]$  
+[user@master:\~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi    
+[user@master:\~]$ grep '#SBATCH -N'  job.mpi  
+\#SBATCH -N 1                  # Total number of nodes requested  
 
 
 #### # Launch MPI-based executable  
