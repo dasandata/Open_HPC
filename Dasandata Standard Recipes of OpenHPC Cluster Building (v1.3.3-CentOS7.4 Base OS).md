@@ -24,13 +24,18 @@ mail@dasandata.co.kr
 
 감사합니다.  
 
+## # Root 로 로그인하여 진행 합니다.
+
 ## # 1.3 Inputs - 변수 정의 및 적용 (파일로 작성)
 
 ```bash
-vi ~/dasan_ohpc_variable.sh  
+cd
+pwd
+
+vi /root/dasan_ohpc_variable.sh  
 ```
 
-\# '~/dasan_ohpc_variable.sh' 파일 내용.
+\# '/root/dasan_ohpc_variable.sh' 파일 내용.
 ```bash
 #!/bin/bash
 
