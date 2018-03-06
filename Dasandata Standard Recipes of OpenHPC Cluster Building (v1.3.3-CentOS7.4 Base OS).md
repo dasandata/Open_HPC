@@ -40,7 +40,7 @@ vi /root/dasan_ohpc_variable.sh
 #!/bin/bash
 
 # 클러스터 이름.
-export CLUSTER_NAME=OpenHPC-Dasandata # 변경 필요
+export CLUSTER_NAME=OpenHPC_Dasandata # 변경 필요
 
 # 노드 배포 이미지 경로 (chroot)
 export CHROOT=/opt/ohpc/admin/images/centos7.4
