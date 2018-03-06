@@ -1211,7 +1211,7 @@ tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 
 ## # 5 Resource Manager Startup
 \# 참조 링크: https://slurm.schedmd.com/
-### # Start munge and slurm controller on master host
+### # 5-A. Start munge and slurm controller on master host
 ```bash
 systemctl enable munge
 systemctl enable slurmctld
@@ -1241,6 +1241,36 @@ Low socket*core*thre slurm     2018-02-25T11:45:44 node1
 scontrol  update  nodename=node1 state=resume
 sinfo --long
 ```
+
+### # 5-B. Start pbspro daemons on master host
+```bash
+systemctl enable pbs
+systemctl start pbs
+```
+#### # initialize PBS path
+```bash
+source  /etc/profile.d/pbs.sh
+
+# enable user environment propagation (needed for modules support)
+qmgr -c "set server default_qsub_arguments= -V"
+# enable uniform multi-node MPI task distribution
+qmgr -c "set server resources_default.place=scatter"
+# enable support for job accounting
+qmgr -c "set server job_history_enable=True"
+```
+
+#### # x4 register compute hosts with pbspro
+```bash
+qmgr -c "create node ${NODE_NAME}${NEW_NODE_NUM}"
+```
+
+#### # x4 register compute hosts with pbspro
+```bash
+for NEW_NODE_NUM in "$(seq 1 4)"; do
+qmgr -c "create node ${NODE_NAME}${NEW_NODE_NUM}"
+done
+```
+
 
 
 ## # 6 Run a Test Job
@@ -1274,7 +1304,7 @@ ls
 [user@master:\~]$ ls  
 **a.out**  Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos  
 
-#### # Submit interactive job request and use prun to launch executable
+#### # (6-A. Slurm) Submit interactive job request and use prun to launch executable
 ```bash
 srun --help | grep 'ntasks\|nodes=N'
 
@@ -1376,8 +1406,72 @@ exit
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)  
 [user@master:\~]$   
 
+#### # (6-B. PBS Pro) Submit interactive job request and use prun to launch executable
 
-### # 6.2 Batch execution
+```bash
+qsub -I -l select=1:mpiprocs=4
+
+qstat
+```
+*output example>*
+```
+[dasan@hostname:~]$
+[dasan@hostname:~]$ qsub -I -l select=1:mpiprocs=4
+qsub: waiting for job 3.hostname to start
+qsub: job 3.hostname ready
+
+[dasan@node12:~]$
+[dasan@node12:~]$ qstat
+Job id            Name             User              Time Use S Queue
+----------------  ---------------- ----------------  -------- - -----
+3.hostname          STDIN            dasan             00:00:00 R workq           
+[dasan@node12:~]$
+```
+***
+```bash
+prun ./a.out
+```
+*output example>*
+```
+[dasan@node12:~]$
+[dasan@node12:~]$ prun ./a.out
+[prun] Master compute host = node12
+[prun] Resource manager = pbspro
+[prun] Launch cmd = mpiexec -x LD_LIBRARY_PATH --prefix /opt/ohpc/pub/mpi/openmpi-gnu7/1.10.7 --hostfile /var/spool/pbs/aux/3.hostname ./a.out (family=openmpi)
+
+ Hello, world (4 procs total)
+    --> Process #   0 of   4 is alive. -> node12
+    --> Process #   1 of   4 is alive. -> node12
+    --> Process #   2 of   4 is alive. -> node12
+    --> Process #   3 of   4 is alive. -> node12
+[dasan@node12:~]$
+```
+***
+```bash
+qstat
+
+exit
+
+qstat
+```
+*output example>*
+```
+[dasan@node12:~]$
+[dasan@node12:~]$ qstat
+Job id            Name             User              Time Use S Queue
+----------------  ---------------- ----------------  -------- - -----
+4.hostname          STDIN            dasan             00:00:00 R workq           
+[dasan@node12:~]$
+[dasan@node12:~]$ exit
+logout
+
+qsub: job 3.hostname completed
+[dasan@hostname:~]$
+[dasan@hostname:~]$ qstat
+[dasan@hostname:~]$
+```
+***
+### # 6.2-A (Slurm) Batch execution
 #### # Copy example job script
 ```bash
 [user@master:~]$ cd ~
