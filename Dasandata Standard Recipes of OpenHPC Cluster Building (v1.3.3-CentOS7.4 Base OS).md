@@ -1549,18 +1549,27 @@ a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Publi
 [user@master:~]$ cd ~
 [user@master:~]$ pwd
 /home/user
-[user@master:~]$ cp /opt/ohpc/pub/examples/slurm/job.mpi .
+[user@master:~]$ cp /opt/ohpc/pub/examples/pbspro/job.mpi .
 [user@master:~]$ cat job.mpi
 #!/bin/bash
+#----------------------------------------------------------
+# Job name
+#PBS -N test
 
-#SBATCH -J test               # Job name
-#SBATCH -o job.%j.out         # Name of stdout output file (%j expands to jobId)
-#SBATCH -N 2                  # Total number of nodes requested
-#SBATCH -n 16                 # Total number of mpi tasks requested
-#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours
+# Name of stdout output file
+#PBS -o job.out
+
+# Total number of nodes and MPI tasks/node requested
+#PBS -l select=2:mpiprocs=4
+
+# Run time (hh:mm:ss) - 1.5 hours
+#PBS -l walltime=01:30:00
+#----------------------------------------------------------
+
+# Change to submission directory
+cd $PBS_O_WORKDIR
 
 # Launch MPI-based executable
-
 prun ./a.out
 [user@master:~]$
 [user@master:~]$
@@ -1569,46 +1578,34 @@ prun ./a.out
 #### # Examine contents (and edit to set desired job sizing characteristics)
 ```bash
 [user@master:~]$
-[user@master:~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
+[user@master:~]$ perl -pi -e 's/#PBS -l select=2/#PBS -l select=1/'   job.mpi
 [user@master:~]$
-[user@master:~]$ grep '#SBATCH -N'  job.mpi
-#SBATCH -N 1                  # Total number of nodes requested
+[user@master:~]$ grep '#PBS -l select='  job.mpi
+#PBS -l select=1:mpiprocs=4
 [user@master:~]$
 ```
 
 #### # Submit job for batch execution Example
 ```bash
-[user@master:~]$ sbatch job.mpi
-Submitted batch job 6
+[user@master:~]$ qsub job.mpi
+7.master
 [user@master:~]$
-[user@master:~]$ squeue
-             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+[user@master:~]$ qstat
 [user@master:~]$
 [user@master:~]$ ls
-a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Public  Templates  Videos
+a.out    Documents  job.mpi  Music  Pictures  Templates  Videos
+Desktop  Downloads  job.out  perl5  Public    test.e7
 [user@master:~]$
-[user@master:~]$ cat job.6.out
-[prun] Master compute host = node1
-[prun] Resource manager = slurm
-[prun] Launch cmd = mpirun ./a.out (family=openmpi)
+[user@master:~]$ cat job.out
+[prun] Master compute host = node12
+[prun] Resource manager = pbspro
+[prun] Launch cmd = mpiexec -x LD_LIBRARY_PATH --prefix /opt/ohpc/pub/mpi/openmpi-gnu7/1.10.7 --hostfile /var/spool/pbs/aux/7.coffee ./a.out (family=openmpi)
 
- Hello, world (16 procs total)
-    --> Process #   0 of  16 is alive. -> node1
-    --> Process #   1 of  16 is alive. -> node1
-    --> Process #   2 of  16 is alive. -> node1
-    --> Process #   3 of  16 is alive. -> node1
-    --> Process #   4 of  16 is alive. -> node1
-    --> Process #   5 of  16 is alive. -> node1
-    --> Process #   6 of  16 is alive. -> node1
-    --> Process #   7 of  16 is alive. -> node1
-    --> Process #   8 of  16 is alive. -> node1
-    --> Process #   9 of  16 is alive. -> node1
-    --> Process #  10 of  16 is alive. -> node1
-    --> Process #  11 of  16 is alive. -> node1
-    --> Process #  12 of  16 is alive. -> node1
-    --> Process #  13 of  16 is alive. -> node1
-    --> Process #  14 of  16 is alive. -> node1
-    --> Process #  15 of  16 is alive. -> node1
+ Hello, world (4 procs total)
+    --> Process #   0 of   4 is alive. -> node12
+    --> Process #   2 of   4 is alive. -> node12
+    --> Process #   1 of   4 is alive. -> node12
+    --> Process #   3 of   4 is alive. -> node12
 [user@master:~]$
 ```
 
