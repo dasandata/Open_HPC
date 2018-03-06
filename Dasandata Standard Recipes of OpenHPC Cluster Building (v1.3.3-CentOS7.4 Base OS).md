@@ -722,6 +722,15 @@ yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc  >> ~/dasan_log_ohpc
 tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
 ```
 
+### # Enable NTP time service on computes and identify master host as local NTP server.
+
+```bash
+chroot ${CHROOT} systemctl enable ntpd
+echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
+```
+
+***
+
 ## # 3.8.3 Customize system configuration
 
 ### # Initialize warewulf database and ssh_keys
@@ -829,13 +838,6 @@ exportfs
 *output example>*
 >/home          <world>  
 /opt/ohpc/pub   <world>  
-
-### # Enable NTP time service on computes and identify master host as local NTP server.
-
-```bash
-chroot ${CHROOT} systemctl enable ntpd
-echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
-```
 
 ***
 
@@ -1409,22 +1411,22 @@ exit
 #### # (6-B. PBS Pro) Submit interactive job request and use prun to launch executable
 
 ```bash
-qsub -I -l select=1:mpiprocs=4
+qsub -I -l select=1:mpiprocs=4  # select = node 갯수 / mpiprocs = cpu 갯수
 
 qstat
 ```
 *output example>*
 ```
-[dasan@hostname:~]$
-[dasan@hostname:~]$ qsub -I -l select=1:mpiprocs=4
-qsub: waiting for job 3.hostname to start
-qsub: job 3.hostname ready
+[dasan@master:~]$
+[dasan@master:~]$ qsub -I -l select=1:mpiprocs=4
+qsub: waiting for job 3.master to start
+qsub: job 3.master ready
 
 [dasan@node12:~]$
 [dasan@node12:~]$ qstat
 Job id            Name             User              Time Use S Queue
 ----------------  ---------------- ----------------  -------- - -----
-3.hostname          STDIN            dasan             00:00:00 R workq           
+3.master          STDIN            dasan             00:00:00 R workq           
 [dasan@node12:~]$
 ```
 ***
@@ -1437,7 +1439,7 @@ prun ./a.out
 [dasan@node12:~]$ prun ./a.out
 [prun] Master compute host = node12
 [prun] Resource manager = pbspro
-[prun] Launch cmd = mpiexec -x LD_LIBRARY_PATH --prefix /opt/ohpc/pub/mpi/openmpi-gnu7/1.10.7 --hostfile /var/spool/pbs/aux/3.hostname ./a.out (family=openmpi)
+[prun] Launch cmd = mpiexec -x LD_LIBRARY_PATH --prefix /opt/ohpc/pub/mpi/openmpi-gnu7/1.10.7 --hostfile /var/spool/pbs/aux/3.master ./a.out (family=openmpi)
 
  Hello, world (4 procs total)
     --> Process #   0 of   4 is alive. -> node12
@@ -1460,15 +1462,15 @@ qstat
 [dasan@node12:~]$ qstat
 Job id            Name             User              Time Use S Queue
 ----------------  ---------------- ----------------  -------- - -----
-4.hostname          STDIN            dasan             00:00:00 R workq           
+3.master          STDIN            dasan             00:00:00 R workq           
 [dasan@node12:~]$
 [dasan@node12:~]$ exit
 logout
 
-qsub: job 3.hostname completed
-[dasan@hostname:~]$
-[dasan@hostname:~]$ qstat
-[dasan@hostname:~]$
+qsub: job 3.master completed
+[dasan@master:~]$
+[dasan@master:~]$ qstat
+[dasan@master:~]$
 ```
 ***
 ### # 6.2-A (Slurm) Batch execution
@@ -1540,7 +1542,75 @@ a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Publi
 [user@master:~]$
 ```
 
+### # 6.2-B (PBS Pro) Batch execution
 
+#### # Copy example job script
+```bash
+[user@master:~]$ cd ~
+[user@master:~]$ pwd
+/home/user
+[user@master:~]$ cp /opt/ohpc/pub/examples/slurm/job.mpi .
+[user@master:~]$ cat job.mpi
+#!/bin/bash
+
+#SBATCH -J test               # Job name
+#SBATCH -o job.%j.out         # Name of stdout output file (%j expands to jobId)
+#SBATCH -N 2                  # Total number of nodes requested
+#SBATCH -n 16                 # Total number of mpi tasks requested
+#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours
+
+# Launch MPI-based executable
+
+prun ./a.out
+[user@master:~]$
+[user@master:~]$
+```
+
+#### # Examine contents (and edit to set desired job sizing characteristics)
+```bash
+[user@master:~]$
+[user@master:~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
+[user@master:~]$
+[user@master:~]$ grep '#SBATCH -N'  job.mpi
+#SBATCH -N 1                  # Total number of nodes requested
+[user@master:~]$
+```
+
+#### # Submit job for batch execution Example
+```bash
+[user@master:~]$ sbatch job.mpi
+Submitted batch job 6
+[user@master:~]$
+[user@master:~]$ squeue
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+[user@master:~]$
+[user@master:~]$ ls
+a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Public  Templates  Videos
+[user@master:~]$
+[user@master:~]$ cat job.6.out
+[prun] Master compute host = node1
+[prun] Resource manager = slurm
+[prun] Launch cmd = mpirun ./a.out (family=openmpi)
+
+ Hello, world (16 procs total)
+    --> Process #   0 of  16 is alive. -> node1
+    --> Process #   1 of  16 is alive. -> node1
+    --> Process #   2 of  16 is alive. -> node1
+    --> Process #   3 of  16 is alive. -> node1
+    --> Process #   4 of  16 is alive. -> node1
+    --> Process #   5 of  16 is alive. -> node1
+    --> Process #   6 of  16 is alive. -> node1
+    --> Process #   7 of  16 is alive. -> node1
+    --> Process #   8 of  16 is alive. -> node1
+    --> Process #   9 of  16 is alive. -> node1
+    --> Process #  10 of  16 is alive. -> node1
+    --> Process #  11 of  16 is alive. -> node1
+    --> Process #  12 of  16 is alive. -> node1
+    --> Process #  13 of  16 is alive. -> node1
+    --> Process #  14 of  16 is alive. -> node1
+    --> Process #  15 of  16 is alive. -> node1
+[user@master:~]$
+```
 
 
 # END.
