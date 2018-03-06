@@ -238,7 +238,7 @@ repolist: 24,090
 yum -y install \
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
 >> ~/dasan_log_ohpc_openhpc_repository.txt
-tail -1 ~/dasan_log_ohpc_openhpc_repository.txt
+tail ~/dasan_log_ohpc_openhpc_repository.txt
 ```
 
 *output example>*  
@@ -543,7 +543,7 @@ echo ${CHROOT}
 *output example>*
 >/opt/ohpc/admin/images/centos7.4
 
-#### # Build initial BOS image
+#### # Build initial BOS (Base OS) image
 ```bash
 wwmkchroot centos-7 ${CHROOT}
 ```
@@ -586,7 +586,7 @@ uname -r
 chroot ${CHROOT} uname -r
 ```
 *output example>*
-```bash
+```
 [root@master:~]#
 [root@master:~]# uname -r
 3.10.0-693.17.1.el7.x86_64
@@ -597,7 +597,8 @@ chroot ${CHROOT} uname -r
 
 #### # Build 된 node provision image 의 업데이트
 ```bash
-yum -y --installroot=${CHROOT} update
+yum -y --installroot=${CHROOT} update  >> ~/dasan_log_ohpc_update_nodeimage.txt
+tail ~/dasan_log_ohpc_update_nodeimage.txt
 ```
 
 ## # 3.8.2 Add OpenHPC components
@@ -630,7 +631,7 @@ rpm -qa | grep glibc
 chroot ${CHROOT} rpm -qa | grep glibc
 ```
 
-```bash
+```
 [root@master:~]#
 [root@master:~]#
 [root@master:~]# rpm -qa | grep kernel
@@ -686,8 +687,11 @@ yum -y --installroot=${CHROOT} install pbspro-execution-ohpc
 
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
 perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
+grep PBS_SERVER ${CHROOT}/etc/pbs.conf
+```
 
-chroot ${CHROOT}/opt/pbs/libexec/pbs_habitat
+```bash
+chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 
 grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
 perl -pi -e "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" ${CHROOT}/var/spool/pbs/mom_priv/config
@@ -695,7 +699,7 @@ grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
 
 echo "\$usecp *:/home /home" >> ${CHROOT}/var/spool/pbs/mom_priv/config
 cat    ${CHROOT}/var/spool/pbs/mom_priv/config
-chroot ${CHROOT}/opt/pbs/libexec/pbs_habitat
+chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 
 chroot ${CHROOT} systemctl enable pbs
 ```
@@ -715,7 +719,7 @@ chroot ${CHROOT} systemctl enable rdma
 ### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
 yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt
-tail -1 ~/dasan_log_ohpc_ntp,kernel,modules.txt  
+tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
 ```
 
 ## # 3.8.3 Customize system configuration
@@ -809,8 +813,8 @@ cat /etc/exports
 ```
 
 *output example>*
->/home \*(rw,no_subtree_check,fsid=10,no_root_squash)
-/opt/ohpc/pub \*(ro,no_subtree_check,fsid=11)
+>/home \*(rw,no_subtree_check,fsid=10,no_root_squash)  
+/opt/ohpc/pub \*(ro,no_subtree_check,fsid=11)  
 
 
 ```bash
@@ -823,8 +827,8 @@ exportfs
 ```
 
 *output example>*
->/home         	<world>
-/opt/ohpc/pub 	<world>
+>/home          <world>  
+/opt/ohpc/pub   <world>  
 
 ### # Enable NTP time service on computes and identify master host as local NTP server.
 
@@ -835,9 +839,9 @@ echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 
 ***
 
-## # 3.8.4 Additional Customization (optional)
+## # 3.8.4 Additional Customization (일부 Optional)
 
-### # 3.8.4.3 Increase locked memory limits
+### # 3.8.4.3 (Optional) Increase locked memory limits
 \# 기본 네트워크 구성이 InfiniBand 또는 Omni-Path를 로 되어 있을 경우에만 수행 합니다.
 
 \# Update memlock settings on master and compute
@@ -876,6 +880,8 @@ grep 'host ='  /etc/ganglia/gmond.conf
 ```bash
 /usr/bin/cp   /etc/ganglia/gmond.conf  ${CHROOT}/etc/ganglia/gmond.conf
 echo "gridname ${CLUSTER_NAME}" >> /etc/ganglia/gmetad.conf
+
+grep gridname /etc/ganglia/gmetad.conf
 ```
 #### # Start and enable Ganglia services
 ```bash
@@ -884,6 +890,12 @@ systemctl enable gmetad
 systemctl start gmond
 systemctl start gmetad
 chroot ${CHROOT} systemctl enable gmond
+```
+#### # php TimeZone setup
+```bash
+grep "^date.timezone =" /etc/php.ini
+echo "date.timezone = Asia/Seoul" >> /etc/php.ini
+grep "^date.timezone =" /etc/php.ini
 ```
 #### # Restart web server
 ```bash
@@ -896,7 +908,7 @@ firewall-cmd --list-all
 firewall-cmd --add-port=80/tcp  --permanent
 firewall-cmd --reload
 ```
-\# Open to http://localhost/ganglia or http://<expternal ip address>/ganglia
+\# Open to http://localhost/ganglia or http://expternal ip address/ganglia
 
 ## # 3.8.5 Import files
 The Warewulf system includes functionality to import arbitrary files from the provisioning server for distribution to managed hosts. This is one way to distribute user credentials to compute nodes.  
@@ -909,7 +921,8 @@ wwsh file import /etc/group
 wwsh file import /etc/shadow
 ```
 
-### # Files for Slurm Resource Manager
+### # (Optional) Files for Slurm Resource Manager
+\# Slurm 을 사용하는 경우에만 실행 합니다. 
 ```bash
 wwsh file import /etc/slurm/slurm.conf
 wwsh file import /etc/munge/munge.key
