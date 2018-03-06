@@ -922,7 +922,7 @@ wwsh file import /etc/shadow
 ```
 
 ### # (Optional) Files for Slurm Resource Manager
-\# Slurm 을 사용하는 경우에만 실행 합니다. 
+\# Slurm 을 사용하는 경우에만 실행 합니다.
 ```bash
 wwsh file import /etc/slurm/slurm.conf
 wwsh file import /etc/munge/munge.key
@@ -1017,16 +1017,17 @@ export NEW_NODE_NUM=1
 
 ### # Add new nodes to Warewulf data store
 ```bash
-wwsh node new ${NODE_NAME}${NEW_NODE_NUM}--netdev ${NODE_INT_NIC} \
+wwsh node new ${NODE_NAME}${NEW_NODE_NUM} --netdev ${NODE_INT_NIC} \
 --ipaddr=10.1.1.11 --hwaddr=<기입> --gateway ${MASTER_IP} --netmask=255.255.255.0
 ```
 
 ### # Define provisioning image for hosts
 ```bash
-wwsh -y provision set "${NODE_NAME}${NEW_NODE_NUM}" --vnfs=centos7.4 \
+wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.4 \
 --bootstrap=`uname -r ` \
---files=dynamic_hosts,passwd,group,shadow,slurm.conf,munge.key,network
+--files=dynamic_hosts,passwd,group,shadow,network
 ```
+\# Slurm 을 사용할 경우 - files= 에 slurm.conf,munge.key 도 추가.
 
 ### # Restart dhcp / update PXE
 
@@ -1036,6 +1037,50 @@ wwsh pxe update
 ```
 
 ### # 노드를 더 추가할 경우 'Set New node Number 부터 반복 합니다.'
+***
+### # 노드 여러대를 한꺼번에 추가할 경우 의 예제 입니다.
+#### # 배열 변수에 mac address 와 ip 할당.
+```bash
+node_mac[1]=aa:aa:aa:aa:aa:aa
+node_mac[2]=bb:bb:bb:bb:bb:bb
+node_mac[3]=cc:cc:cc:cc:cc:cc
+node_mac[4]=dd:dd:dd:dd:dd:dd
+
+node_ip[1]=10.1.1.10
+node_ip[2]=10.1.1.20
+node_ip[3]=10.1.1.30
+node_ip[4]=10.1.1.40
+```
+#### # for 문을 이용해서 반복 수행
+```bash
+# for문 출력 예제.
+for NEW_NODE_NUM in $(seq 1 4) ;  # 1~4 까지 순차적으로 수행.
+do echo "";
+echo node${NEW_NODE_NUM} mac = ${node_mac[NEW_NODE_NUM]} ;  # 배열 변수 사용시 중괄호{} 가 필요함.
+echo node${NEW_NODE_NUM} ip = ${node_ip[NEW_NODE_NUM]} ;
+echo "" ;
+done
+```
+
+#### # 4x Add new nodes to Warewulf data store
+```bash
+for NEW_NODE_NUM in $(seq 1 4) ;
+do echo "" ;
+wwsh -y node new ${NODE_NAME}${NEW_NODE_NUM} --netdev ${NODE_INT_NIC} \
+--ipaddr=${node_ip[NEW_NODE_NUM]} --hwaddr=${node_mac[NEW_NODE_NUM]} \
+--gateway ${MASTER_IP} --netmask=255.255.255.0 ;
+done
+```
+
+#### # 4x Define provisioning image for hosts
+```bash
+for NEW_NODE_NUM in $(seq 1 4) ;
+do echo "" ;
+wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.4 \
+--bootstrap=`uname -r ` \
+--files=dynamic_hosts,passwd,group,shadow,network ;
+done
+```
 
 ***
 
@@ -1047,7 +1092,7 @@ ping -c 4 ${NODE_NAME}${NEW_NODE_NUM}
 
 ssh ${NODE_NAME}${NEW_NODE_NUM}
 
-df -hT
+df -hT | grep -v tmpfs
 ```
 
 *output example>*
