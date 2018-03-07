@@ -27,7 +27,21 @@
 
 ```
 
-### 4. Add Module 
+### 4. Add Module
+
+```bash
+
+```
+
+
+### 5. Nodes Power On / Off
+#### Power On
+- ipmi (iDrac)
+- WOL (Wake On Lan)
+
+#### Power Off
+- ipmi (iDrac)
+- pdsh -w
 
 ```bash
 
