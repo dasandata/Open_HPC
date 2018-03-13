@@ -1,3 +1,5 @@
+```bash
+
 # (PBS Pro)  Resource Manager Startup  & Run a Test Job
 
 
@@ -175,3 +177,21 @@ mpirun  -np $num_proc -hostfile $PBS_NODEFILE  ./a.out
 # Submit job for batch execution
 qsub hello.mpi
 5.master
+
+
+
+# psbpro 에서   total  cpu  확인 하는 방법 두가지
+[dasan@master:~]$ pbsnodes  -a  | grep    "resources_available.ncpus"   |  cut  -d "=" -f 2     >  total-cpus.txt
+[dasan@master:~]$ sum=0; while read num; do ((sum += num)); done < total-cpus.txt; echo $sum
+120
+[dasan@master:~]$
+[dasan@master:~]$
+
+
+[dasan@master:~]$
+[dasan@master:~]$ IFS=$'\n' num=(`pbsnodes -a | grep "resources_available.ncpus" | cut -d "=" -f 2`)
+[dasan@master:~]$ sum=0 ; for i in ${num[@]}; do ((sum += $i)); done ; echo $sum
+120
+[dasan@master:~]$
+
+```
