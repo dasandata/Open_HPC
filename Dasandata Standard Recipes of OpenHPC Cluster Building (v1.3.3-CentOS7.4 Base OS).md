@@ -938,6 +938,23 @@ wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 
 ```
 
+## # 3.8.6 /etc/warewulf/vnfs.conf 수정.
+```bash
+# cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
+gzip command = /usr/bin/pigz -9
+cpio command = cpio --quiet -o -H newc
+build directory = /var/tmp/
+exclude += /tmp/*
+exclude += /var/log/*
+exclude += /var/chroots/*
+exclude += /var/cache
+exclude += /usr/src
+hybridize += /usr/X11R6
+hybridize += /usr/share/man
+hybridize += /usr/share/doc
+
+```
+
 ## # 3.9 Finalizing provisioning configuration
 
 ### # 3.9.1 Assemble bootstrap image
