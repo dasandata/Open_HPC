@@ -46,7 +46,7 @@ export CLUSTER_NAME=OpenHPC_Dasandata # 변경 필요
 export CHROOT=/opt/ohpc/admin/images/centos7.4
 
 # MASTER 의 이름 과 IP.
-export MASTER_HOSTNAME=$(hostname)
+export MASTER_HOSTNAME=$(hostname -s)
 export MASTER_IP=10.1.1.1
 export MASTER_PREFIX=24
 
@@ -939,6 +939,7 @@ wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 ```
 
 ## # 3.8.6 /etc/warewulf/vnfs.conf 수정.
+### # 아래와 같이 수정 합니다.
 ```bash
 # cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
 gzip command = /usr/bin/pigz -9
