@@ -437,12 +437,17 @@ tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 
 ```bash
 yum -y groupinstall "InfiniBand Support"
-yum -y install infinipath-psm
+yum -y install infinipath-psm opensm 
+
 ```
 
 #### (Optional) Load InfiniBand drivers
 ```bash
+systemctl enable opensm
+systemctl start opensm
+
 systemctl start rdma
+systemctl enable rdma
 ```
 
 #### (Optional) Copy ib0 template to master
