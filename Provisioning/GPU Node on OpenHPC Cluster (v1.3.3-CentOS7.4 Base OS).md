@@ -204,7 +204,7 @@ ssh node1 reboot
 ### # Download Module Template of CUDA
 ```bash
 git clone https://github.com/dasandata/open_hpc
-GIT_CLONE_DIR="$(pwd)/open_hpc"
+GIT_CLONE_DIR="/root/open_hpc"
 echo ${GIT_CLONE_DIR}
 
 MODULES_DIR="/opt/ohpc/pub/modulefiles"
