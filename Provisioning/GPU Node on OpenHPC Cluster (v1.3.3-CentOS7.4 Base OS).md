@@ -214,7 +214,7 @@ mkdir -p ${MODULES_DIR}/cuda
 ### # Add CUDA Module File by each version
 ```bash
 for VERSION in 7.0 7.5 8.0 9.0 9.1; do
-cp -a ${GIT_CLONE_DIR}/cuda.lua ${MODULES_DIR}/cuda/${VERSION}.lua ;
+cp -a ${GIT_CLONE_DIR}/Module_Template/cuda.lua ${MODULES_DIR}/cuda/${VERSION}.lua ;
 sed -i "s/{version}/${VERSION}/" ${MODULES_DIR}/cuda/${VERSION}.lua ;
 done
 ```
@@ -352,21 +352,21 @@ VERSION=3.5.4
 ### # Add Python Module File by each version
 ```bash
 GNU_VERSION=4
-cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULES_DIR}/python3/${VERSION}
+cp -a ${GIT_CLONE_DIR}/Module_Template/python3.txt        ${MODULES_DIR}/python3/${VERSION}
 sed -i "s/{VERSION}/${VERSION}/"          ${MODULES_DIR}/python3/${VERSION}
 sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULES_DIR}/python3/${VERSION}
 ```
 
 ```bash
 GNU_VERSION=5
-cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
+cp -a ${GIT_CLONE_DIR}/Module_Template/python3.txt        ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
 sed -i "s/{VERSION}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
 sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
 ```
 
 ```bash
 GNU_VERSION=7
-cp -a ${GIT_CLONE_DIR}/python3.lua        ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
+cp -a ${GIT_CLONE_DIR}/Module_Template/python3.txt        ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
 sed -i "s/{VERSION}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
 sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
 ```
