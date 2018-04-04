@@ -549,38 +549,18 @@ echo ${CHROOT}
 
 #### # Build initial BOS (Base OS) image
 ```bash
-wwmkchroot centos-7 ${CHROOT}
+wwmkchroot centos-7 ${CHROOT} >> ~/dasan_log_ohpc_initial-BaseOS.txt 2>&1
+tail ~/dasan_log_ohpc_initial-BaseOS.txt
 ```
 *output example>*
->Loaded plugins: fastestmirror, langpacks, priorities  
-os-base                                                  | 3.6 kB     00:00     
-(1/2): os-base/x86_64/group_gz                             | 156 kB   00:01     
-(2/2): os-base/x86_64/primary_db                           | 5.7 MB   01:55     
-Determining fastest mirrors  
-Resolving Dependencies  
---> Running transaction check  
---> Package basesystem.noarch 0:10.0-7.el7.centos will be installed  
---> Package bash.x86_64 0:4.2.46-28.el7 will be installed  
-<일부 생략>  
---> Finished Dependency Resolution  
-Dependencies Resolved  
-================================================================================  
- Package                      Arch    Version                    Repository  
-                                                                           Size  
-================================================================================  
-Installing:  
- basesystem                   noarch  10.0-7.el7.centos          os-base  5.0 k  
- bash                         x86_64  4.2.46-28.el7              os-base  1.0 M  
- centos-release               x86_64  **7-4.1708.el7.centos**        os-base   23 k  
-<일부 생략>  
-Transaction Summary  
-================================================================================  
+>================================================================================  
 Install  43 Packages (+132 Dependent packages)  
 Total download size: 85 M  
 Installed size: 363 M  
 Downloading packages:  
 <일부 생략>  
 Complete!  
+
 
 #### # Build 된 node image 와 master 의 kernel version 비교.
 
