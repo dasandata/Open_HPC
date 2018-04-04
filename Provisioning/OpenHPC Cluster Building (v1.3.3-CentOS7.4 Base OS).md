@@ -136,8 +136,8 @@ sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ### # 2.4 Master 의 내부망 인터페이스의 설정 변경.
 ```bash
-perl -pi -e 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-perl -pi -e 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+sed -i 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
+sed -i 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 
 ### # 2.5 Master 의 내부망 ip 설정
@@ -179,9 +179,11 @@ ip a
 ```bash
 firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
+
 firewall-cmd --reload
 
 firewall-cmd --list-all --zone=external
+firewall-cmd --list-all --zone=trusted
 ```
 *output example>*
 >*external* (active)  
@@ -189,9 +191,6 @@ target: *default*
 icmp-block-inversion: no  
 interfaces: *em2*  
 
-```bash
-firewall-cmd --list-all --zone=trusted
-```
 *output example>*
 >*trusted* (active)  
   target: ACCEPT  
@@ -237,7 +236,7 @@ repolist: 24,090
 ```bash
 yum -y install \
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
->> ~/dasan_log_ohpc_openhpc_repository.txt
+>> ~/dasan_log_ohpc_openhpc_repository.txt 2>&1
 tail ~/dasan_log_ohpc_openhpc_repository.txt
 ```
 
@@ -286,7 +285,7 @@ repolist: 24,839
 #### # Install base meta-packages
 
 ```bash
-yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt
+yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt 2>&1
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
 *output example>*  
@@ -337,7 +336,7 @@ systemctl restart ntpd
 
 #### # Install slurm server meta-package
 ```bash
-yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt
+yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt 2>&1
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
 *output example>*
@@ -363,9 +362,9 @@ grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 ControlMachine=linux0   
 
 ```bash
-perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/"  /etc/slurm/slurm.conf
-perl -pi -e "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" /etc/slurm/slurm.conf
-grep ClusterName /etc/slurm/slurm.conf
+sed -i "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/"  /etc/slurm/slurm.conf
+sed -i "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" /etc/slurm/slurm.conf
+grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 
 ```
 *output example>*
@@ -391,7 +390,7 @@ grep NodeName= /etc/slurm/slurm.conf          # slurm 설정 파일의 기본 �
 NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 ```bash
-perl -pi -e "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_RANGE}/" /etc/slurm/slurm.conf
+sed -i "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_RANGE}/" /etc/slurm/slurm.conf
 grep NodeName= /etc/slurm/slurm.conf
 ```
 *output example>* **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
@@ -413,9 +412,9 @@ grep NodeName= /etc/slurm/slurm.conf
 >NodeName=node[1-3] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 ```bash
-perl -pi -e "s/Sockets=\S+/Sockets=${SOCKETS}/"  /etc/slurm/slurm.conf
-perl -pi -e "s/CoresPerSocket=\S+/CoresPerSocket=${CORESPERSOCKET}/"  /etc/slurm/slurm.conf
-perl -pi -e "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.conf
+sed -i "s/Sockets=\S+/Sockets=${SOCKETS}/"  /etc/slurm/slurm.conf
+sed -i "s/CoresPerSocket=\S+/CoresPerSocket=${CORESPERSOCKET}/"  /etc/slurm/slurm.conf
+sed -i "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.conf
 
 grep NodeName= /etc/slurm/slurm.conf  
 ```
@@ -427,7 +426,7 @@ grep NodeName= /etc/slurm/slurm.conf
 
 #### # Install to pbspro-server-ohpc
 ```bash
-yum -y install pbspro-server-ohpc >> ~/dasan_log_ohpc_resourcemanager_pbspro.txt
+yum -y install pbspro-server-ohpc >> ~/dasan_log_ohpc_resourcemanager_pbspro.txt 2>&1
 tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 ```
 
@@ -437,7 +436,7 @@ tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 
 ```bash
 yum -y groupinstall "InfiniBand Support"
-yum -y install infinipath-psm opensm 
+yum -y install infinipath-psm opensm
 
 ```
 
@@ -457,8 +456,8 @@ cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-sc
 
 #### (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
 ```bash
-perl -pi -e "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
-perl -pi -e "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+sed -i "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+sed -i "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 
 echo  “MTU=4096”  >>  /
 ```
@@ -503,7 +502,7 @@ network device = **eth1**
 \# 인터페이스 명 변경
 ```bash
 
-perl -pi -e "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
+sed -i "s/device = eth1/device = ${INT_NIC}/" /etc/warewulf/provision.conf
 grep device /etc/warewulf/provision.conf
 ```
 
@@ -514,14 +513,14 @@ network device = **p1p1**
 ### # Enable tftp service for compute node image distribution
 ```bash
 grep disable /etc/xinetd.d/tftp
-perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
+sed -i "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
 grep disable /etc/xinetd.d/tftp
 ```
 
 *output example>*
 >[root@master:\~]# grep disable /etc/xinetd.d/tftp  
 	disable			= yes  
-[root@master:\~]# perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
+[root@master:\~]# sed -i "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
 [root@master:\~]# grep disable /etc/xinetd.d/tftp  
  disable = no  
 [root@master:\~]#   
@@ -602,7 +601,7 @@ chroot ${CHROOT} uname -r
 
 #### # Build 된 node provision image 의 업데이트
 ```bash
-yum -y --installroot=${CHROOT} update  >> ~/dasan_log_ohpc_update_nodeimage.txt
+yum -y --installroot=${CHROOT} update  >> ~/dasan_log_ohpc_update_nodeimage.txt 2>&1
 tail ~/dasan_log_ohpc_update_nodeimage.txt
 ```
 
@@ -612,7 +611,7 @@ tail ~/dasan_log_ohpc_update_nodeimage.txt
 ```bash
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel-headers kernel-devel parted xfsprogs python-devel \
- yum htop ipmitool glibc* >> ~/dasan_log_ohpc_meta-package.txt
+ yum htop ipmitool glibc* >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```
@@ -679,7 +678,7 @@ cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 ### # Add Slurm client support meta-package
 \# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
-yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt
+yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt 2>&1
 tail -1 ~/dasan_log_ohpc_slurmclient.txt
 ```
 
@@ -688,10 +687,10 @@ tail -1 ~/dasan_log_ohpc_slurmclient.txt
 ### # Add PBS Professional client support
 \# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
 ```bash
-yum -y --installroot=${CHROOT} install pbspro-execution-ohpc
+yum -y --installroot=${CHROOT} install pbspro-execution-ohpc 2>&1
 
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
-perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
+sed -i "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
 ```
 
@@ -699,7 +698,7 @@ grep PBS_SERVER ${CHROOT}/etc/pbs.conf
 chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 
 grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
-perl -pi -e "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" ${CHROOT}/var/spool/pbs/mom_priv/config
+sed -i "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" ${CHROOT}/var/spool/pbs/mom_priv/config
 grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
 
 echo "\$usecp *:/home /home" >> ${CHROOT}/var/spool/pbs/mom_priv/config
@@ -723,7 +722,8 @@ chroot ${CHROOT} systemctl enable rdma
 
 ### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
-yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt
+yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc \
+ >> ~/dasan_log_ohpc_ntp,kernel,modules.txt 2>&1
 tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
 ```
 
@@ -853,11 +853,11 @@ exportfs
 
 \# Update memlock settings on master and compute
 ```bash
-perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
-perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
+sed -i 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
+sed -i 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
 
-perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
-perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
+sed -i 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
+sed -i 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
 
 tail /etc/security/limits.conf
 tail ${CHROOT}/etc/security/limits.conf
@@ -868,19 +868,19 @@ tail ${CHROOT}/etc/security/limits.conf
 
 #### # Install Ganglia meta-package on master
 ```bash
-yum -y install ohpc-ganglia >> ~/dasan_log_ohpc_ganglia.txt
+yum -y install ohpc-ganglia >> ~/dasan_log_ohpc_ganglia.txt 2>&1
 tail -1 ~/dasan_log_ohpc_ganglia.txt
 ```
 #### # Install Ganglia compute node daemon
 ```bash
-yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc >> ~/dasan_log_ohpc_ganglia-node.txt
+yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc >> ~/dasan_log_ohpc_ganglia-node.txt 2>&1
 tail -1 ~/dasan_log_ohpc_ganglia-node.txt
 ```
 #### # Use example configuration script to enable unicast receiver on master host
 ```bash
 /usr/bin/cp  /opt/ohpc/pub/examples/ganglia/gmond.conf  /etc/ganglia/gmond.conf
 grep 'host =' /etc/ganglia/gmond.conf
-perl -pi -e "s/<sms>/${MASTER_HOSTNAME}/" /etc/ganglia/gmond.conf
+sed -i "s/<sms>/${MASTER_HOSTNAME}/" /etc/ganglia/gmond.conf
 grep 'host ='  /etc/ganglia/gmond.conf
 ```
 #### # Add configuration to compute image and provide gridname
@@ -1171,29 +1171,30 @@ wwsh  object  print  -p :all
 #### # Install autotools meta-package (Default)
 ```bash
 yum -y install  ohpc-autotools EasyBuild-ohpc hwloc-ohpc spack-ohpc valgrind-ohpc \
->> ~/dasan_log_ohpc_autotools,meta-package.txt
+>> ~/dasan_log_ohpc_autotools,meta-package.txt 2>&1
 tail -1 ~/dasan_log_ohpc_autotools,meta-package.txt
 ```
 
 ### # 4.2 Compilers (gcc ver 7 and 5.4)
 ```bash
-yum -y install  gnu7-compilers-ohpc  gnu-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt
+yum -y install  gnu7-compilers-ohpc  gnu-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt 2>&1
 tail -1 ~/dasan_log_ohpc_Compilers.txt
 ```
 
 ### # 4.3 MPI Stacks
 ```bash
-yum -y install  openmpi-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc >> ~/dasan_log_ohpc_MPI-Stacks.txt
+yum -y install  openmpi-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc \
+ >> ~/dasan_log_ohpc_MPI-Stacks.txt 2>&1
 tail -1 ~/dasan_log_ohpc_MPI-Stacks.txt
 ```
 
 ### # 4.4 Performance Tools
 #### # Install perf-tools meta-package
 ```bash
-yum -y install ohpc-gnu7-perf-tools >> ~/dasan_log_ohpc_perf-tools-gnu7.txt
+yum -y install ohpc-gnu7-perf-tools >> ~/dasan_log_ohpc_perf-tools-gnu7.txt 2>&1
 tail -1 ~/dasan_log_ohpc_perf-tools-gnu7.txt
 
-yum -y groupinstall  ohpc-perf-tools-gnu >> ~/dasan_log_ohpc_perf-tools-gnu.txt
+yum -y groupinstall  ohpc-perf-tools-gnu >> ~/dasan_log_ohpc_perf-tools-gnu.txt 2>&1
 tail -1 ~/dasan_log_ohpc_perf-tools-gnu.txt
 ```
 
@@ -1203,7 +1204,7 @@ tail -1 ~/dasan_log_ohpc_perf-tools-gnu.txt
 
 ### # 4.5 Setup default development environment
 ```bash
-yum -y install  lmod-defaults-gnu7-openmpi-ohpc  >> ~/dasan_log_ohpc_lmod-gnu7.txt
+yum -y install  lmod-defaults-gnu7-openmpi-ohpc  >> ~/dasan_log_ohpc_lmod-gnu7.txt 2>&1
 tail -1 ~/dasan_log_ohpc_lmod-gnu7.txt
 ```
 
@@ -1211,21 +1212,21 @@ tail -1 ~/dasan_log_ohpc_lmod-gnu7.txt
 #### # Install 3rd party libraries/tools meta-packages built with GNU toolchain
 ```bash
 yum -y install  ohpc-gnu7-serial-libs hpc-gnu7-io-libs ohpc-gnu7-python-libs \
- ohpc-gnu7-runtimes >> ~/dasan_log_ohpc_3rdPartyLib.txt
+ ohpc-gnu7-runtimes >> ~/dasan_log_ohpc_3rdPartyLib.txt 2>&1
 tail -1 ~/dasan_log_ohpc_3rdPartyLib.txt
 ```
 
 #### # Install parallel lib meta-packages for all available MPI toolchains
 ```bash
 yum -y install  ohpc-gnu7-mpich-parallel-libs ohpc-gnu7-mvapich2-parallel-libs \
- ohpc-gnu7-openmpi-parallel-libs  >> ~/dasan_log_ohpc_parallellib.txt
+ ohpc-gnu7-openmpi-parallel-libs  >> ~/dasan_log_ohpc_parallellib.txt 2>&1
 tail -1 ~/dasan_log_ohpc_parallellib.txt
 ````
 
 #### # Install gnu5 MPI Stacks & lib & meta-packages
 ```bash
 yum -y groupinstall  ohpc-io-libs-gnu ohpc-parallel-libs-gnu ohpc-parallel-libs-gnu-mpich \
- ohpc-python-libs-gnu ohpc-runtimes-gnu ohpc-serial-libs-gnu >> ~/dasan_log_ohpc_gnu5MPI.txt
+ ohpc-python-libs-gnu ohpc-runtimes-gnu ohpc-serial-libs-gnu >> ~/dasan_log_ohpc_gnu5MPI.txt 2>&1
 tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 ```
 
@@ -1522,7 +1523,7 @@ prun ./a.out
 #### # Examine contents (and edit to set desired job sizing characteristics)
 ```bash
 [user@master:~]$
-[user@master:~]$ perl -pi -e 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
+[user@master:~]$ sed -i 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
 [user@master:~]$
 [user@master:~]$ grep '#SBATCH -N'  job.mpi
 #SBATCH -N 1                  # Total number of nodes requested
@@ -1601,7 +1602,7 @@ prun ./a.out
 #### # Examine contents (and edit to set desired job sizing characteristics)
 ```bash
 [user@master:~]$
-[user@master:~]$ perl -pi -e 's/#PBS -l select=2/#PBS -l select=1/'   job.mpi
+[user@master:~]$ sed -i 's/#PBS -l select=2/#PBS -l select=1/'   job.mpi
 [user@master:~]$
 [user@master:~]$ grep '#PBS -l select='  job.mpi
 #PBS -l select=1:mpiprocs=4
