@@ -336,7 +336,8 @@ systemctl restart ntpd
 
 #### # Install slurm server meta-package
 ```bash
-yum -y install ohpc-slurm-server  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt 2>&1
+yum -y install ohpc-slurm-server slurm-contribs-ohpc \
+  >> ~/dasan_log_ohpc_resourcemanager_slurm.txt 2>&1
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
 *output example>*
