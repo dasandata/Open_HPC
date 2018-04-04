@@ -382,7 +382,7 @@ ControlMachine=*master*
 
 #### # NodeName 설정
 ```bash
-echo "NodeName="${NODE_NAME}${NODE_RANGE} &&  # 선언 되어 있는 변수 확인
+echo "NodeName=${NODE_NAME}${NODE_RANGE} " # 선언 되어 있는 변수 확인
 grep NodeName= /etc/slurm/slurm.conf          # slurm 설정 파일의 기본 값 확인.
 ```
 *output example>*
@@ -390,7 +390,7 @@ grep NodeName= /etc/slurm/slurm.conf          # slurm 설정 파일의 기본 �
 NodeName=c[1-4] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 ```bash
-sed -i "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_RANGE}/" /etc/slurm/slurm.conf
+perl -pi -e "s/NodeName=\S+/NodeName=${NODE_NAME}${NODE_RANGE}/" /etc/slurm/slurm.conf
 grep NodeName= /etc/slurm/slurm.conf
 ```
 *output example>* **노드 이름이 'node' 이고, 총 수량은 3대 일 경우**
@@ -412,9 +412,9 @@ grep NodeName= /etc/slurm/slurm.conf
 >NodeName=node[1-3] Sockets=2 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN  
 
 ```bash
-sed -i "s/Sockets=\S+/Sockets=${SOCKETS}/"  /etc/slurm/slurm.conf
-sed -i "s/CoresPerSocket=\S+/CoresPerSocket=${CORESPERSOCKET}/"  /etc/slurm/slurm.conf
-sed -i "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.conf
+perl -pi -e "s/Sockets=\S+/Sockets=${SOCKETS}/"  /etc/slurm/slurm.conf
+perl -pi -e "s/CoresPerSocket=\S+/CoresPerSocket=${CORESPERSOCKET}/"  /etc/slurm/slurm.conf
+perl -pi -e "s/ThreadsPerCore=\S+/ThreadsPerCore=${THREAD}/"  /etc/slurm/slurm.conf
 
 grep NodeName= /etc/slurm/slurm.conf  
 ```
