@@ -513,14 +513,14 @@ network device = **p1p1**
 ### # Enable tftp service for compute node image distribution
 ```bash
 grep disable /etc/xinetd.d/tftp
-sed -i "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
+perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp
 grep disable /etc/xinetd.d/tftp
 ```
 
 *output example>*
 >[root@master:\~]# grep disable /etc/xinetd.d/tftp  
 	disable			= yes  
-[root@master:\~]# sed -i "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
+[root@master:\~]# perl -pi -e "s/^\s+disable\s+= yes/ disable = no/" /etc/xinetd.d/tftp  
 [root@master:\~]# grep disable /etc/xinetd.d/tftp  
  disable = no  
 [root@master:\~]#   
