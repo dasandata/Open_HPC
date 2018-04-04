@@ -798,18 +798,18 @@ master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0
 ```bash
 cat /etc/exports
 
-echo "/home *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
-echo "/opt/ohpc/pub *(ro,no_subtree_check,fsid=11)" >> /etc/exports
+echo "/home *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+echo "/opt/ohpc/pub *(ro,no_subtree_check)" >> /etc/exports
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.  
-#echo "/data *(rw,no_subtree_check,fsid=10,no_root_squash)" >> /etc/exports
+#echo "/data *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
 
 cat /etc/exports
 ```
 
 *output example>*
->/home \*(rw,no_subtree_check,fsid=10,no_root_squash)  
-/opt/ohpc/pub \*(ro,no_subtree_check,fsid=11)  
+>/home \*(rw,no_subtree_check,no_root_squash)  
+/opt/ohpc/pub \*(ro,no_subtree_check)  
 
 
 ```bash
