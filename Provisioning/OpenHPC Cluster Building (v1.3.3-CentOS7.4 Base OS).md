@@ -591,7 +591,7 @@ tail ~/dasan_log_ohpc_update_nodeimage.txt
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
- ohpc-base-compute kernel-headers kernel-devel parted xfsprogs python-devel \
+ ohpc-base-compute kernel kernel-headers kernel-devel parted xfsprogs python-devel \
  yum htop ipmitool glibc* >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 tail ~/dasan_log_ohpc_meta-package.txt  
 
