@@ -201,16 +201,47 @@ chmod a+r  cuda/lib64/*
 mv  cuda/include/cudnn.h  ${CHROOT}/usr/local/cuda-8.0/include/
 mv  cuda/lib64/libcudnn*  ${CHROOT}/usr/local/cuda-8.0/lib64/
 
-cd ..
-rm -rf cudnn/
-
+cd
 updatedb ; locate libcudnn.so
 ```
 
-## # Update to Node nvfs image
+## # wwsh vnfs.con 파일 수정.
+```bash
+[root@master:~]# grep -n -v '^$\|^#' /etc/warewulf/vnfs.conf
+15:gzip command = /usr/bin/pigz -9
+26:cpio command = cpio --quiet -o -H newc
+31:build directory = /var/tmp/
+41:exclude += /tmp/*
+42:exclude += /var/log/*
+43:exclude += /var/chroots/*
+44:exclude += /var/cache
+45:exclude += /usr/src
+46:exclude += /usr/local
+68:hybridize += /usr/X11R6
+72:hybridize += /usr/share/man
+73:hybridize += /usr/share/doc
+[root@master:~]#
+```
+
+
+## # /usr/local/ 을 NFS Service 에 추가.
+```bash
+echo "/usr/local *(ro,no_subtree_check)"  >> /etc/exports
+systemctl restart nfs-server
+exportfs
+
+echo "dfnc-master:/usr/local /usr/local nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+```
+
+
+## # Update to Node nvfs image.
 ```bash
 wwvnfs --chroot ${CHROOT}
+
+wwsh vnfs list
 ```
+
+
 ## # Apply update imgae to nodes (rebooting)
 ```bash
 ssh node1 reboot
@@ -223,6 +254,7 @@ ssh node1 reboot
 git clone https://github.com/dasandata/open_hpc
 GIT_CLONE_DIR="/root/open_hpc"
 echo ${GIT_CLONE_DIR}
+
 
 MODULES_DIR="/opt/ohpc/pub/modulefiles"
 mkdir -p ${MODULES_DIR}/cuda
