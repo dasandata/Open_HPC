@@ -661,6 +661,8 @@ cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 ```bash
 yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt 2>&1
 tail -1 ~/dasan_log_ohpc_slurmclient.txt
+
+chroot ${CHROOT} systemctl enable slurmd
 ```
 
 ***
