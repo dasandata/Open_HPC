@@ -158,7 +158,7 @@ tail dasan_log_ohpc_libGLU,libX-on-master.txt
 ```bash
 yum -y install --installroot ${CHROOT} libXi-devel mesa-libGLU-devel \
 libXmu-devel libX11-devel freeglut-devel libXm*   openmotif*  \
- >> dasan_log_ohpc_libGLU,libX-on-node.txt
+ >> dasan_log_ohpc_libGLU,libX-on-node.txt 2>&1
 tail dasan_log_ohpc_libGLU,libX-on-node.txt
 ```
 
@@ -166,7 +166,7 @@ tail dasan_log_ohpc_libGLU,libX-on-node.txt
 ## # (Optional) Install cuda 8.0, 9.0 to Master
 ```bash
 yum -y install cuda-8-0 cuda-9-0 \
->> dasan_log_ohpc_cuda8,9-master.txt
+>> dasan_log_ohpc_cuda8,9-master.txt 2>&1
 tail dasan_log_ohpc_cuda8,9-master.txt
 ```
 
@@ -174,7 +174,7 @@ tail dasan_log_ohpc_cuda8,9-master.txt
 ## # Install cuda 8.0, 9.0 to node vnfs images
 ```bash
 yum -y install --installroot ${CHROOT} cuda-8-0 cuda-9-0 \
->> dasan_log_ohpc_cuda8,9-node-vnfs.txt
+>> dasan_log_ohpc_cuda8,9-node-vnfs.txt 2>&1
 tail dasan_log_ohpc_cuda8,9-node-vnfs.txt
 ```
 
