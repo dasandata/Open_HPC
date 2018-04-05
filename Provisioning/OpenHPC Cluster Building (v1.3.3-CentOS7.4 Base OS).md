@@ -1284,7 +1284,8 @@ done
 
 ## # 6 Run a Test Job
 ```bash
-wwsh file resync passwd shadow group
+wwsh file list
+wwsh file resync passwd shadow group # 필요한 경우 - slurm.conf 추가
 ```
 
 ```bash
