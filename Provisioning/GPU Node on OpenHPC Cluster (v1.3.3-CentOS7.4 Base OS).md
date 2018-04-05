@@ -109,8 +109,11 @@ gpgkey=http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/7fa2
 
 ## # Check to available list cuda repo
 ```bash
+
 yum --disablerepo="*" --enablerepo="cuda" list available
+
 chroot ${CHROOT} yum --disablerepo="*" --enablerepo="cuda" list available
+
 ```
 *output example>*
 ```bash
@@ -141,6 +144,16 @@ xorg-x11-drv-nvidia-libs.x86_64                  1:390.30-1.el7             cuda
 [root@master:~]#
 ```
 
+
+## # (Optional) Install libGLU.so libX11.so libXi.so libXmu.so to Master
+```bash
+yum -y install libXi-devel mesa-libGLU-devel \
+libXmu-devel libX11-devel freeglut-devel libXm*   openmotif*  \
+  >> dasan_log_ohpc_libGLU,libX-on-master.txt
+tail dasan_log_ohpc_libGLU,libX-on-master.txt
+```
+
+
 ## # Install  libGLU.so libX11.so libXi.so libXmu.so to node vnfs images
 ```bash
 yum -y install --installroot ${CHROOT} libXi-devel mesa-libGLU-devel \
@@ -149,22 +162,26 @@ libXmu-devel libX11-devel freeglut-devel libXm*   openmotif*  \
 tail dasan_log_ohpc_libGLU,libX-on-node.txt
 ```
 
-## # Install cuda 7.0, 7.5, 8.0, 9.0, 9.1 to Master
+
+## # (Optional) Install cuda 8.0, 9.0 to Master
 ```bash
-yum -y install cuda-7-0 cuda-7-5 cuda-8-0 cuda-9-0 cuda-9-1 \
->> dasan_log_ohpc_cuda7to9-master.txt
-tail dasan_log_ohpc_cuda7to9-master.txt
+yum -y install cuda-8-0 cuda-9-0 \
+>> dasan_log_ohpc_cuda8,9-master.txt
+tail dasan_log_ohpc_cuda8,9-master.txt
 ```
 
-## # Install cuda 7.0, 7.5, 8.0, 9.0, 9.1 to node vnfs images
+
+## # Install cuda 8.0, 9.0 to node vnfs images
 ```bash
-yum -y install --installroot ${CHROOT} cuda-7-0 cuda-7-5 cuda-8-0 cuda-9-0 cuda-9-1 \
->> dasan_log_ohpc_cuda7to9-node-vnfs.txt
-tail dasan_log_ohpc_cuda7to9-node-vnfs.txt
+yum -y install --installroot ${CHROOT} cuda-8-0 cuda-9-0 \
+>> dasan_log_ohpc_cuda8,9-node-vnfs.txt
+tail dasan_log_ohpc_cuda8,9-node-vnfs.txt
 ```
+
 
 ## # Install Cudnn to node vnfs images
 \# 먼저 cudnn 압축파일을 ~/cudnn 에 다운로드 한 후 진행 합니다.
+
 
 ```
 cd ~/cudnn
