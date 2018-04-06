@@ -274,7 +274,7 @@ done
 ```bash
 rm -rf  ~/.lmod.d/.cache
 
-module av
+module av 
 ```
 *output example>*
 ```bash
@@ -304,13 +304,50 @@ Use "module keyword key1 key2 ..." to search for all possible modules matching
 any of the "keys".
 ```
 ### # CUDA Sample Compile
-\# Master 에서 Sample 을 Compile 한 후 실행은 node 에서 합니다.
+\# 사용자 계정으로 / Master 에서 Sample 을 Compile
+```bash
+su - sonic
+cd
 
-샘플 컴파일시, gcc 7 에서는 오류 발생  
+pwd
+whoami
+```
+
+\#샘플 컴파일시, gcc7 에서는 오류 발생  
+```bash
+module purge
+module load gnu cuda/8.0
+
+cd -r /usr/local/cuda-8.0/samples  ~/NVIDIA_CUDA-8.0_Samples
+
+cd  ~/NVIDIA_CUDA-8.0_Samples
+make -j $(nproc) >> dasan_log_cuda8.0_sample_compile.txt 2>&1
+tail dasan_log_cuda8.0_sample_compile.txt
+
+ssh node ~/NVIDIA_CUDA-8.0_Samples/1_Utilities/deviceQuery/deviceQuery
+```
 
 
+```bash
+module purge
+module load gnu cuda/9.0
+
+cd -r /usr/local/cuda-9.0/samples  ~/NVIDIA_CUDA-9.0_Samples
+
+cd  ~/NVIDIA_CUDA-9.0_Samples
+make -j $(nproc) >> dasan_log_cuda9.0_sample_compile.txt 2>&1
+tail dasan_log_cuda9.0_sample_compile.txt
+
+ssh node ~/NVIDIA_CUDA-9.0_Samples/1_Utilities/deviceQuery/deviceQuery
+```
 
 ## # Install Python 3.5.4 to Master
+
+### # 기존에 OS에 설치된 Python3.4 제거
+```bash
+yum -y erase python34-*  >> dasan_log_uninstall_python34.txt 2>&1
+tail dasan_log_uninstall_python34.txt
+```
 
 ### # Pre installation package
 ```bash
@@ -319,10 +356,13 @@ yum -y install zlib-devel bzip2-devel sqlite sqlite-devel openssl-devel \
 tail dasan_log_install_python-prepackage.txt
 ```
 
-### # Download Python 3.5.4
+### # Download Python 3.x.x
+\# https://www.python.org/downloads/
+
 ```bash
-wget https://www.python.org/ftp/python/3.5.4/Python-3.5.4.tgz
-tar  xvzf  Python-3.5.4.tgz
+PYTHON_VERSION=3.5.4  # 다운로드 및 설치할 받을 버젼명을 기재 합니다.
+wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
+tar  xvzf  Python-${PYTHON_VERSION}.tgz
 ```
 
 ### # Install Python via gnu5 Compiler
@@ -331,10 +371,10 @@ module purge
 module load gnu
 gcc --version
 
-cd ~/Python-3.5.4
+cd ~/Python-${PYTHON_VERSION}
 ./configure --enable-optimizations \
 --with-ensurepip=install --enable-shared \
---prefix=/opt/ohpc/pub/apps/python3/3.5.4
+--prefix=/opt/ohpc/pub/apps/python3/${PYTHON_VERSION}
 
 make -j$(nproc) ; make install
 
@@ -353,10 +393,11 @@ cd
 ```
 
 ```bash
-VERSION=3.5.4
 
-cp -a /root/open_hpc/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${VERSION}
-sed -i "s/{VERSION}/${VERSION}/"                  /opt/ohpc/pub/modulefiles/python3/${VERSION}
+mkdir /opt/ohpc/pub/modulefiles/python3
+
+cp -a /root/open_hpc/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
+sed -i "s/{VERSION}/${PYTHON_VERSION}/"                  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
 ```
 
 ### # Refresh modules
@@ -367,8 +408,28 @@ module av
 ```
 *output example>*
 ```bash
+[root@master:~]# module av
 
+-------------------------------------------- /opt/ohpc/pub/moduledeps/gnu --------------------------------------------
+   gsl/2.2.1      metis/5.1.0    mvapich2/2.2    ocr/1.0.1          openmpi/1.10.6
+   hdf5/1.8.17    mpich/3.2      numpy/1.11.1    openblas/0.2.19    superlu/5.2.1
 
+-------------------------------------------- /opt/ohpc/admin/modulefiles ---------------------------------------------
+   spack/0.11.2
+
+--------------------------------------------- /opt/ohpc/pub/modulefiles ----------------------------------------------
+   EasyBuild/3.5.3    cuda/8.0  (L)    gnu7/7.3.0      papi/5.6.0    python3/${PYTHON_VERSION}
+   autotools          cuda/9.0  (D)    hwloc/1.11.9    pmix/2.1.1    singularity/2.4.5
+   cmake/3.10.2       gnu/5.4.0 (L)    ohpc            prun/1.2      valgrind/3.13.0
+
+  Where:
+   D:  Default Module
+   L:  Module is loaded
+
+Use "module spider" to find all possible modules.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
+
+[root@master:~]#
 ```
 ### # Test of Python Module
 ```bash
@@ -382,10 +443,10 @@ No modules loaded
 [root@master:~]# ml load python3
 [root@master:~]#
 [root@master:~]# which python3
-/opt/ohpc/pub/apps/python3/3.5.4/bin/python3
+/opt/ohpc/pub/apps/python3/${PYTHON_VERSION}/bin/python3
 [root@master:~]#
 [root@master:~]# python3 -V
-Python 3.5.4
+Python ${PYTHON_VERSION}
 [root@master:~]#
 ```
 
