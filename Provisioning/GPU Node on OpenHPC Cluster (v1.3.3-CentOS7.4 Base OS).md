@@ -181,7 +181,6 @@ tail dasan_log_ohpc_cuda8,9-node-vnfs.txt
 ## # Install Cudnn to node vnfs images
 \# 먼저 cudnn 압축파일을 ~/cudnn 에 다운로드 한 후 진행 합니다.
 
-
 ```
 cd ~/cudnn
 pwd
@@ -274,7 +273,7 @@ done
 ```bash
 rm -rf  ~/.lmod.d/.cache
 
-module av 
+module av
 ```
 *output example>*
 ```bash
@@ -365,7 +364,7 @@ wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION
 tar  xvzf  Python-${PYTHON_VERSION}.tgz
 ```
 
-### # Install Python via gnu5 Compiler
+### # Install Python3 via gnu5 Compiler
 ```bash
 module purge
 module load gnu
@@ -390,10 +389,26 @@ cd /root/open_hpc
 git pull
 
 cd
+cat /root/open_hpc/Module_Template/python3.txt
 ```
+*output example>*
+```
+[root@master:~]# cat /root/open_hpc/Module_Template/python3.txt
+#%Module1.0
+
+module-whatis "python"
+module-whatis "Version: {VERSION}"
+
+setenv PYTHONROOT             /opt/ohpc/pub/apps/python3/{VERSION}/
+
+prepend-path PATH             /opt/ohpc/pub/apps/python3/{VERSION}/bin
+prepend-path LD_LIBRARY_PATH  /opt/ohpc/pub/apps/python3/{VERSION}/lib
+prepend-path LIBPATH          /opt/ohpc/pub/apps/python3/{VERSION}/lib
+[root@master:~]#
+```
+***
 
 ```bash
-
 mkdir /opt/ohpc/pub/modulefiles/python3
 
 cp -a /root/open_hpc/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
@@ -450,7 +465,31 @@ Python ${PYTHON_VERSION}
 [root@master:~]#
 ```
 
-## # Install to TensorFlow
+## # Install multiple versions of TensorFlow
+
+컴파일된 파이썬 폴더 와 모듈파일을 복사한 후 텐서플로우 버젼을 표시.  
+```bash
+ml av | grep python3
+
+PYTHON_VERSION=3.5.4  # 기타, 기존 설치된 버젼으로 변경.
+TENSOR_VERSION=1.4    # or 1.6
+
+cp -r /opt/ohpc/pub/apps/python3/${PYTHON_VERSION}  /opt/ohpc/pub/apps/python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}
+cp    /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}
+
+sed -i "s/${PYTHON_VERSION}/${PYTHON_VERSION}-tf${TENSOR_VERSION}/" /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}
+sed -i "s/${PYTHON_VERSION}/${PYTHON_VERSION}-tf${TENSOR_VERSION}/" /opt/ohpc/pub/apps/python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}/bin/pip3
+
+rm -rf  ~/.lmod.d/.cache
+module av
+ml load python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}
+
+pip3 install tensorflow-gpu==${TENSOR_VERSION}
+pip3 list | grep tensorflow
+
+```
+## # gres.conf For Slurm Resource Manager.
+
 
 
 
