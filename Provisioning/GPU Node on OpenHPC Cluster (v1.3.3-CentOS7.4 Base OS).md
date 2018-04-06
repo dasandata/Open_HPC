@@ -314,112 +314,49 @@ any of the "keys".
 
 ### # Pre installation package
 ```bash
-yum -y install zlib-devel bzip2-devel sqlite sqlite-devel openssl-devel
+yum -y install zlib-devel bzip2-devel sqlite sqlite-devel openssl-devel \
+>> dasan_log_install_python-prepackage.txt 2>&1
+tail dasan_log_install_python-prepackage.txt
 ```
 
 ### # Download Python 3.5.4
 ```bash
 wget https://www.python.org/ftp/python/3.5.4/Python-3.5.4.tgz
 tar  xvzf  Python-3.5.4.tgz
-mv ~/Python-3.5.4 ~/Python-3.5.4-gnu4
-cp -r ~/Python-3.5.4-gnu4 ~/Python-3.5.4-gnu5
-cp -r ~/Python-3.5.4-gnu4 ~/Python-3.5.4-gnu7
-```
-### # Install Python For each compiler version
-
-#### # For gnu4
-```bash
-module purge
-gcc --version
-
-cd ~/Python-3.5.4-gnu4
-./configure \
---enable-optimizations \
---with-ensurepip=install \
---enable-shared \
---prefix=/opt/ohpc/pub/apps/python3/gnu4
-
-make -j$(grep -c processor /proc/cpuinfo) ; make install
-
-cd ..
-rm -rf ~/Python-3.5.4-gnu4
 ```
 
-#### # For gnu5
+### # Install Python via gnu5 Compiler
 ```bash
 module purge
 module load gnu
 gcc --version
 
-cd ~/Python-3.5.4-gnu5
-./configure \
---enable-optimizations \
---with-ensurepip=install \
---enable-shared \
---prefix=/opt/ohpc/pub/apps/python3/gnu5
+cd ~/Python-3.5.4
+./configure --enable-optimizations \
+--with-ensurepip=install --enable-shared \
+--prefix=/opt/ohpc/pub/apps/python3/3.5.4
 
-make -j$(grep -c processor /proc/cpuinfo) ; make install
+make -j$(nproc) ; make install
 
-cd ..
-rm -rf ~/Python-3.5.4-gnu5
+cd
 ```
-
-#### # For gnu7
-```bash
-module purge
-module load gnu7
-gcc --version
-
-cd ~/Python-3.5.4-gnu7
-./configure \
---enable-optimizations \
---with-ensurepip=install \
---enable-shared \
---prefix=/opt/ohpc/pub/apps/python3/gnu7
-
-make -j$(grep -c processor /proc/cpuinfo) ; make install
-
-cd ~
-rm -rf ~/Python-3.5.4-gnu7
-```
-
-## # Add Python Module for GPU Node
+## # Add Python Module
 ### # Download Module Template of Python
 ```bash
 cd /root/
 git clone https://github.com/dasandata/open_hpc
-GIT_CLONE_DIR="/root/open_hpc"
-echo ${GIT_CLONE_DIR}
 
-MODULES_DIR="/opt/ohpc/pub/modulefiles"
-mkdir -p ${MODULES_DIR}/python3
+cd /root/open_hpc
+git pull
 
-MODULE_DEPS_DIR="/opt/ohpc/pub/moduledeps"
-mkdir -p ${MODULE_DEPS_DIR}/gnu/python3
-mkdir -p ${MODULE_DEPS_DIR}/gnu7/python3
+cd
+```
+
+```bash
 VERSION=3.5.4
-```
 
-### # Add Python Module File by each version
-```bash
-GNU_VERSION=4
-cp -a ${GIT_CLONE_DIR}/Module_Template/python3.txt        ${MODULES_DIR}/python3/${VERSION}
-sed -i "s/{VERSION}/${VERSION}/"          ${MODULES_DIR}/python3/${VERSION}
-sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULES_DIR}/python3/${VERSION}
-```
-
-```bash
-GNU_VERSION=5
-cp -a ${GIT_CLONE_DIR}/Module_Template/python3.txt        ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
-sed -i "s/{VERSION}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
-sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu/python3/${VERSION}
-```
-
-```bash
-GNU_VERSION=7
-cp -a ${GIT_CLONE_DIR}/Module_Template/python3.txt        ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
-sed -i "s/{VERSION}/${VERSION}/"          ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
-sed -i "s/{GNU_VERSION}/${GNU_VERSION}/"  ${MODULE_DEPS_DIR}/gnu7/python3/${VERSION}
+cp -a /root/open_hpc/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${VERSION}
+sed -i "s/{VERSION}/${VERSION}/"                  /opt/ohpc/pub/modulefiles/python3/${VERSION}
 ```
 
 ### # Refresh modules
@@ -430,30 +367,8 @@ module av
 ```
 *output example>*
 ```bash
------------------------- /opt/ohpc/pub/moduledeps/gnu7 -------------------------
-   R/3.4.2        mvapich2/2.2       openmpi/1.10.7 (L)    python3/3.4.5 (D)
-   gsl/2.4        numpy/1.13.1       openmpi3/3.0.0        scotch/6.0.4
-   metis/5.1.0    ocr/1.0.1          pdtoolkit/3.24        superlu/5.2.1
-   mpich/3.2      openblas/0.2.20    plasma/2.8.0
 
-------------------------- /opt/ohpc/admin/modulefiles --------------------------
-   spack/0.10.0
 
--------------------------- /opt/ohpc/pub/modulefiles ---------------------------
-   EasyBuild/3.4.1        cuda/9.0            papi/5.5.1
-   autotools       (L)    cuda/9.1     (D)    pmix/1.2.3
-   cmake/3.9.2            gnu/5.4.0           prun/1.2        (L)
-   cuda/7.0               gnu7/7.2.0   (L)    python3/3.4.5
-   cuda/7.5               hwloc/1.11.8        singularity/2.4
-   cuda/8.0               ohpc         (L)    valgrind/3.13.0
-
-  Where:
-   D:  Default Module
-   L:  Module is loaded
-
-Use "module spider" to find all possible modules.
-Use "module keyword key1 key2 ..." to search for all possible modules matching
-any of the "keys".
 ```
 ### # Test of Python Module
 ```bash
@@ -461,148 +376,18 @@ any of the "keys".
 [root@master:~]# ml list
 No modules loaded
 [root@master:~]#
-[root@master:~]# gcc --version | head -1
-gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-16)
-[root@master:~]#
 [root@master:~]# which python3
 /usr/bin/which: no python3 in (/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin:/root/bin)
 [root@master:~]#
 [root@master:~]# ml load python3
 [root@master:~]#
 [root@master:~]# which python3
-/opt/ohpc/pub/apps/python3/gnu4/bin/python3
+/opt/ohpc/pub/apps/python3/3.5.4/bin/python3
 [root@master:~]#
 [root@master:~]# python3 -V
 Python 3.5.4
 [root@master:~]#
 ```
-
-```bash
-[root@master:~]# ml purge
-[root@master:~]#
-[root@master:~]# ml load gnu
-[root@master:~]#
-[root@master:~]# gcc --version | head -1
-gcc (GCC) 5.4.0
-[root@master:~]#
-[root@master:~]# ml load python3
-[root@master:~]#
-[root@master:~]# which python3
-/opt/ohpc/pub/apps/python3/gnu5/bin/python3
-[root@master:~]#
-[root@master:~]# python3 -V
-Python 3.5.4
-[root@master:~]#
-```
-
-```bash
-[root@master:~]# ml purge
-[root@master:~]#
-[root@master:~]# ml load gnu7
-[root@master:~]#
-[root@master:~]# gcc --version | head -1
-gcc (GCC) 7.2.0
-[root@master:~]#
-[root@master:~]# ml load python3
-[root@master:~]#
-[root@master:~]# which python3
-/opt/ohpc/pub/apps/python3/gnu7/bin/python3
-[root@master:~]#
-[root@master:~]# python3 -V
-Python 3.5.4
-[root@master:~]#
-```
-
-## # Install pip for Python 2.7.5 to Master
-```bash
-which  python
-rpm -qa  |  grep ^python-2.7
-python -V
-rpm -ql  python-2.7.5
-
-easy_install pip
-rpm -qa | grep  setuptools
-
-pip -V
-```
-*output example>*
-```bash
-[root@master:~]# which  python
-/bin/python
-[root@master:~]# rpm -qa  |  grep ^python-2.7
-python-2.7.5-58.el7.x86_64
-[root@master:~]# python -V
-Python 2.7.5
-[root@master:~]#
-[root@master:~]# rpm -ql  python-2.7.5
-/usr/bin/pydoc
-/usr/bin/python
-/usr/bin/python2
-/usr/bin/python2.7
-/usr/share/doc/python-2.7.5
-/usr/share/doc/python-2.7.5/LICENSE
-/usr/share/doc/python-2.7.5/README
-/usr/share/man/man1/python.1.gz
-/usr/share/man/man1/python2.1.gz
-/usr/share/man/man1/python2.7.1.gz
-[root@master:~]#
-[root@master:~]# easy_install pip
-Searching for pip
-Reading https://pypi.python.org/simple/pip/
-Best match: pip 9.0.1
-Downloading https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447/pip-9.0.1.tar.gz#md5=35f01da33009719497f01a4ba69d63c9
-
-<일부 생략>
-
-Installed /usr/lib/python2.7/site-packages/pip-9.0.1-py2.7.egg
-Processing dependencies for pip
-Finished processing dependencies for pip
-[root@master:~]# rpm -qa | grep  setuptools
-python-setuptools-0.9.8-7.el7.noarch
-[root@master:~]#
-[root@master:~]# pip -V
-pip 9.0.1 from /usr/lib/python2.7/site-packages/pip-9.0.1-py2.7.egg (python 2.7)
-[root@master:~]#
-```
-
-
-## # Install pip for Python 2.7.5 to node vnfs imgae
-
-```bash
-echo ${CHROOT}
-
-wget https://pypi.python.org/packages/5f/ad/1fde06877a8d7d5c9b60eff7de2d452f639916ae1d48f0b8f97bf97e570a/distribute-0.7.3.zip#md5=c6c59594a7b180af57af8a0cc0cf5b4a
-
-mv ~/distribute-0.7.3.zip  ${CHROOT}/root/
-
-cd ${CHROOT}/root/
-unzip distribute-0.7.3.zip
-
-cd
-chroot ${CHROOT}
-```
-
-*output example>*
-```bash
-[root@master:~]# echo $CHROOT
-/opt/ohpc/admin/images/centos7.4
-[root@master:~]#
-[root@master:~]# mv ~/distribute-0.7.3.zip  ${CHROOT}/root/
-[root@master:~]# cd ${CHROOT}/root/
-[root@master:root]# unzip distribute-0.7.3.zip
-[root@master:root]# cd
-[root@master:~]# chroot $CHROOT
-[root@master:/]#
-```
-
-```bash
-cd ~
-cd distribute-0.7.3
-python setup.py install
-
-```
-
-
 
 ## # Install to TensorFlow
 
