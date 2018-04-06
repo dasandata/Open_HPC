@@ -12,6 +12,8 @@
 
 ```bash
 
+wwshuseradd
+
 ```
 
 
@@ -46,5 +48,32 @@
 ```bash
 
 ```
+
+
+### 6. master hostname 변경.
+
+```bash
+grep -r ${OLD_HOSTNAME} /etc/
+
+
+```
+
+
+
+### 7. 계산 노드 추가 / macaddress 변경
+
+```bash
+
+wwsh node add
+
+
+wwsh node set
+
+wwsh pxe update
+systemctl restart dhcpd
+
+```
+
+
 
 ## End.
