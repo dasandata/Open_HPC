@@ -52,7 +52,6 @@ export CHROOT=/opt/ohpc/admin/images/centos7.4
 ```
 
 
-
 ## # Install cuda-repo to Master
 ```bash
 curl  -L -o  cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
@@ -251,7 +250,10 @@ ssh node1 reboot
 ## # Add Cuda Module for GPU Node
 ### # Download Module Template of CUDA
 ```bash
+cd /root
+
 git clone https://github.com/dasandata/open_hpc
+
 GIT_CLONE_DIR="/root/open_hpc"
 echo ${GIT_CLONE_DIR}
 
@@ -262,7 +264,7 @@ mkdir -p ${MODULES_DIR}/cuda
 
 ### # Add CUDA Module File by each version
 ```bash
-for VERSION in 7.0 7.5 8.0 9.0 9.1; do
+for VERSION in 8.0 9.0 ; do
 cp -a ${GIT_CLONE_DIR}/Module_Template/cuda.lua ${MODULES_DIR}/cuda/${VERSION}.lua ;
 sed -i "s/{version}/${VERSION}/" ${MODULES_DIR}/cuda/${VERSION}.lua ;
 done
@@ -277,21 +279,21 @@ module av
 *output example>*
 ```bash
 ------------------------ /opt/ohpc/pub/moduledeps/gnu7 -------------------------
-   R/3.4.2        mvapich2/2.2       openmpi/1.10.7 (L)    scotch/6.0.4
-   gsl/2.4        numpy/1.13.1       openmpi3/3.0.0        superlu/5.2.1
-   metis/5.1.0    ocr/1.0.1          pdtoolkit/3.24
-   mpich/3.2      openblas/0.2.20    plasma/2.8.0
+   R/3.4.4         mpich/3.2.1            openmpi3/3.0.0      scotch/6.0.4
+   gsl/2.4         mvapich2/2.2           pdtoolkit/3.25      superlu/5.2.1
+   hdf5/1.10.1     ocr/1.0.1              plasma/2.8.0
+   likwid/4.3.1    openblas/0.2.20        py2-numpy/1.14.2
+   metis/5.1.0     openmpi/1.10.7  (L)    py3-numpy/1.14.2
 
 ------------------------- /opt/ohpc/admin/modulefiles --------------------------
-   spack/0.10.0
+   spack/0.11.2
 
 -------------------------- /opt/ohpc/pub/modulefiles ---------------------------
-   EasyBuild/3.4.1        cuda/9.0            papi/5.5.1
-   autotools       (L)    cuda/9.1     (D)    pmix/1.2.3
-   cmake/3.9.2            gnu/5.4.0           prun/1.2        (L)
-   cuda/7.0               gnu7/7.2.0   (L)    singularity/2.4
-   cuda/7.5               hwloc/1.11.8        valgrind/3.13.0
-   cuda/8.0               ohpc         (L)
+   EasyBuild/3.5.3        gnu/5.4.0           pmix/2.1.1
+   autotools       (L)    gnu7/7.3.0   (L)    prun/1.2          (L)
+   cmake/3.10.2           hwloc/1.11.9        singularity/2.4.5
+   cuda/8.0               ohpc         (L)    valgrind/3.13.0
+   cuda/9.0        (D)    papi/5.6.0
 
   Where:
    D:  Default Module
@@ -304,7 +306,7 @@ any of the "keys".
 ### # CUDA Sample Compile
 \# Master 에서 Sample 을 Compile 한 후 실행은 node 에서 합니다.
 
-
+샘플 컴파일시, gcc 7 에서는 오류 발생  
 
 
 
