@@ -144,7 +144,7 @@ xorg-x11-drv-nvidia-libs.x86_64                  1:390.30-1.el7             cuda
 ```
 
 
-## # (Optional) Install libGLU.so libX11.so libXi.so libXmu.so to Master
+## # Install libGLU.so libX11.so libXi.so libXmu.so to Master
 ```bash
 yum -y install libXi-devel mesa-libGLU-devel \
 libXmu-devel libX11-devel freeglut-devel libXm*   openmotif*  \
@@ -162,7 +162,7 @@ tail dasan_log_ohpc_libGLU,libX-on-node.txt
 ```
 
 
-## # (Optional) Install cuda 8.0, 9.0 to Master
+## # Install cuda 8.0, 9.0 to Master
 ```bash
 yum -y install cuda-8-0 cuda-9-0 \
 >> dasan_log_ohpc_cuda8,9-master.txt 2>&1
@@ -178,7 +178,7 @@ tail dasan_log_ohpc_cuda8,9-node-vnfs.txt
 ```
 
 
-## # Install Cudnn to node vnfs images
+## # Install Cudnn (for cuda 8.0) to Master  
 \# 먼저 cudnn 압축파일을 ~/cudnn 에 다운로드 한 후 진행 합니다.
 
 ```
@@ -196,14 +196,36 @@ ls -l cuda/lib64/
 chmod a+r  cuda/include/*
 chmod a+r  cuda/lib64/*
 
-mv  cuda/include/cudnn.h  ${CHROOT}/usr/local/cuda-8.0/include/
-mv  cuda/lib64/libcudnn*  ${CHROOT}/usr/local/cuda-8.0/lib64/
+mv  cuda/include/cudnn.h  /usr/local/cuda-8.0/include/
+mv  cuda/lib64/libcudnn*  /usr/local/cuda-8.0/lib64/
 
 cd
 updatedb ; locate libcudnn.so
 ```
 
-## # wwsh vnfs.con 파일 수정.
+## # Install Cudnn (for cuda 9.0) to Master  
+
+```
+cd ~/cudnn9
+pwd
+ls -l
+
+tar xvzf cudnn-9.0-linux-x64-v7.0.tgz
+
+ls -l cuda/include/
+ls -l cuda/lib64/
+
+chmod a+r  cuda/include/*
+chmod a+r  cuda/lib64/*
+
+mv  cuda/include/cudnn.h  /usr/local/cuda-9.0/include/
+mv  cuda/lib64/libcudnn*  /usr/local/cuda-9.0/lib64/
+
+cd
+```
+
+
+## # wwsh vnfs.con 파일을 아래와 같이 수정.
 ```bash
 [root@master:~]# grep -n -v '^$\|^#' /etc/warewulf/vnfs.conf
 15:gzip command = /usr/bin/pigz -9
@@ -228,7 +250,66 @@ echo "/usr/local *(ro,no_subtree_check)"  >> /etc/exports
 systemctl restart nfs-server
 exportfs
 
-echo "dfnc-master:/usr/local /usr/local nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+echo "${MASTER_HOSTNAME}:/usr/local /usr/local nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
+```
+
+
+```
+[root@master:~]#
+[root@master:~]# exportfs
+/home         	<world>
+/opt/ohpc/pub 	<world>
+/DATA1        	<world>
+/DATA2        	<world>
+/usr/local    	<world>
+[root@master:~]# vi /usr/local/bin/nvidia-startup.sh
+[root@master:~]# cat /usr/local/bin/nvidia-startup.sh
+#!/bin/bash
+/sbin/modprobe nvidia
+if [ "$?" -eq 0 ]; then
+  # Count the number of NVIDIA controllers found.
+  NVDEVS=`lspci | grep -i NVIDIA`
+  N3D=`echo "$NVDEVS" | grep "3D controller" | wc -l`
+  NVGA=`echo "$NVDEVS" | grep "VGA compatible controller" | wc -l`
+  N=`expr $N3D + $NVGA - 1`
+  for i in `seq 0 $N`; do
+    mknod -m 666 /dev/nvidia$i c 195 $i
+  done
+  mknod -m 666 /dev/nvidiactl c 195 255
+else
+	exit 1
+fi
+/sbin/modprobe nvidia-uvm
+if [ "$?" -eq 0 ]; then
+  # Find out the major device number used by the nvidia-uvm driver
+  D=`grep nvidia-uvm /proc/devices | awk '{print $1}'`
+  mknod -m 666 /dev/nvidia-uvm c $D 0
+else
+	exit 1
+fi
+[root@master:~]# vi /opt/ohpc/admin/images/centos7.4/etc/rc.local
+[root@master:~]#
+[root@master:~]# cat /opt/ohpc/admin/images/centos7.4/etc/rc.local
+#!/bin/bash
+# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
+#
+# It is highly advisable to create own systemd services or udev rules
+# to run scripts during boot instead of using this file.
+#
+# In contrast to previous versions due to parallel execution during boot
+# this script will NOT be run after all other services.
+#
+# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
+# that this script will be executed during boot.
+
+touch /var/lock/subsys/local
+
+sh  /usr/local/bin/nvidia-startup.sh
+systemctl  restart  slurmd    
+
+[root@master:~]#
+(reverse-i-search)`': vi /usr/local/bin/^Cidia-startup.sh
+[root@master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
 ```
 
 
@@ -246,26 +327,25 @@ ssh node1 reboot
 ```
 
 
-## # Add Cuda Module for GPU Node
-### # Download Module Template of CUDA
+## # Add Multiple Cuda Module for GPU Node
+### # Download Module Template file of CUDA
 ```bash
 cd /root
-
 git clone https://github.com/dasandata/open_hpc
 
-GIT_CLONE_DIR="/root/open_hpc"
-echo ${GIT_CLONE_DIR}
+cd /root/open_hpc
+git pull
 
-
-MODULES_DIR="/opt/ohpc/pub/modulefiles"
-mkdir -p ${MODULES_DIR}/cuda
+mkdir -p /opt/ohpc/pub/modulefiles/cuda
+cd
 ```
+
 
 ### # Add CUDA Module File by each version
 ```bash
-for VERSION in 8.0 9.0 ; do
-cp -a ${GIT_CLONE_DIR}/Module_Template/cuda.lua ${MODULES_DIR}/cuda/${VERSION}.lua ;
-sed -i "s/{version}/${VERSION}/" ${MODULES_DIR}/cuda/${VERSION}.lua ;
+for CUDA_VERSION in 8.0 9.0 ; do
+cp -a ${GIT_CLONE_DIR}/Module_Template/cuda.lua ${MODULES_DIR}/cuda/${CUDA_VERSION}.lua ;
+sed -i "s/{version}/${CUDA_VERSION}/" ${MODULES_DIR}/cuda/${CUDA_VERSION}.lua ;
 done
 ```
 
@@ -360,6 +440,7 @@ tail dasan_log_install_python-prepackage.txt
 
 ```bash
 PYTHON_VERSION=3.5.4  # 다운로드 및 설치할 받을 버젼명을 기재 합니다.
+
 wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
 tar  xvzf  Python-${PYTHON_VERSION}.tgz
 ```
@@ -379,6 +460,8 @@ make -j$(nproc) ; make install
 
 cd
 ```
+
+
 ## # Add Python Module
 ### # Download Module Template of Python
 ```bash
@@ -391,6 +474,7 @@ git pull
 cd
 cat /root/open_hpc/Module_Template/python3.txt
 ```
+
 *output example>*
 ```
 [root@master:~]# cat /root/open_hpc/Module_Template/python3.txt
@@ -414,6 +498,7 @@ mkdir /opt/ohpc/pub/modulefiles/python3
 cp -a /root/open_hpc/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
 sed -i "s/{VERSION}/${PYTHON_VERSION}/"                  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
 ```
+
 
 ### # Refresh modules
 ```bash
@@ -446,6 +531,8 @@ Use "module keyword key1 key2 ..." to search for all possible modules matching a
 
 [root@master:~]#
 ```
+
+
 ### # Test of Python Module
 ```bash
 [root@master:~]# ml purge
@@ -465,9 +552,99 @@ Python ${PYTHON_VERSION}
 [root@master:~]#
 ```
 
+### # Defaule Module 설정 파일 2가지
+
+\# /etc/profile.d/lmod.sh
+```
+[root@master:~]# cat /etc/profile.d/lmod.sh
+#!/bin/sh
+# -*- shell-script -*-
+########################################################################
+#  This is the system wide source file for setting up
+#  modules:
+#
+########################################################################
+
+# NOOP if running under known resource manager
+if [ ! -z "$SLURM_NODELIST" ];then
+     return
+fi
+
+if [ ! -z "$PBS_NODEFILE" ];then
+    return
+fi
+
+export LMOD_SETTARG_CMD=":"
+export LMOD_FULL_SETTARG_SUPPORT=no
+export LMOD_COLORIZE=no
+export LMOD_PREPEND_BLOCK=normal
+
+if [ $EUID -eq 0 ]; then
+    export MODULEPATH=/opt/ohpc/admin/modulefiles:/opt/ohpc/pub/modulefiles
+else
+    export MODULEPATH=/opt/ohpc/pub/modulefiles
+fi
+
+export BASH_ENV=/opt/ohpc/admin/lmod/lmod/init/bash
+
+# Initialize modules system
+. /opt/ohpc/admin/lmod/lmod/init/bash >/dev/null
+
+# Load baseline OpenHPC environment
+module try-add ohpc
+
+[root@master:~]#
+[root@master:~]#
+```
+
+***
+
+\# /opt/ohpc/pub/modulefiles/ohpc
+```
+[root@master:~]# cat /opt/ohpc/pub/modulefiles/ohpc
+#%Module1.0#####################################################################
+# Default OpenHPC environment
+#############################################################################
+
+proc ModulesHelp { } {
+puts stderr "Setup default login environment"
+}
+
+#
+# Load Desired Modules
+#
+
+prepend-path     PATH   /opt/ohpc/pub/bin
+
+if { [ expr [module-info mode load] || [module-info mode display] ] } {
+        prepend-path MANPATH /usr/local/share/man:/usr/share/man/overrides:/usr/share/man/en:/usr/share/man
+	module try-add cuda/8.0
+	module try-add gnu
+        module try-add python3/3.5.4-tf1.4
+}
+
+if [ module-info mode remove ] {
+        module del python3/3.5.4-tf1.4
+        module del gnu
+        module del cuda/8.0
+}
+[root@master:~]#
+```
+
+```
+[root@master:~]# module lsit
+
+Currently Loaded Modules:
+  1) cuda/8.0   2) gnu/5.4.0   3) python3/3.5.4-tf1.4   4) ohpc
+
+[root@master:~]#
+```
+
+
 ## # Install multiple versions of TensorFlow
 
 컴파일된 파이썬 폴더 와 모듈파일을 복사한 후 텐서플로우 버젼을 표시.  
+
 ```bash
 ml av | grep python3
 
@@ -479,18 +656,273 @@ cp    /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}  /opt/ohpc/pub/modulef
 
 sed -i "s/${PYTHON_VERSION}/${PYTHON_VERSION}-tf${TENSOR_VERSION}/" /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}
 sed -i "s/${PYTHON_VERSION}/${PYTHON_VERSION}-tf${TENSOR_VERSION}/" /opt/ohpc/pub/apps/python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}/bin/pip3
+```
 
+```bash
 rm -rf  ~/.lmod.d/.cache
 module av
 ml load python3/${PYTHON_VERSION}-tf${TENSOR_VERSION}
+```
 
+```bash
 pip3 install tensorflow-gpu==${TENSOR_VERSION}
 pip3 list | grep tensorflow
+```
+
+***
+
+## # slurm.conf & gres.conf For Slurm Resource Manager.
+
+\# /etc/slurm/slurm.conf
+```
+SlurmUser=slurm
+SlurmctldPort=6817
+SlurmdPort=6818
+AuthType=auth/munge
+StateSaveLocation=/var/spool/slurm/ctld
+SlurmdSpoolDir=/var/spool/slurm/d
+SwitchType=switch/none
+MpiDefault=none
+SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmdPidFile=/var/run/slurmd.pid
+ProctrackType=proctrack/pgid
+SlurmctldTimeout=300
+SlurmdTimeout=300
+InactiveLimit=0
+MinJobAge=300
+KillWait=30
+Waittime=0
+SchedulerType=sched/backfill
+SelectType=select/cons_res
+SelectTypeParameters=CR_Core
+DefMemPerCPU=0
+FastSchedule=1
+SlurmctldDebug=3
+SlurmctldLogFile=/var/log/slurmctld.log
+SlurmdDebug=3
+SlurmdLogFile=/var/log/slurmd.log
+JobCompType=jobcomp/none
+JobAcctGatherType=jobacct_gather/linux
+JobAcctGatherFrequency=30
+PropagateResourceLimitsExcept=MEMLOCK
+AccountingStorageType=accounting_storage/filetxt
+GresTypes=gpu  
+ReturnToService=1
+
+ClusterName=OpenHPC_dfnc
+ControlMachine=master
+
+NodeName=node5 Sockets=1 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN Gres=gpu:GTX1080Ti:4
+
+PartitionName=cpu Nodes=node5 MaxTime=24:00:00 State=UP
+PartitionName=gpu Nodes=node5 MaxTime=24:00:00 State=UP Default=YES
+```
+
+\# /etc/slurm/gres.conf
+```
+# This file location is /etc/slurm/gres.conf
+# for Four GPU Set
+
+Nodename=node5  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
+
+# End of File.
+```
+
+***
+
+```bash
+cp /etc/slurm/gres.conf /opt/ohpc/admin/images/centos7.4/etc/slurm/
+cp /etc/slurm/slurm.conf /opt/ohpc/admin/images/centos7.4/etc/slurm/
+
+wwvnfs --chroot /opt/ohpc/admin/images/centos7.4 # 추후 노드에 적용 되도록 이미지 생성.
+
+ssh node5 reboot
+```
+
+***
+
+```bash
+systemctl  restart  slurmctld # 새로 설정된 파일에 맞추어 마스터 서비스 재시작.
+
+scontrol  update  nodename=node5 state=resume
+
+scontrol  show  node
+
+sinfo
 
 ```
-## # gres.conf For Slurm Resource Manager.
 
 
+### # 54-8. slurm interactive job test
+#### # cpu test   
+
+```bash
+# 인터렉티브 모드 진입전 queue 상태 와 환경변수 확인.
+squeue
+env  | grep  SLURM | tail
+```
+
+```bash
+# 인터렉티브 모드로 진입.
+srun  -N1  -n 10   --pty /bin/bash
+```
+
+```bash
+# 인터렉티브 모드로 진입 후 queue 상태 와 환경변수 (env) 확인.
+squeue  
+env  | grep SLURM | tail
+```
+
+```bash
+# 병렬작업 실행 (모드 진입시 설정한 cpu 수 [-n 값] 만큼 실행 됩니다.)
+srun  hostname
+srun  hostname | wc -l
+```
+
+```bash
+# 인터렉티브 모드에서 빠져나와서  queue 상태 와 환경변수 (env) 확인.
+exit
+squeue  
+env  | grep  SLURM | tail
+```
+
+***
+
+#### # GPU Test   
+\# gpu 테스트를 하는동안 모니터링 : ` watch 'squeue ; echo ; echo ; nvidia-smi -l ; echo ; echo' `
+
+```bash
+srun  --gres=gpu:1   --exclusive  --pty  /bin/bash  
+squeue  
+
+~/NVIDIA_CUDA-8.0_Samples/bin/x86_64/linux/release/deviceQuery | tail
+python3  ~/TensorFlow-Examples/examples/5_DataManagement/tensorflow_dataset_api.py | tail
+
+exit
+
+srun  --gres=gpu:2   --exclusive  --pty  /bin/bash  
+squeue  
+
+/root/NVIDIA_CUDA-8.0_Samples/bin/x86_64/linux/release/deviceQuery | tail
+python  /root/TensorFlow-Examples/examples/5_DataManagement/tensorflow_dataset_api.py | tail
+
+exit
+```
+
+### # 54-9. batch job test
+
+##### # Copy of Batch Scripts Samples
+
+```bash
+cp -r /root/LISR/Ubuntu16/Slurm/SLURM_SBATCH_TEST/   /root/
+cd /root/SLURM_SBATCH_TEST
+
+```
+
+#### # CPU Batch Job
+```bash
+cat test-sbatch-cpu.sh
+
+sbatch test-sbatch-cpu.sh
+sbatch test-sbatch-cpu.sh
+sbatch test-sbatch-cpu.sh
+sbatch test-sbatch-cpu.sh
+sbatch test-sbatch-cpu.sh
+
+sinfo
+squeue
+```
+
+```bash
+ls -ltr
+
+cat $(ls -tr | tail -1)
+```
+
+#### # GPU batch job  
+\# gpu 테스트를 하는동안 모니터링 : `watch 'squeue ; echo ; echo ; nvidia-smi -l ; echo ; echo '`
+
+##### # nbody batch job (1GPU)    
+```bash
+cat test-sbatch-nbody.sh
+
+sbatch  test-sbatch-nbody.sh
+sbatch  test-sbatch-nbody.sh
+sbatch  test-sbatch-nbody.sh
+sbatch  test-sbatch-nbody.sh
+sbatch  test-sbatch-nbody.sh
+
+sinfo
+squeue
+```
+
+```bash
+ls -ltr
+
+tail $(ls -tr | tail -1)
+```
+
+##### # nbody batch job (2GPU)    
+```bash
+cat test-sbatch-nbody-2GPU.sh
+
+sbatch  test-sbatch-nbody-2GPU.sh
+sbatch  test-sbatch-nbody-2GPU.sh
+sbatch  test-sbatch-nbody-2GPU.sh
+sbatch  test-sbatch-nbody-2GPU.sh
+sbatch  test-sbatch-nbody-2GPU.sh
+
+sinfo
+squeue
+```
+
+```bash
+ls -ltr
+
+tail $(ls -tr | tail -1)
+```
+
+##### # Tensor flow Test (1GPU)  
+
+```bash
+cat test-sbatch-tensorflow.sh
+
+sbatch  test-sbatch-tensorflow.sh
+sbatch  test-sbatch-tensorflow.sh
+sbatch  test-sbatch-tensorflow.sh
+sbatch  test-sbatch-tensorflow.sh
+sbatch  test-sbatch-tensorflow.sh
+
+sinfo
+squeue
+```
+
+```bash
+ls -ltr
+
+tail $(ls -tr | tail -1)
+```
+
+##### # Tensor flow Test (2GPU)  
+
+```bash
+cat test-sbatch-tensorflow-2GPU.sh
+
+sbatch  test-sbatch-tensorflow-2GPU.sh
+sbatch  test-sbatch-tensorflow-2GPU.sh
+sbatch  test-sbatch-tensorflow-2GPU.sh
+sbatch  test-sbatch-tensorflow-2GPU.sh
+sbatch  test-sbatch-tensorflow-2GPU.sh
+
+sinfo
+squeue
+```
+
+```bash
+ls -ltr
+
+tail $(ls -tr | tail -1)
+```
 
 
 
