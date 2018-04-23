@@ -1,6 +1,5 @@
 # Dasandata Standard Recipes of GPU Node on OpenHPC Cluster (v1.3.3-CentOS7.4 Base OS)[2018.02]
 
-
 ## # Check dasan_ohpc_variable.sh
 ```bash
 [root@master:~]#
@@ -253,64 +252,276 @@ exportfs
 echo "${MASTER_HOSTNAME}:/usr/local /usr/local nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
 ```
 
+## # Nvidia device enable on boot (/dev/nvidia*)
 
+```bash
+chroot /opt/ohpc/admin/images/centos7.4
 ```
-[root@master:~]#
-[root@master:~]# exportfs
-/home         	<world>
-/opt/ohpc/pub 	<world>
-/DATA1        	<world>
-/DATA2        	<world>
-/usr/local    	<world>
-[root@master:~]# vi /usr/local/bin/nvidia-startup.sh
-[root@master:~]# cat /usr/local/bin/nvidia-startup.sh
-#!/bin/bash
-/sbin/modprobe nvidia
-if [ "$?" -eq 0 ]; then
-  # Count the number of NVIDIA controllers found.
-  NVDEVS=`lspci | grep -i NVIDIA`
-  N3D=`echo "$NVDEVS" | grep "3D controller" | wc -l`
-  NVGA=`echo "$NVDEVS" | grep "VGA compatible controller" | wc -l`
-  N=`expr $N3D + $NVGA - 1`
-  for i in `seq 0 $N`; do
-    mknod -m 666 /dev/nvidia$i c 195 $i
-  done
-  mknod -m 666 /dev/nvidiactl c 195 255
-else
-	exit 1
-fi
-/sbin/modprobe nvidia-uvm
-if [ "$?" -eq 0 ]; then
-  # Find out the major device number used by the nvidia-uvm driver
-  D=`grep nvidia-uvm /proc/devices | awk '{print $1}'`
-  mknod -m 666 /dev/nvidia-uvm c $D 0
-else
-	exit 1
-fi
-[root@master:~]# vi /opt/ohpc/admin/images/centos7.4/etc/rc.local
-[root@master:~]#
-[root@master:~]# cat /opt/ohpc/admin/images/centos7.4/etc/rc.local
-#!/bin/bash
-# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
-#
-# It is highly advisable to create own systemd services or udev rules
-# to run scripts during boot instead of using this file.
-#
-# In contrast to previous versions due to parallel execution during boot
-# this script will NOT be run after all other services.
-#
-# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
-# that this script will be executed during boot.
-
-touch /var/lock/subsys/local
-
-sh  /usr/local/bin/nvidia-startup.sh
-systemctl  restart  slurmd    
-
-[root@master:~]#
-(reverse-i-search)`': vi /usr/local/bin/^Cidia-startup.sh
-[root@master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
 ```
+vi  /etc/init.d/nvidia
+
+#!/bin/bash
+#
+# nvidia    Set up NVIDIA GPU Compute Accelerators
+#
+# chkconfig: 2345 55 25
+# description:    NVIDIA GPUs provide additional compute capability. \
+#    This service sets the GPUs into the desired state.
+#
+# config: /etc/sysconfig/nvidia
+
+### BEGIN INIT INFO
+# Provides: nvidia
+# Required-Start: $local_fs $network $syslog
+# Required-Stop: $local_fs $syslog
+# Should-Start: $syslog
+# Should-Stop: $network $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Set GPUs into the desired state
+# Description:    NVIDIA GPUs provide additional compute capability.
+#    This service sets the GPUs into the desired state.
+### END INIT INFO
+
+
+################################################################################
+######################## Microway Cluster Management Software (MCMS) for OpenHPC
+################################################################################
+#
+# Copyright (c) 2015-2016 by Microway, Inc.
+#
+# This file is part of Microway Cluster Management Software (MCMS) for OpenHPC.
+#
+#    MCMS for OpenHPC is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    MCMS for OpenHPC is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with MCMS.  If not, see <http://www.gnu.org/licenses/>
+#
+################################################################################
+
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+# Some definitions to make the below more readable
+NVSMI=/usr/bin/nvidia-smi
+NVCONFIG=/etc/sysconfig/nvidia
+prog="nvidia"
+
+# default settings
+NVIDIA_ACCOUNTING=1
+NVIDIA_PERSISTENCE_MODE=1
+NVIDIA_COMPUTE_MODE=0
+NVIDIA_CLOCK_SPEEDS=max
+# pull in sysconfig settings
+[ -f $NVCONFIG ] && . $NVCONFIG
+
+RETVAL=0
+
+
+# Determine the maximum graphics and memory clock speeds for each GPU.
+# Create an array of clock speed pairs (memory,graphics) to be passed to nvidia-smi
+declare -a MAX_CLOCK_SPEEDS
+get_max_clocks()
+{
+    GPU_QUERY="$NVSMI --query-gpu=clocks.max.memory,clocks.max.graphics --format=csv,noheader,nounits"
+
+    MAX_CLOCK_SPEEDS=( $($GPU_QUERY | awk '{print $1 $2}') )
+}
+
+
+start()
+{
+    /sbin/lspci | grep -qi nvidia
+    if [ $? -ne 0 ] ; then
+        echo -n $"No NVIDIA GPUs present. Skipping NVIDIA GPU tuning."
+        warning
+        echo
+        exit 0
+    fi
+
+    echo -n $"Starting $prog: "
+
+    # If the nvidia-smi utility is missing, this script can't do its job
+    [ -x $NVSMI ] || exit 5
+
+    # A configuration file is not required
+    if [ ! -f $NVCONFIG ] ; then
+        echo -n $"No GPU config file present ($NVCONFIG) - using defaults"
+        echo
+    fi
+
+    # Set persistence mode first to speed things up
+    echo -n "persistence"
+    $NVSMI --persistence-mode=$NVIDIA_PERSISTENCE_MODE 1> /dev/null
+    RETVAL=$?
+
+    if [ ! $RETVAL -gt 0 ]; then
+        echo -n " accounting"
+        $NVSMI --accounting-mode=$NVIDIA_ACCOUNTING 1> /dev/null
+        RETVAL=$?
+    fi
+
+    if [ ! $RETVAL -gt 0 ]; then
+        echo -n " compute"
+        $NVSMI --compute-mode=$NVIDIA_COMPUTE_MODE 1> /dev/null
+        RETVAL=$?
+    fi
+
+
+    if [ ! $RETVAL -gt 0 ]; then
+        echo -n " clocks"
+        if [ -n "$NVIDIA_CLOCK_SPEEDS" ]; then
+            # If the requested clock speed value is "max",
+            # work through each GPU and set to max speed.
+            if [ "$NVIDIA_CLOCK_SPEEDS" == "max" ]; then
+                get_max_clocks
+
+                GPU_COUNTER=0
+                GPUS_SKIPPED=0
+                while [ "$GPU_COUNTER" -lt ${#MAX_CLOCK_SPEEDS[*]} ] && [ ! $RETVAL -gt 0 ]; do
+                    if [[ ${MAX_CLOCK_SPEEDS[$GPU_COUNTER]} =~ Supported ]] ; then
+                        if [ $GPUS_SKIPPED -eq 0 ] ; then
+                            echo
+                            GPUS_SKIPPED=1
+                        fi
+                        echo "Skipping non-boostable GPU"
+                    else
+                        $NVSMI -i $GPU_COUNTER --applications-clocks=${MAX_CLOCK_SPEEDS[$GPU_COUNTER]} 1> /dev/null
+                    fi
+                    RETVAL=$?
+
+                    GPU_COUNTER=$(( $GPU_COUNTER + 1 ))
+                done
+            else
+                # This sets all GPUs to the same clock speeds (which only works
+                # if the GPUs in this system are all the same).
+                $NVSMI --applications-clocks=$NVIDIA_CLOCK_SPEEDS 1> /dev/null
+            fi
+        else
+            $NVSMI --reset-applications-clocks 1> /dev/null
+        fi
+        RETVAL=$?
+    fi
+
+    if [ ! $RETVAL -gt 0 ]; then
+        if [ -n "$NVIDIA_POWER_LIMIT" ]; then
+            echo -n " power-limit"
+            $NVSMI --power-limit=$NVIDIA_POWER_LIMIT 1> /dev/null
+            RETVAL=$?
+        fi
+    fi
+
+    if [ ! $RETVAL -gt 0 ]; then
+        success
+    else
+        failure
+    fi
+    echo
+    return $RETVAL
+}
+
+stop()
+{
+    /sbin/lspci | grep -qi nvidia
+    if [ $? -ne 0 ] ; then
+        echo -n $"No NVIDIA GPUs present. Skipping NVIDIA GPU tuning."
+        warning
+        echo
+        exit 0
+    fi
+
+    echo -n $"Stopping $prog: "
+    [ -x $NVSMI ] || exit 5
+
+    $NVSMI --persistence-mode=0 1> /dev/null && success || failure
+    RETVAL=$?
+    echo
+    return $RETVAL
+}
+
+restart() {
+    stop
+    start
+}
+
+force_reload() {
+    restart
+}
+
+status() {
+    $NVSMI
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        status
+        RETVAL=$?
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|force-reload|status}"
+        RETVAL=2
+esac
+exit $RETVAL
+```
+
+```bash
+chmod  +x   /etc/init.d/nvidia
+```
+
+
+***
+
+
+```bash
+vi    /lib/systemd/system/nvidia-gpu.service
+```
+```
+[Unit]
+Description=NVIDIA GPU Initialization
+After=remote-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/etc/init.d/nvidia start
+ExecStop=/etc/init.d/nvidia stop
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+systemctl enable nvidia-gpu.service
+```
+
+```bash
+exit
+
+wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
+```
+
+
+***
 
 
 ## # Update to Node nvfs image.
@@ -702,20 +913,19 @@ SlurmctldLogFile=/var/log/slurmctld.log
 SlurmdDebug=3
 SlurmdLogFile=/var/log/slurmd.log
 JobCompType=jobcomp/none
-JobAcctGatherType=jobacct_gather/linux
-JobAcctGatherFrequency=30
 PropagateResourceLimitsExcept=MEMLOCK
 AccountingStorageType=accounting_storage/filetxt
-GresTypes=gpu  
 ReturnToService=1
 
-ClusterName=OpenHPC_dfnc
-ControlMachine=master
+ClusterName=OpenHPC_dasandata
+ControlMachine=ohpc-master
 
-NodeName=node5 Sockets=1 CoresPerSocket=8 ThreadsPerCore=2 State=UNKNOWN Gres=gpu:GTX1080Ti:4
+GresTypes=gpu
 
-PartitionName=cpu Nodes=node5 MaxTime=24:00:00 State=UP
-PartitionName=gpu Nodes=node5 MaxTime=24:00:00 State=UP Default=YES
+NodeName=node[1-2] Procs=40 Sockets=2 CoresPerSocket=10 ThreadsPerCore=2 RealMemory=102400 State=UNKNOWN Gres=gpu:GTX1080Ti:4
+
+PartitionName=cpu             Nodes=node[1-2] MaxTime=24:00:00 State=UP
+PartitionName=gpu Default=YES Nodes=node[1-2] MaxTime=24:00:00 State=UP
 ```
 
 \# /etc/slurm/gres.conf
@@ -723,7 +933,7 @@ PartitionName=gpu Nodes=node5 MaxTime=24:00:00 State=UP Default=YES
 # This file location is /etc/slurm/gres.conf
 # for Four GPU Set
 
-Nodename=node5  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
+Nodename=node[1-2]  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
 
 # End of File.
 ```
@@ -734,17 +944,17 @@ Nodename=node5  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
 cp /etc/slurm/gres.conf /opt/ohpc/admin/images/centos7.4/etc/slurm/
 cp /etc/slurm/slurm.conf /opt/ohpc/admin/images/centos7.4/etc/slurm/
 
-wwvnfs --chroot /opt/ohpc/admin/images/centos7.4 # 추후 노드에 적용 되도록 이미지 생성.
+wwvnfs --chroot /opt/ohpc/admin/images/centos7.4  # 추후 노드에 적용 되도록 이미지 생성.
 
-ssh node5 reboot
+pdsh -w node[1-2] reboot
 ```
 
 ***
 
 ```bash
-systemctl  restart  slurmctld # 새로 설정된 파일에 맞추어 마스터 서비스 재시작.
+systemctl  restart  slurmctld  # 새로 설정된 파일에 맞추어 마스터 서비스 재시작.
 
-scontrol  update  nodename=node5 state=resume
+scontrol  update  nodename=node[1-2] state=resume
 
 scontrol  show  node
 
@@ -789,7 +999,7 @@ env  | grep  SLURM | tail
 ***
 
 #### # GPU Test   
-\# gpu 테스트를 하는동안 모니터링 : ` watch 'squeue ; echo ; echo ; nvidia-smi -l ; echo ; echo' `
+\# gpu 테스트를 하는동안 모니터링 : ` watch -n 1 'squeue ; echo ; echo ; nvidia-smi --loop=1 ; echo ; echo' `
 
 ```bash
 srun  --gres=gpu:1   --exclusive  --pty  /bin/bash  
