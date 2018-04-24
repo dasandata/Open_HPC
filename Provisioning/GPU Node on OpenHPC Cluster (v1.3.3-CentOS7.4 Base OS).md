@@ -974,7 +974,7 @@ env  | grep  SLURM | tail
 
 ```bash
 # 인터렉티브 모드로 진입.
-srun  -N1  -n 10   --pty /bin/bash
+srun  -N1  -n 10 --pty bash -i
 ```
 
 ```bash
@@ -1002,7 +1002,7 @@ env  | grep  SLURM | tail
 \# gpu 테스트를 하는동안 모니터링 : ` watch -n 1 'squeue ; echo ; echo ; nvidia-smi --loop=1 ; echo ; echo' `
 
 ```bash
-srun  --gres=gpu:1   --exclusive  --pty  /bin/bash  
+srun  --gres=gpu:1   --pty bash -i
 squeue  
 
 ~/NVIDIA_CUDA-8.0_Samples/bin/x86_64/linux/release/deviceQuery | tail
@@ -1010,7 +1010,7 @@ python3  ~/TensorFlow-Examples/examples/5_DataManagement/tensorflow_dataset_api.
 
 exit
 
-srun  --gres=gpu:2   --exclusive  --pty  /bin/bash  
+srun  --gres=gpu:2   --pty bash -i
 squeue  
 
 /root/NVIDIA_CUDA-8.0_Samples/bin/x86_64/linux/release/deviceQuery | tail
