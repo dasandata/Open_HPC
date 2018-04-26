@@ -992,7 +992,9 @@ hybridize += /usr/share/doc
 
 ### # 3.9.1 Assemble bootstrap image
 
-#### # (Optional) Include Lustre/BeeGFS drivers; needed if enabling additional kernel modules on computes
+#### # (Optional) Include Lustre/BeeGFS drivers
+#### # needed if enabling additional kernel modules on computes
+
 ```bash
 export WW_CONF=/etc/warewulf/bootstrap.conf
 echo "drivers += updates/kernel/" >> $WW_CONF
@@ -1033,6 +1035,7 @@ echo ${CHROOT}
 
 ```bash
 wwvnfs --chroot ${CHROOT}
+# or wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
 ```
 
 *output example>*
@@ -1230,6 +1233,7 @@ tail -1 ~/dasan_log_ohpc_perf-tools-gnu.txt
 
 
 ### # 4.5 Setup default development environment
+
 ```bash
 yum -y install  lmod-defaults-gnu7-openmpi-ohpc  >> ~/dasan_log_ohpc_lmod-gnu7.txt 2>&1
 tail -1 ~/dasan_log_ohpc_lmod-gnu7.txt
@@ -1257,7 +1261,12 @@ yum -y groupinstall  ohpc-io-libs-gnu ohpc-parallel-libs-gnu ohpc-parallel-libs-
 tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 ```
 
-
+#### # Fast way ;)
+```bash
+cd
+git clone https://github.com/dasandata/Open_HPC
+bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components.sh
+```
 ***
 
 
