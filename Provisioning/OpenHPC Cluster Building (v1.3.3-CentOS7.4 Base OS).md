@@ -675,15 +675,16 @@ tail -1 ~/dasan_log_ohpc_pbsprolient.txt
 
 
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
-sed -i "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
+perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
 ```
+
 
 ```bash
 chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 
 grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
-sed -i "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" ${CHROOT}/var/spool/pbs/mom_priv/config
+perl -pi -e "s/\$clienthost \S+/\$clienthost ${MASTER_HOSTNAME}/" ${CHROOT}/var/spool/pbs/mom_priv/config
 grep clienthost ${CHROOT}/var/spool/pbs/mom_priv/config
 
 echo "\$usecp *:/home /home" >> ${CHROOT}/var/spool/pbs/mom_priv/config
@@ -1272,8 +1273,10 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components.sh
 
 
 ## # 5 Resource Manager Startup
-\# 참조 링크: https://slurm.schedmd.com/
+\# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
+
 ### # 5-A. Start munge and slurm controller on master host
+\# 참조 링크: https://slurm.schedmd.com/
 ```bash
 systemctl enable munge
 systemctl enable slurmctld
@@ -1321,7 +1324,7 @@ qmgr -c "set server resources_default.place=scatter"
 qmgr -c "set server job_history_enable=True"
 ```
 
-#### # x4 register compute hosts with pbspro
+#### # register compute hosts with pbspro (single node)
 ```bash
 qmgr -c "create node ${NODE_NAME}${NEW_NODE_NUM}"
 ```
@@ -1342,29 +1345,39 @@ wwsh file resync passwd shadow group # 필요한 경우 - slurm.conf 추가
 ```
 
 ```bash
-pdsh -w ${NODE_NAME}${NEW_NODE_NUM} /warewulf/bin/wwgetfiles
+pdsh -w node1 uptime
+pdsh -w node1 /warewulf/bin/wwgetfiles
+pdsh -w node1 systemctl status pbs | grep active
+
+# node가 여러대 인 경우
+pdsh -w node[1-4] uptime
+pdsh -w node[1-4] /warewulf/bin/wwgetfiles
+pdsh -w node[1-4] systemctl status pbs | grep active
 ```
 
 ### # 6.1 Interactive execution
-#### # Switch to "user"
+#### # Switch to normal user
 ```bash
-su - user
+su - sonic   # sonic is dasandata's normal user name.
 ```
 *output example>*
 >[root@master:\~]#  
-[root@master:\~]# su - user  
+[root@master:\~]# su - sonic  
 Last login: Sun Feb 25 11:28:01 KST 2018 from 192.168.0.152 on pts/0  
-[user@master:\~]$  
-[user@master:\~]$  
+[sonic@master:\~]$  
+[sonic@master:\~]$  
 
 #### # Compile MPI "hello world" example
 ```bash
+cd
+pwd
+
 mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c
 ls
 ```
 *output example>*
->[user@master:\~]$ mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c  
-[user@master:\~]$ ls  
+>[sonic@master:\~]$ mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c  
+[sonic@master:\~]$ ls  
 **a.out**  Desktop  Documents  Downloads  Music  Pictures  Public  Templates  Videos  
 
 #### # (6-A. Slurm) Submit interactive job request and use prun to launch executable
@@ -1374,8 +1387,8 @@ srun --help | grep 'ntasks\|nodes=N'
 srun -n 8 -N 1 --pty /bin/bash
 ```
 *output example>*
->[user@master:\~]$  
-[user@master:\~]$ srun -n 8 -N 1 --pty /bin/bash  
+>[sonic@master:\~]$  
+[sonic@master:\~]$ srun -n 8 -N 1 --pty /bin/bash  
 [user@node1:\~]$  
 [user@node1:\~]$  
 
@@ -1464,10 +1477,10 @@ squeue
 [user@node1:\~]$   
 [user@node1:\~]$ exit  
 exit  
-[user@master:\~]$   
-[user@master:\~]$ squeue   
+[sonic@master:\~]$   
+[sonic@master:\~]$ squeue   
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)  
-[user@master:\~]$   
+[sonic@master:\~]$   
 
 #### # (6-B. PBS Pro) Submit interactive job request and use prun to launch executable
 
@@ -1537,11 +1550,11 @@ qsub: job 3.master completed
 ### # 6.2-A (Slurm) Batch execution
 #### # Copy example job script
 ```bash
-[user@master:~]$ cd ~
-[user@master:~]$ pwd
+[sonic@master:~]$ cd ~
+[sonic@master:~]$ pwd
 /home/user
-[user@master:~]$ cp /opt/ohpc/pub/examples/slurm/job.mpi .
-[user@master:~]$ cat job.mpi
+[sonic@master:~]$ cp /opt/ohpc/pub/examples/slurm/job.mpi .
+[sonic@master:~]$ cat job.mpi
 #!/bin/bash
 
 #SBATCH -J test               # Job name
@@ -1553,32 +1566,32 @@ qsub: job 3.master completed
 # Launch MPI-based executable
 
 prun ./a.out
-[user@master:~]$
-[user@master:~]$
+[sonic@master:~]$
+[sonic@master:~]$
 ```
 
 #### # Examine contents (and edit to set desired job sizing characteristics)
 ```bash
-[user@master:~]$
-[user@master:~]$ sed -i 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
-[user@master:~]$
-[user@master:~]$ grep '#SBATCH -N'  job.mpi
+[sonic@master:~]$
+[sonic@master:~]$ sed -i 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
+[sonic@master:~]$
+[sonic@master:~]$ grep '#SBATCH -N'  job.mpi
 #SBATCH -N 1                  # Total number of nodes requested
-[user@master:~]$
+[sonic@master:~]$
 ```
 
 #### # Submit job for batch execution Example
 ```bash
-[user@master:~]$ sbatch job.mpi
+[sonic@master:~]$ sbatch job.mpi
 Submitted batch job 6
-[user@master:~]$
-[user@master:~]$ squeue
+[sonic@master:~]$
+[sonic@master:~]$ squeue
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-[user@master:~]$
-[user@master:~]$ ls
+[sonic@master:~]$
+[sonic@master:~]$ ls
 a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Public  Templates  Videos
-[user@master:~]$
-[user@master:~]$ cat job.6.out
+[sonic@master:~]$
+[sonic@master:~]$ cat job.6.out
 [prun] Master compute host = node1
 [prun] Resource manager = slurm
 [prun] Launch cmd = mpirun ./a.out (family=openmpi)
@@ -1600,18 +1613,18 @@ a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Publi
     --> Process #  13 of  16 is alive. -> node1
     --> Process #  14 of  16 is alive. -> node1
     --> Process #  15 of  16 is alive. -> node1
-[user@master:~]$
+[sonic@master:~]$
 ```
 
 ### # 6.2-B (PBS Pro) Batch execution
 
 #### # Copy example job script
 ```bash
-[user@master:~]$ cd ~
-[user@master:~]$ pwd
+[sonic@master:~]$ cd ~
+[sonic@master:~]$ pwd
 /home/user
-[user@master:~]$ cp /opt/ohpc/pub/examples/pbspro/job.mpi .
-[user@master:~]$ cat job.mpi
+[sonic@master:~]$ cp /opt/ohpc/pub/examples/pbspro/job.mpi .
+[sonic@master:~]$ cat job.mpi
 #!/bin/bash
 #----------------------------------------------------------
 # Job name
@@ -1632,32 +1645,32 @@ cd $PBS_O_WORKDIR
 
 # Launch MPI-based executable
 prun ./a.out
-[user@master:~]$
-[user@master:~]$
+[sonic@master:~]$
+[sonic@master:~]$
 ```
 
 #### # Examine contents (and edit to set desired job sizing characteristics)
 ```bash
-[user@master:~]$
-[user@master:~]$ sed -i 's/#PBS -l select=2/#PBS -l select=1/'   job.mpi
-[user@master:~]$
-[user@master:~]$ grep '#PBS -l select='  job.mpi
+[sonic@master:~]$
+[sonic@master:~]$ sed -i 's/#PBS -l select=2/#PBS -l select=1/'   job.mpi
+[sonic@master:~]$
+[sonic@master:~]$ grep '#PBS -l select='  job.mpi
 #PBS -l select=1:mpiprocs=4
-[user@master:~]$
+[sonic@master:~]$
 ```
 
 #### # Submit job for batch execution Example
 ```bash
-[user@master:~]$ qsub job.mpi
+[sonic@master:~]$ qsub job.mpi
 7.master
-[user@master:~]$
-[user@master:~]$ qstat
-[user@master:~]$
-[user@master:~]$ ls
+[sonic@master:~]$
+[sonic@master:~]$ qstat
+[sonic@master:~]$
+[sonic@master:~]$ ls
 a.out    Documents  job.mpi  Music  Pictures  Templates  Videos
 Desktop  Downloads  job.out  perl5  Public    test.e7
-[user@master:~]$
-[user@master:~]$ cat job.out
+[sonic@master:~]$
+[sonic@master:~]$ cat job.out
 [prun] Master compute host = node12
 [prun] Resource manager = pbspro
 [prun] Launch cmd = mpiexec -x LD_LIBRARY_PATH --prefix /opt/ohpc/pub/mpi/openmpi-gnu7/1.10.7 --hostfile /var/spool/pbs/aux/7.coffee ./a.out (family=openmpi)
@@ -1667,7 +1680,7 @@ Desktop  Downloads  job.out  perl5  Public    test.e7
     --> Process #   2 of   4 is alive. -> node12
     --> Process #   1 of   4 is alive. -> node12
     --> Process #   3 of   4 is alive. -> node12
-[user@master:~]$
+[sonic@master:~]$
 ```
 
 
