@@ -1684,4 +1684,99 @@ Desktop  Downloads  job.out  perl5  Public    test.e7
 ```
 
 
+
+```bash
+[sonic@Master:~]$ cp /opt/ohpc/pub/examples/pbspro/job.mpi .
+[sonic@Master:~]$ vi job.mpi
+[sonic@Master:~]$
+[sonic@Master:~]$
+[sonic@Master:~]$ cat job.mpi
+#!/bin/bash
+#----------------------------------------------------------
+# Job name
+#PBS -N test-job
+
+# Merge output and error files
+#PBS -j oe
+
+# Name of stdout output file
+#PBS -o out.test-job.\$PBS_JOBID
+
+# Total number of nodes and MPI tasks/node requested
+#PBS -l select=1:mpiprocs=4:ncpus=4
+
+# Run time (hh:mm:ss) - 1.5 hours
+#PBS -l walltime=01:30:00
+#----------------------------------------------------------
+
+# Change to submission directory
+cd $PBS_O_WORKDIR
+
+# Launch MPI-based executable
+date
+prun ./a.out
+hostname
+date
+
+[sonic@Master:~]$
+[sonic@Master:~]$ qsub job.mpi
+22.Master
+[sonic@Master:~]$ qsub job.mpi
+23.Master
+[sonic@Master:~]$ qsub job.mpi
+24.Master
+[sonic@Master:~]$ qsub job.mpi
+25.Master
+[sonic@Master:~]$
+[sonic@Master:~]$
+[sonic@Master:~]$ qstat -ans
+
+Master:
+                                                            Req'd  Req'd   Elap
+Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+--------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+22.Master       sonic    workq    test         6229   1   4    --  01:30 R 00:00
+   node1/0*4
+   Job run at Thu Apr 26 at 20:44 on (node1:ncpus=4)
+23.Master       sonic    workq    test         6263   1   4    --  01:30 R 00:00
+   node1/1*4
+   Job run at Thu Apr 26 at 20:44 on (node1:ncpus=4)
+24.Master       sonic    workq    test         6297   1   4    --  01:30 R 00:00
+   node1/2*4
+   Job run at Thu Apr 26 at 20:44 on (node1:ncpus=4)
+25.Master       sonic    workq    test         6331   1   4    --  01:30 R 00:00
+   node1/3*4
+   Job run at Thu Apr 26 at 20:44 on (node1:ncpus=4)
+[sonic@Master:~]$
+[sonic@Master:~]$ pbsnodes -aSj
+                                                        mem       ncpus   nmics   ngpus
+vnode           state           njobs   run   susp      f/t        f/t     f/t     f/t   jobs
+--------------- --------------- ------ ----- ------ ------------ ------- ------- ------- -------
+node1           free                 4     4      0      1tb/1tb 112/128     0/0     0/0 22,23,24,25
+[sonic@Master:~]$
+[sonic@Master:~]$ qsub job.mpi
+26.Master
+[sonic@Master:~]$
+[sonic@Master:~]$ pbsnodes -aSj
+                                                        mem       ncpus   nmics   ngpus
+vnode           state           njobs   run   susp      f/t        f/t     f/t     f/t   jobs
+--------------- --------------- ------ ----- ------ ------------ ------- ------- ------- -------
+node1           free                 5     5      0      1tb/1tb 108/128     0/0     0/0 22,23,24,25,26
+[sonic@Master:~]$
+[sonic@Master:~]$ cat out.job
+Thu Apr 26 20:44:34 KST 2018
+[prun] Master compute host = node1
+[prun] Resource manager = pbspro
+[prun] Launch cmd = mpiexec -x LD_LIBRARY_PATH --prefix /opt/ohpc/pub/mpi/openmpi-gnu7/1.10.7 --hostfile /var/spool/pbs/aux/26.Master ./a.out (family=openmpi)
+
+ Hello, world (4 procs total)
+    --> Process #   0 of   4 is alive. -> node1
+    --> Process #   2 of   4 is alive. -> node1
+    --> Process #   1 of   4 is alive. -> node1
+    --> Process #   3 of   4 is alive. -> node1
+node1
+Thu Apr 26 20:45:34 KST 2018
+[sonic@Master:~]$
+```
+
 # END.
