@@ -826,8 +826,11 @@ exportfs
 ```
 
 *output example>*
->/home          <world>  
+```
+/home          <world>  
 /opt/ohpc/pub   <world>  
+```
+
 
 ***
 
@@ -936,9 +939,42 @@ wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 ```
 
 ## # 3.8.6 /etc/warewulf/vnfs.conf 수정.
-### # 아래와 같이 수정 합니다.
+
 ```bash
-# cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
+cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
+```
+
+*output example>*
+```
+gzip command = /usr/bin/pigz -9
+cpio command = cpio --quiet -o -H newc
+build directory = /var/tmp/
+exclude += /tmp/*
+exclude += /var/log/*
+exclude += /var/chroots/*
+exclude += /var/cache
+exclude += /usr/src
+hybridize += /usr/X11R6
+hybridize += /usr/lib/locale
+hybridize += /usr/lib64/locale
+hybridize += /usr/include
+hybridize += /usr/share/man
+hybridize += /usr/share/doc
+hybridize += /usr/share/locale
+```
+
+***
+
+```bash
+sed -i "s#hybridize += /usr/lib/locale#\#hybridize += /usr/lib/locale#"     /etc/warewulf/vnfs.conf
+sed -i "s#hybridize += /usr/lib64/locale#\#hybridize += /usr/lib64/locale#" /etc/warewulf/vnfs.conf
+sed -i "s#hybridize += /usr/include#\#hybridize += /usr/include#"           /etc/warewulf/vnfs.conf
+sed -i "s#hybridize += /usr/share/locale#\#hybridize += /usr/share/locale#" /etc/warewulf/vnfs.conf
+
+cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
+```
+*output example>*
+```
 gzip command = /usr/bin/pigz -9
 cpio command = cpio --quiet -o -H newc
 build directory = /var/tmp/
@@ -950,7 +986,6 @@ exclude += /usr/src
 hybridize += /usr/X11R6
 hybridize += /usr/share/man
 hybridize += /usr/share/doc
-
 ```
 
 ## # 3.9 Finalizing provisioning configuration
