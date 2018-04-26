@@ -670,7 +670,9 @@ chroot ${CHROOT} systemctl enable slurmd
 ### # Add PBS Professional client support
 \# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
 ```bash
-yum -y --installroot=${CHROOT} install pbspro-execution-ohpc 2>&1
+yum -y --installroot=${CHROOT} install pbspro-execution-ohpc >> ~/dasan_log_ohpc_pbsprolient.txt 2>&1
+tail -1 ~/dasan_log_ohpc_pbsprolient.txt
+
 
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
 sed -i "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
@@ -859,12 +861,19 @@ tail -1 ~/dasan_log_ohpc_ganglia.txt
 yum -y --installroot=${CHROOT} install ganglia-gmond-ohpc >> ~/dasan_log_ohpc_ganglia-node.txt 2>&1
 tail -1 ~/dasan_log_ohpc_ganglia-node.txt
 ```
+
 #### # Use example configuration script to enable unicast receiver on master host
 ```bash
 /usr/bin/cp  /opt/ohpc/pub/examples/ganglia/gmond.conf  /etc/ganglia/gmond.conf
+
 grep 'host =' /etc/ganglia/gmond.conf
 sed -i "s/<sms>/${MASTER_HOSTNAME}/" /etc/ganglia/gmond.conf
 grep 'host ='  /etc/ganglia/gmond.conf
+
+grep OpenHPC /etc/ganglia/gmond.conf
+sed -i "s/OpenHPC/${CLUSTER_NAME}/" /etc/ganglia/gmond.conf
+grep ${CLUSTER_NAME} /etc/ganglia/gmond.conf
+
 ```
 #### # Add configuration to compute image and provide gridname
 ```bash
