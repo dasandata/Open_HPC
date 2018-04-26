@@ -1,7 +1,7 @@
 #!/bin/bash
 echo
 # 4. Install OpenHPC Development Components
-echo "##### Start... Install OpenHPC Development Components."
+echo "##### Start... Install OpenHPC Development Components on Master"
 echo
 echo
 # 4.1 Development Tools

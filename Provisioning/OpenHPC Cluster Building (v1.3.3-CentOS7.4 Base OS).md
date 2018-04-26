@@ -1261,7 +1261,7 @@ yum -y groupinstall  ohpc-io-libs-gnu ohpc-parallel-libs-gnu ohpc-parallel-libs-
 tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 ```
 
-#### # Fast way ;)
+#### # Fast way ;)  (use script)
 ```bash
 cd
 git clone https://github.com/dasandata/Open_HPC
