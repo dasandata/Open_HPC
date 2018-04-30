@@ -1779,4 +1779,120 @@ Thu Apr 26 20:45:34 KST 2018
 [sonic@Master:~]$
 ```
 
+```
+[sonic@Master:~]$ cat pbstest.sh
+#!/bin/bash
+#----------------------------------------------------------
+# Job name
+#PBS -N pbs-test
+
+# Merge output and error files
+#PBS -j oe
+
+# Name of stdout output file
+#PBS -o out.pbs-test
+
+### Total number of nodes and core(cpu)
+###PBS -l select=1::ncpus=4
+
+# Run time (hh:mm:ss) - 1.5 hours
+#PBS -l walltime=01:30:00
+#----------------------------------------------------------
+
+# Change to submission directory
+cd $PBS_O_WORKDIR
+
+# Launch executabled
+date
+hostname
+sleep 20
+echo ${PBS_JOBID}
+date
+
+# End of File.
+[sonic@Master:~]$
+[sonic@Master:~]$ qsub pbstest.sh
+37.Master
+[sonic@Master:~]$
+[sonic@Master:~]$ cat out.pbs-test
+Thu Apr 26 21:44:59 KST 2018
+node1
+37.Master
+Thu Apr 26 21:45:19 KST 2018
+[sonic@Master:~]$
+[sonic@Master:~]$
+
+
+
+```
+
+#### # https://www0.sun.ac.za/hpc/index.php?title=HOWTO_submit_jobs
+```bash
+[sonic@Master:~]$
+[sonic@Master:~]$ vi pbstest.sh
+[sonic@Master:~]$
+[sonic@Master:~]$ cat pbstest.sh
+#!/bin/bash
+#----------------------------------------------------------
+# Job name
+#PBS -N pbs-test
+
+# Merge output and error files
+#PBS -j oe
+
+# Name of stdout output file
+#PBS -o out.pbs-test
+
+# Total number of nodes and core(cpu)
+#PBS -l select=1:ncpus=8:mpiprocs=8
+
+# Run time (hh:mm:ss) - 1.5 hours
+#PBS -l walltime=01:30:00
+#----------------------------------------------------------
+
+# Change to submission directory
+cd $PBS_O_WORKDIR
+
+# Launch executabled
+date
+hostname
+sleep 20
+echo
+echo "The nodefile for this job is stored at ${PBS_NODEFILE}"
+cat ${PBS_NODEFILE}
+np=$(wc -l < ${PBS_NODEFILE})
+echo "Cores assigned: ${np}"
+date
+echo
+# End of File.
+[sonic@Master:~]$
+[sonic@Master:~]$
+[sonic@Master:~]$ qsub pbstest.sh
+41.Master
+[sonic@Master:~]$
+[sonic@Master:~]$ qsub pbstest.sh
+42.Master
+[sonic@Master:~]$
+[sonic@Master:~]$ pbsnodes -aSj ; echo ; qstat -ans
+                                                        mem       ncpus   nmics   ngpus
+vnode           state           njobs   run   susp      f/t        f/t     f/t     f/t   jobs
+--------------- --------------- ------ ----- ------ ------------ ------- ------- ------- -------
+node1           free                 2     2      0      1tb/1tb 112/128     0/0     0/0 41,42
+
+
+Master:
+                                                            Req'd  Req'd   Elap
+Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+--------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+41.Master       sonic    workq    pbs-test     7464   1   8    --  01:30 R 00:00
+   node1/0*8
+   Job run at Thu Apr 26 at 22:05 on (node1:ncpus=8)
+42.Master       sonic    workq    pbs-test     7485   1   8    --  01:30 R 00:00
+   node1/1*8
+   Job run at Thu Apr 26 at 22:05 on (node1:ncpus=8)
+[sonic@Master:~]$
+[sonic@Master:~]$ 
+```
+
+
 # END.
