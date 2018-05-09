@@ -10,6 +10,11 @@
 ## # 목차
 [1. 사용자 추가 (add user)](http://warewulf.lbl.gov/trac)  
 [2. 계산 노드에 프로그램 추가 (Install App on nodes)](http://warewulf.lbl.gov/trac)  
+[3. 네트워크 마운트 포인트 추가 (Add NFS Mount on nodes)]
+[4. Add Module Example]
+[5. Nodes Power On / Off]
+[6. 마스터(로그인) 노드의 hostname or IP Address 변경.]
+[7. 계산 노드 추가 및 변경 (mac address)]
 
 ***
 
@@ -21,6 +26,20 @@
 wwshuseradd
 
 ```
+
+ <span style="color:blue">
+ 출력 예  
+```
+wwshuseradd
+adfadf
+sadfsadf
+asdfasfd
+asdfsafd
+#asdfsadf
+# sdfasdf
+
+```
+ </span>
 
 
 ### 2. 계산 노드에 프로그램 추가 (Install App on nodes)
@@ -80,13 +99,14 @@ grep -r ${OLD_HOSTNAME} /etc/
 
 wwsh node add
 
-
 wwsh node set
 
 wwsh pxe update
 systemctl restart dhcpd
-
 ```
+이제 계산노드의 전원을 켜서 확인 합니다.   
+(부팅순서 1순위가 네트워크 - pxe - 로 설정 되었는지 확인 합니다.)  
+
 
 
 
