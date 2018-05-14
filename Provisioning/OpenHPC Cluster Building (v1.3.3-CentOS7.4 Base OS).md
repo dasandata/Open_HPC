@@ -52,8 +52,8 @@ export MASTER_PREFIX=24
 
 # 인터페이스 이름.
 export EXT_NIC=em2 # 외부망.
-export INT_NIC=p1p1 # 내부망.
-export NODE_INT_NIC=p1p1  # node 들의 내부망 인터페이스 명.
+export INT_NIC=em1 # 내부망.
+export NODE_INT_NIC=eth0  # node 들의 내부망 인터페이스 명.
 
 # NODE 의 이름, 수량, 사양.
 export NODE_NAME=node
@@ -911,7 +911,7 @@ firewall-cmd --list-all
 firewall-cmd --add-port=80/tcp  --permanent
 firewall-cmd --reload
 ```
-\# Open to http://localhost/ganglia or http://expternal ip address/ganglia
+\# Open to http://localhost/ganglia or http://<expternal ip address>/ganglia
 
 ## # 3.8.5 Import files
 The Warewulf system includes functionality to import arbitrary files from the provisioning server for distribution to managed hosts. This is one way to distribute user credentials to compute nodes.  
@@ -1891,7 +1891,7 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
    node1/1*8
    Job run at Thu Apr 26 at 22:05 on (node1:ncpus=8)
 [sonic@Master:~]$
-[sonic@Master:~]$ 
+[sonic@Master:~]$
 ```
 
 
