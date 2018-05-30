@@ -7,14 +7,20 @@
 [1. 사용자 계정 관리 (추가 및 제거)][1]  
 [2. 계산 노드에 프로그램 추가 (Install App on nodes)][2]  
 [3. 네트워크 마운트 포인트 추가 (Add NFS Mount on nodes)][3]  
-[4. Example to Add Python3 Module on OpenHPC]  
-[5. Nodes Power On / Off]  
-[6. 마스터(로그인) 노드의 hostname or IP Address 변경.]  
-[7. 계산 노드 추가 및 변경 (mac address)]  
+[4. Example to Add Python3 Module on OpenHPC][4]  
+[5. Nodes Power On / Off][5]  
+[6. 마스터(로그인) 노드의 hostname or IP Address 변경.][6]  
+[7. 계산 노드 추가 및 변경 (mac address)][7]  
 
 [1]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#1-%EC%82%AC%EC%9A%A9%EC%9E%90-%EA%B3%84%EC%A0%95-%EA%B4%80%EB%A6%AC-%EC%B6%94%EA%B0%80-%EB%B0%8F-%EC%A0%9C%EA%B1%B0
 [2]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#2-%EA%B3%84%EC%82%B0-%EB%85%B8%EB%93%9C%EC%97%90-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%B6%94%EA%B0%80-install-app-on-nodes
 [3]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#3-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%A7%88%EC%9A%B4%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%8A%B8-%EC%B6%94%EA%B0%80-add-nfs-mount-on-nodes
+[4]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#4-example-to-add-python3-module-on-openhpc
+[5]:
+[6]:
+[7]:
+
+
 
 ***
 
@@ -338,7 +344,7 @@ drwxr-xr-x 2 root root 4096 Apr 26 18:18 valgrind
 #### 4-2. Install Python 3.5
 Python 다운받고 컴파일 하여 설치 합니다.  
 
-##### 현재 파이썬 버젼 확인
+##### # 현재 파이썬 버젼 확인
 ```bash
 [root@Master:~]# python3 -V
 Python 3.4.8
@@ -348,12 +354,12 @@ Python 3.4.8
 [root@Master:~]#
 ```
 
-##### Pre installation package for python3
+##### # Pre installation package for python3 compile.
 ```
 yum -y install zlib-devel bzip2-devel sqlite sqlite-devel openssl-devel
 ```
 
-##### Download & Install Python 3.5.4
+##### # Download & Install Python 3.5.4
 ```bash
 cd /root
 PYTHON_VERSION=3.5.4
@@ -370,20 +376,20 @@ cd ~/Python-${PYTHON_VERSION}
 make -j$(nproc) ; make install
 ```
 
-##### Add Python Module
+##### # Add Python Module
 ```bash
 cd /root
 PYTHON_VERSION=3.5.4
 
-git clone https://github.com/dasandata/open_hpc
-cd /root/open_hpc
+git clone https://github.com/dasandata/Open_HPC
+cd /root/Open_HPC
 git pull
 
-cat /root/open_hpc/Module_Template/python3.txt
+cat /root/Open_HPC/Module_Template/python3.txt
 echo ${PYTHON_VERSION}
 
 mkdir /opt/ohpc/pub/modulefiles/python3
-cp -a /root/open_hpc/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
+cp -a /root/Open_HPC/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
 sed -i "s/{VERSION}/${PYTHON_VERSION}/"                  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
 
 cat /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
@@ -399,8 +405,8 @@ ml list
 python3 -V
 which python3
 ```
-##### Verification
-node 에 로그인 하여 python3.5.6 module load 해 봅니다.   
+##### # Verification
+node 에 로그인 하여 python3.5.4 module load 해 봅니다.   
 ```
 
 ```
@@ -409,11 +415,11 @@ node 에 로그인 하여 python3.5.6 module load 해 봅니다.
 
 
 ### 5. Nodes Power On / Off
-#### Power On
+#### # Power On
 - ipmi (iDrac)
 - WOL (Wake On Lan)
 
-#### Power Off
+#### # Power Off
 - ipmi (iDrac)
 - pdsh -w
 
@@ -446,7 +452,6 @@ systemctl restart dhcpd
 ```
 이제 계산노드의 전원을 켜서 확인 합니다.   
 (부팅순서 1순위가 네트워크 - pxe - 로 설정 되었는지 확인 합니다.)  
-
 
 
 
