@@ -1,5 +1,64 @@
 # slurm
 
+## slurm 설정파일 경로 (2가지)
+### /etc/slurm/slurm.conf
+```
+[root@master:~]#
+[root@master:~]# cat /etc/slurm/slurm.conf | grep -v "^$\|^#"  # 공백라인 과 주석 제외
+ClusterName=OpenHPC-KoreaAC
+ControlMachine=master
+SlurmUser=slurm
+SlurmctldPort=6817
+SlurmdPort=6818
+AuthType=auth/munge
+StateSaveLocation=/var/spool/slurm/ctld
+SlurmdSpoolDir=/var/spool/slurm/d
+SwitchType=switch/none
+MpiDefault=none
+SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmdPidFile=/var/run/slurmd.pid
+ProctrackType=proctrack/pgid
+SlurmctldTimeout=300
+SlurmdTimeout=300
+InactiveLimit=0
+MinJobAge=300
+KillWait=30
+Waittime=0
+SchedulerType=sched/backfill
+SelectType=select/cons_res
+SelectTypeParameters=CR_Core
+DefMemPerCPU=0
+FastSchedule=1
+SlurmctldDebug=3
+SlurmctldLogFile=/var/log/slurmctld.log
+SlurmdDebug=3
+SlurmdLogFile=/var/log/slurmd.log
+JobCompType=jobcomp/filetxt
+JobCompLoc=/var/log/slurm/job_completions.log
+JobAcctGatherType=jobacct_gather/linux
+JobAcctGatherFrequency=30
+AccountingStorageType=accounting_storage/slurmdbd
+AccountingStoreJobComment = YES
+AccountingStorageLoc=/var/log/slurm_accounting.log
+PropagateResourceLimitsExcept=MEMLOCK
+Epilog=/etc/slurm/slurm.epilog.clean
+GresTypes=gpu
+NodeName=node[1-3] Procs=32  Sockets=2 CoresPerSocket=8 ThreadsPerCore=2   RealMemory=102400    TmpDisk=51200   Gres=gpu:TitanXp:4  Feature=TitanXp,DellT640
+PartitionName=cpu Default=Yes MinNodes=1 MaxNodes=3 DefaultTime=12:00:00 MaxTime=12:00:00 Priority=1 DisableRootJobs=NO RootOnly=NO Hidden=NO Shared=NO GraceTime=0 ReqResv=NO AllowAccounts=ALL AllowQos=ALL LLN=NO Nodes=node[1-3]
+PartitionName=gpu             MinNodes=1 MaxNodes=3 DefaultTime=12:00:00 MaxTime=12:00:00 Priority=1 DisableRootJobs=NO RootOnly=NO Hidden=NO Shared=NO GraceTime=0 ReqResv=NO AllowAccounts=ALL AllowQos=ALL LLN=NO Nodes=node[1-3]
+[root@master:~]#
+[root@master:~]#
+```
+
+### /etc/slurm/gres.conf
+```
+[root@master:~]# cat /etc/slurm/gres.conf
+Nodename=node[1-3]    Name=gpu  Type=TitanXp  File=/dev/nvidia0  CPUs=0-1
+Nodename=node[1-3]    Name=gpu  Type=TitanXp  File=/dev/nvidia1  CPUs=2-3
+Nodename=node[1-3]    Name=gpu  Type=TitanXp  File=/dev/nvidia2  CPUs=4-5
+Nodename=node[1-3]    Name=gpu  Type=TitanXp  File=/dev/nvidia3  CPUs=6-7
+[root@master:~]#
+```
 
 ## Slurm Example (interactive job - 대화형 작업).
 
@@ -112,7 +171,7 @@ Multiplication with variables: 6
 ## Slurm Example (batch job - 일괄작업).
 
 ```
-[sonic@master:DATA1]$ 
+[sonic@master:DATA1]$
 [sonic@master:DATA1]$ pwd
 /DATA1
 [sonic@master:DATA1]$
