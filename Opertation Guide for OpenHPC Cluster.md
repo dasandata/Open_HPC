@@ -278,7 +278,7 @@ node2: master:/DATA1        nfs       3.7T  1.4G  3.7T   1% /DATA1
 
 
 ### [4. Example to Add Python3 Module on OpenHPC][contents]
-Python 3.5.x 을 nfs 공유 디렉토리에 컴파일 하여 설치 하고,  
+Python 3.5.x 을 Opeh_HPC 의 nfs 공유 디렉토리에 컴파일 하여 설치 하고,  
 모듈(module) 파일을 생성하여 node 에서 사용하는 방법 입니다.  
 
 #### 4-1. Module 명령어 사용 및 경로 확인
