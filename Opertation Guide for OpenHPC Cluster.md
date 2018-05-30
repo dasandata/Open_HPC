@@ -406,20 +406,60 @@ python3 -V
 which python3
 ```
 ##### # Verification
-node 에 로그인 하여 python3.5.4 module load 해 봅니다.   
+node 에 사용자 계정으로 로그인 하여 python3.5.4 module load 해 봅니다.   
 ```
+[root@Master:~]# su - sonic
+Last login: Wed May 30 11:17:51 KST 2018 from localhost on pts/4
+[sonic@Master:~]$
+[sonic@Master:~]$ ml list
+No modules loaded
+[sonic@Master:~]$
+[sonic@Master:~]$ ml av
 
+--------------------------------------- /opt/ohpc/pub/modulefiles ----------------------------------------
+   EasyBuild/3.5.3    cmake/3.10.2    gnu7/7.3.0      ohpc          prun/1.2         singularity/2.4.5
+   autotools          gnu/5.4.0       hwloc/1.11.9    papi/5.6.0    python3/3.5.4    valgrind/3.13.0
+
+Use "module spider" to find all possible modules.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
+
+
+[sonic@Master:~]$
+[sonic@Master:~]$
+[sonic@Master:~]$ python3 -V
+Python 3.4.8
+[sonic@Master:~]$ which python3
+/bin/python3
+[sonic@Master:~]$
+[sonic@Master:~]$ ml load python3/3.5.4
+[sonic@Master:~]$
+[sonic@Master:~]$ ml list
+
+Currently Loaded Modules:
+  1) python3/3.5.4
+
+[sonic@Master:~]$
+[sonic@Master:~]$ python3 -V
+Python 3.5.4
+[sonic@Master:~]$
+[sonic@Master:~]$ which python3
+/opt/ohpc/pub/apps/python3/3.5.4/bin/python3
+[sonic@Master:~]$
+[sonic@Master:~]$ pip3 -V
+pip 9.0.1 from /opt/ohpc/pub/apps/python3/3.5.4/lib/python3.5/site-packages (python 3.5)
+[sonic@Master:~]$
+[sonic@Master:~]$
 ```
 
 ***
 
 
-### 5. Nodes Power On / Off
-#### # Power On
+### 5. -예정- Nodes Power On / Off
+#### 5-1. Power On
 - ipmi (iDrac)
 - WOL (Wake On Lan)
 
-#### # Power Off
+#### 5-2. Power Off
 - ipmi (iDrac)
 - pdsh -w
 
@@ -428,31 +468,27 @@ node 에 로그인 하여 python3.5.4 module load 해 봅니다.
 ```
 
 
-### 6. 마스터(로그인) 노드의 hostname or IP Address 변경.
+### 6. -예정- 마스터(로그인) 노드의 hostname or IP Address 변경.
 
 ```bash
 
 grep -r ${OLD_HOSTNAME} /etc/
 
+sed -i
 
 ```
 
 
-### 7. 계산 노드 추가 및 변경 (mac address)
+### 7. -예정- 계산 노드 추가 및 정보 변경
 새로운 계산노드가 추가 되거나, 고장 등으로 노드를 교체해야 할 때   
 마스터(로그인) 노드에 새로운 노드 정보를 추가 / 변경하는 방법 입니다.   
 ```bash
+wwsh node new node1 --netdev eth0 --ipaddr=10.1.1.11 --hwaddr=xx:xx:xx:xx:xx:xx --gateway=10.1.1.1 --netmask=255.255.255.0
 
-wwsh node add
-
-wwsh node set
+wwsh provision set node1 --vnfs=centos7.4 --bootstrap=3.10.0-693.21.1.el7.x86_64 --files=dynamic_hosts,passwd,group,shadow,network
 
 wwsh pxe update
 systemctl restart dhcpd
 ```
-이제 계산노드의 전원을 켜서 확인 합니다.   
-(부팅순서 1순위가 네트워크 - pxe - 로 설정 되었는지 확인 합니다.)  
-
-
 
 ## End.
