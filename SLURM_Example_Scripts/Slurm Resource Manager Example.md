@@ -1,7 +1,7 @@
 # slurm
 
-## slurm 설정파일 경로 (2가지)
-### /etc/slurm/slurm.conf
+## 1. slurm 설정파일 경로 (2가지)
+### 1-1. /etc/slurm/slurm.conf
 ```
 [root@master:~]#
 [root@master:~]# cat /etc/slurm/slurm.conf | grep -v "^$\|^#"  # 공백라인 과 주석 제외
@@ -50,7 +50,7 @@ PartitionName=gpu             MinNodes=1 MaxNodes=3 DefaultTime=12:00:00 MaxTime
 [root@master:~]#
 ```
 
-### /etc/slurm/gres.conf
+### 1-2. /etc/slurm/gres.conf
 ```
 [root@master:~]# cat /etc/slurm/gres.conf
 Nodename=node[1-3]    Name=gpu  Type=TitanXp  File=/dev/nvidia0  CPUs=0-1
@@ -60,7 +60,10 @@ Nodename=node[1-3]    Name=gpu  Type=TitanXp  File=/dev/nvidia3  CPUs=6-7
 [root@master:~]#
 ```
 
-## Slurm Example (interactive job - 대화형 작업).
+## 2. Status Monitoring
+
+
+## 3. Slurm Example (interactive job - 대화형 작업).
 
 ```
 [sonic@master:~]$ cd /DATA1
@@ -168,7 +171,7 @@ Multiplication with variables: 6
 ```
 
 
-## Slurm Example (batch job - 일괄작업).
+## 4. Slurm Example (batch job - 일괄작업).
 
 ```
 [sonic@master:DATA1]$
