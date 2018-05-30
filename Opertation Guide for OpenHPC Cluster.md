@@ -70,7 +70,7 @@ passwd: all authentication tokens updated successfully.
 ```
 
 
-### 2. [계산 노드에 프로그램 추가 (Install App on nodes)][contents]
+### [2. 계산 노드에 프로그램 추가 (Install App on nodes)][contents]
 OpenHPC 는 [Warewulf](http://warewulf.lbl.gov/trac) 의 [DiskLess](https://en.wikipedia.org/wiki/Diskless_node) 방식을 기반으로 구성 되어 있어 (재 부팅시 배포 이미지를 내려 받음)  
 계산노드에 패키지(프로그램) 를 설치하는 경우 실행되고 있는 계산노드에 설치하는 것 뿐만 아니라  
 노드 재부팅후 또는 추가 되는 노드에 동일한 상태가 적용 되도록 노드의 배포 이미지에도 설치 되어야 합니다.  
@@ -162,7 +162,7 @@ Total elapsed time                                          : 118.87 s
 
 ***
 
-### 3. [네트워크 마운트 포인트 추가 (Add NFS Mount on nodes)][contents]
+### [3. 네트워크 마운트 포인트 추가 (Add NFS Mount on nodes)][contents]
 하드디스크 또는 스토리지를 추가로 장착하게 되어, 계산 노드들에서 사용할 수 있는 공유 저장 공간이  
 추가로 확보된 경우 마스터(로그인) 노드에 공유 설정을 추가하고, 노드에서 mount 하는 방법 입니다.  
 
@@ -277,7 +277,7 @@ node2: master:/DATA1        nfs       3.7T  1.4G  3.7T   1% /DATA1
 ```
 
 
-### 4. [Example to Add Python3 Module on OpenHPC][contents]
+### [4. Example to Add Python3 Module on OpenHPC][contents]
 Python 3.5.x 을 nfs 공유 디렉토리에 컴파일 하여 설치 하고,  
 모듈(module) 파일을 생성하여 node 에서 사용하는 방법 입니다.  
 
@@ -454,7 +454,7 @@ pip 9.0.1 from /opt/ohpc/pub/apps/python3/3.5.4/lib/python3.5/site-packages (pyt
 ***
 
 
-### 5. [-예정- Nodes Power On / Off][contents]
+### [5. -예정- Nodes Power On / Off][contents]
 #### 5-1. Power On
 - ipmi (iDrac)
 - WOL (Wake On Lan)
@@ -468,7 +468,7 @@ pip 9.0.1 from /opt/ohpc/pub/apps/python3/3.5.4/lib/python3.5/site-packages (pyt
 ```
 
 
-### 6. [-예정- 마스터(로그인) 노드의 hostname or IP Address 변경.][contents]
+### [6. -예정- 마스터(로그인) 노드의 hostname or IP Address 변경.][contents]
 
 ```bash
 
@@ -479,7 +479,7 @@ sed -i
 ```
 
 
-### 7. [-예정- 계산 노드 추가 및 정보 변경][contents]
+### [7. -예정- 계산 노드 추가 및 정보 변경][contents]
 새로운 계산노드가 추가 되거나, 고장 등으로 노드를 교체해야 할 때   
 마스터(로그인) 노드에 새로운 노드 정보를 추가 / 변경하는 방법 입니다.   
 ```bash
