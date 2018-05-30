@@ -1,4 +1,4 @@
-# Dasandata Standard Recipes of GPU Node on OpenHPC Cluster (v1.3.3-CentOS7.4 Base OS)[2018.02]
+# GPU Node Provisioning of OpenHPC Cluster
 
 ## # Check dasan_ohpc_variable.sh
 ```bash
@@ -252,14 +252,18 @@ exportfs
 echo "${MASTER_HOSTNAME}:/usr/local /usr/local nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
 ```
 
+
 ## # Nvidia device enable on boot (/dev/nvidia*)
 
 ```bash
 chroot /opt/ohpc/admin/images/centos7.4
 ```
-```
-vi  /etc/init.d/nvidia
 
+```bash
+vi  /etc/init.d/nvidia
+```
+
+```
 #!/bin/bash
 #
 # nvidia    Set up NVIDIA GPU Compute Accelerators
@@ -510,6 +514,7 @@ ExecStop=/etc/init.d/nvidia stop
 [Install]
 WantedBy=multi-user.target
 ```
+
 ```bash
 systemctl enable nvidia-gpu.service
 ```
@@ -519,7 +524,6 @@ exit
 
 wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
 ```
-
 
 ***
 
