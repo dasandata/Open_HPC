@@ -840,13 +840,13 @@ exportfs
 ### # 3.8.4.3 (Optional) Increase locked memory limits
 \# 기본 네트워크 구성이 InfiniBand 또는 Omni-Path를 로 되어 있을 경우에만 수행 합니다.
 
-\# Update memlock settings on master and compute
+\# Update memlock settings on master and compute image
 ```bash
-sed -i 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
-sed -i 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
+perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
+perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
 
-sed -i 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
-sed -i 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
+perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
+perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
 
 tail /etc/security/limits.conf
 tail ${CHROOT}/etc/security/limits.conf
