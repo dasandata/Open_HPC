@@ -45,18 +45,18 @@ cd
 ## # Download Module Template of Python
 ```bash
 cd /root/
-git clone https://github.com/dasandata/Opeh_HPC
+git clone https://github.com/dasandata/Open_HPC
 
-cd /root/Opeh_HPC
+cd /root/Open_HPC
 git pull
 
 cd
-cat /root/Opeh_HPC/Module_Template/python3.txt
+cat /root/Open_HPC/Module_Template/python3.txt
 ```
 
 *output example>*
 ```
-[root@master:~]# cat /root/Opeh_HPC/Module_Template/python3.txt
+[root@master:~]# cat /root/Open_HPC/Module_Template/python3.txt
 #%Module1.0
 
 module-whatis "python"
@@ -74,7 +74,7 @@ prepend-path LIBPATH          /opt/ohpc/pub/apps/python3/{VERSION}/lib
 ```bash
 mkdir /opt/ohpc/pub/modulefiles/python3
 
-cp -a /root/Opeh_HPC/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
+cp -a /root/Open_HPC/Module_Template/python3.txt  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
 sed -i "s/{VERSION}/${PYTHON_VERSION}/"                  /opt/ohpc/pub/modulefiles/python3/${PYTHON_VERSION}
 ```
 
