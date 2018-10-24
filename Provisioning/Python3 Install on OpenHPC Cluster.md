@@ -114,6 +114,11 @@ Use "module keyword key1 key2 ..." to search for all possible modules matching a
 
 ## # Test of Python Module
 ```bash
+[root@master:~]# ml list
+
+Currently Loaded Modules:
+  1) gnu/5.4.0
+
 [root@master:~]# ml purge
 [root@master:~]# ml list
 No modules loaded
@@ -121,7 +126,13 @@ No modules loaded
 [root@master:~]# which python3
 /usr/bin/which: no python3 in (/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin:/root/bin)
 [root@master:~]#
+
 [root@master:~]# ml load python3
+[root@master:~]# ml
+
+Currently Loaded Modules:
+  1) python3/3.x.x
+
 [root@master:~]#
 [root@master:~]# which python3
 /opt/ohpc/pub/apps/python3/${PYTHON_VERSION}/bin/python3
@@ -129,6 +140,22 @@ No modules loaded
 [root@master:~]# python3 -V
 Python ${PYTHON_VERSION}
 [root@master:~]#
+[root@master:~]# which pip3
+/opt/ohpc/pub/apps/python3/${PYTHON_VERSION}/bin/pip3
+[root@master:~]#
+[root@master:~]#
+[root@master:~]# pip3  install --upgrade pip
+Downloading/unpacking pip from https://files.pythonhosted.org/packages/c2/d7/90f34cb0d83a6c5631cf71dfe64cc1054598c843a92b400e55675cc2ac37/pip-18.1-py2.py3-none-any.whl#sha256=7909d0a0932e88ea53a7014dfd14522ffef91a464daaaf5c573343852ef98550
+  Downloading pip-18.1-py2.py3-none-any.whl (1.3MB): 1.3MB downloaded
+Installing collected packages: pip
+  Found existing installation: pip 1.5.4
+    Uninstalling pip:
+      Successfully uninstalled pip
+Successfully installed pip
+Cleaning up...
+[root@master:~]#
+[root@master:~]# rm /opt/ohpc/pub/apps/python3/3.4.0/bin/pip
+[root@master:~]# 
 ```
 
 ## # Default Load Module 설정 파일 2가지
