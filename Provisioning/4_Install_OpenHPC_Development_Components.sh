@@ -37,7 +37,7 @@ echo
 echo
 # 4.5 Setup default development environment
 echo "##### Start... Install default development environment"
-yum -y install  lmod-defaults-gnu7-openmpi-ohpc  >> ~/dasan_log_ohpc_lmod-gnu7.txt 2>&1
+yum -y install  lmod-defaults-gnu7-openmpi3-ohpc  >> ~/dasan_log_ohpc_lmod-gnu7.txt 2>&1
 tail -1 ~/dasan_log_ohpc_lmod-gnu7.txt
 echo
 echo
@@ -52,7 +52,7 @@ echo
 # Install parallel lib meta-packages for all available MPI toolchains
 echo "##### Start... Install parallel lib meta-packages for all available MPI toolchains"
 yum -y install  ohpc-gnu7-mpich-parallel-libs ohpc-gnu7-mvapich2-parallel-libs \
- ohpc-gnu7-openmpi-parallel-libs  >> ~/dasan_log_ohpc_parallellib.txt 2>&1
+ ohpc-gnu7-openmpi3-parallel-libs  >> ~/dasan_log_ohpc_parallellib.txt 2>&1
 tail -1 ~/dasan_log_ohpc_parallellib.txt
 echo
 echo
