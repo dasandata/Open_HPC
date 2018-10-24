@@ -635,7 +635,7 @@ chroot ${CHROOT} systemctl enable slurmd
 yum -y --installroot=${CHROOT} install pbspro-execution-ohpc >> ~/dasan_log_ohpc_pbsprolient.txt 2>&1
 tail -1 ~/dasan_log_ohpc_pbsprolient.txt
 
-echo "PBS_LEAF_NAME=${sms_name}" >> /etc/pbs.conf
+echo "PBS_LEAF_NAME=${MASTER_HOSTNAME}" >> /etc/pbs.conf
 
 grep PBS_SERVER ${CHROOT}/etc/pbs.conf
 perl -pi -e "s/PBS_SERVER=\S+/PBS_SERVER=${MASTER_HOSTNAME}/" ${CHROOT}/etc/pbs.conf
