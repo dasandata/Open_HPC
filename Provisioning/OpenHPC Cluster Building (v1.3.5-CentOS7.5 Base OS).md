@@ -1340,7 +1340,15 @@ qmgr -c "create node ${NODE_NAME}${NEW_NODE_NUM}"
 done
 ```
 
+### # check pbspro status
 
+```bash
+pbsnodes -aSj
+
+qstat -q
+
+qstat -ans
+```
 
 ## # 6 Run a Test Job
 ```bash
