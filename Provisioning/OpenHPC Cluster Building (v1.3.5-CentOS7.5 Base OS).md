@@ -1083,7 +1083,7 @@ wwsh node new node1 --netdev eth0 \
 
 ### # Define provisioning image for hosts
 ```bash
-wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.4 \
+wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.5 \
 --bootstrap=`uname -r ` \
 --files=dynamic_hosts,passwd,group,shadow,network
 ```
@@ -1136,7 +1136,7 @@ done
 ```bash
 for NEW_NODE_NUM in $(seq 1 4) ;
 do echo "" ;
-wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.4 \
+wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.5 \
 --bootstrap=`uname -r ` \
 --files=dynamic_hosts,passwd,group,shadow,network ;
 done
