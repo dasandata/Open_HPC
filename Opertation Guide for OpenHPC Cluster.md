@@ -54,16 +54,16 @@ passwd: all authentication tokens updated successfully.
 [root@master:~]# rm -rf /home/testuser/
 ```
 
-#### 1-3. wwgetfiles error 가 발생한 경우
+#### 1-3. es error 가 발생한 경우
 ```
 # error 발생한노드 접속
 [root@master:~]# ssh node1
 
 # wwgetfiles  확인
-[root@node1 ~]# ls -l /tmp/wwgetfiles.lock
+[root@node1 ~]# ls -l /tmp/.wwgetfiles.lock
 
 # wwgetfiles 지우기
-[root@node1 ~]# rm -rf /tmp/wwgetfiles.lock
+[root@node1 ~]# rm -rf /tmp/.wwgetfiles.lock
 
 # wwgetfiles 생성
 [root@node1 ~]# /warewulf/bin/wwgetfiles
