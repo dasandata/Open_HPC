@@ -459,7 +459,7 @@ cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-sc
 
 ### (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
 ```bash
-sed -i "s/master_ipoib/${sms_ipoib}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+sed -i "s/master_ipoib/${sms_ipoib}/"      /etc/sysconfig/network-scripts/ifcfg-ib0
 sed -i "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 
 echo  “MTU=4096”  >>  /
@@ -469,11 +469,27 @@ echo  “MTU=4096”  >>  /
 ```bash
 ifup ib0
 
-rdma   tunning
-
-udaddy -s  10.1.1.1
-
+ibstat
 ```
+*output example>*
+>CA 'mlx4_0'
+	CA type: MT4099
+	Number of ports: 1
+	Firmware version: 2.31.5050
+	Hardware version: 1
+	Node GUID: 0x0002c90300197120
+	System image GUID: 0x0002c90300197123
+	Port 1:
+		State: Active
+		Physical state: LinkUp
+		Rate: 56
+		Base lid: 1
+		LMC: 0
+		SM lid: 1
+		Capability mask: 0x0259486a
+		Port GUID: 0x0002c90300197121
+		Link layer: InfiniBand
+
 ***
 
 # # 3.7 Complete basic Warewulf setup for master node
@@ -1081,6 +1097,13 @@ wwsh node new node1 --netdev eth0 \
 --ipaddr=10.1.1.10 --hwaddr=<기입> --gateway ${MASTER_IP} --netmask=255.255.255.0
 ```
 
+### # Additional step required if desiring to use predictable network interface
+### # # naming schemes (e.g. en4s0f0). Skip if using eth# style names.
+```bash
+wwsh provision set ${NODE_NAME}${NEW_NODE_NUM} --kargs "net.ifnames=1,biosdevname=1"
+wwsh provision set --postnetdown=1 ${NODE_NAME}${NEW_NODE_NUM}
+```
+
 ### # Define provisioning image for hosts
 ```bash
 wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.5 \
@@ -1088,6 +1111,14 @@ wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.5 \
 --files=dynamic_hosts,passwd,group,shadow,network
 ```
 \# Slurm 을 사용할 경우 - files= 에 slurm.conf,munge.key 도 추가.
+
+### # Optionally define IPoIB network settings (required if planning to mount Lustre)
+```bash
+wwsh -y node set ${NODE_NAME}${NEW_NODE_NUM} -D ib0 --ipaddr=${c_ipoib[$i]} \
+ --netmask=${ipoib_netmask}
+
+wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
+```
 
 ### # Restart dhcp / update PXE
 
