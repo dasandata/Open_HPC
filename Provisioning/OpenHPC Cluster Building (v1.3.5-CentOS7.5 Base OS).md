@@ -497,8 +497,19 @@ ibhosts
 		Capability mask: 0x0259486a  
 		Port GUID: 0x0002c90300197121  
 		Link layer: InfiniBand  
-  
+
 ***
+
+### # (Optional) ib 방화벽 zone 설정 변경
+```bash
+firewall-cmd --change-interface=$ib0  --zone=trusted   --permanent
+
+firewall-cmd --reload
+systemctl restart firewalld
+
+firewall-cmd --list-all --zone=trusted
+```
+
 
 # # 3.7 Complete basic Warewulf setup for master node
 
