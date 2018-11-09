@@ -476,26 +476,28 @@ echo  “MTU=4096”  >>  /etc/sysconfig/network-scripts/ifcfg-ib0
 ifup ib0
 
 ibstat
+
+ibhosts
 ```
 *output example>*
->CA 'mlx4_0'
-	CA type: MT4099
-	Number of ports: 1
-	Firmware version: 2.31.5050
-	Hardware version: 1
-	Node GUID: 0x0002c90300197120
-	System image GUID: 0x0002c90300197123
-	Port 1:
-		State: Active
-		Physical state: LinkUp
-		Rate: 56
-		Base lid: 1
-		LMC: 0
-		SM lid: 1
-		Capability mask: 0x0259486a
-		Port GUID: 0x0002c90300197121
-		Link layer: InfiniBand
-
+>CA 'mlx4_0'  
+	CA type: MT4099  
+	Number of ports: 1  
+	Firmware version: 2.31.5050  
+	Hardware version: 1  
+	Node GUID: 0x0002c90300197120  
+	System image GUID: 0x0002c90300197123  
+	Port 1:  
+		State: Active  
+		Physical state: LinkUp  
+		Rate: 56  
+		Base lid: 1  
+		LMC: 0  
+		SM lid: 1  
+		Capability mask: 0x0259486a  
+		Port GUID: 0x0002c90300197121  
+		Link layer: InfiniBand  
+  
 ***
 
 # # 3.7 Complete basic Warewulf setup for master node
