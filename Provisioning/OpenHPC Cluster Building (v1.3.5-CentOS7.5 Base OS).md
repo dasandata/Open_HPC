@@ -694,15 +694,6 @@ chroot ${CHROOT} systemctl enable pbs
 
 ***
 
-### # (Optional) Add IB support and enable
-\# 인피니밴드(InfiniBand) 를 사용하는 경우에만 실행 합니다.
-```bash
-yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support"
-yum -y --installroot=${CHROOT} install infinipath-psm
-chroot ${CHROOT} systemctl enable rdma
-```
-
-***
 
 ### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
@@ -770,7 +761,7 @@ df -hT | grep -v tmpfs
 echo ${MASTER_HOSTNAME}
 cat  ${CHROOT}/etc/fstab
 
-echo "${MASTER_HOSTNAME}:/home /home nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> ${CHROOT}/etc/fstab
+echo "${MASTER_HOSTNAME}:/home         /home         nfs nfsvers=3,rsize=1024,wsize=1024,cto 0 0" >> ${CHROOT}/etc/fstab
 echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0" >> ${CHROOT}/etc/fstab
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.
@@ -801,8 +792,8 @@ master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3 0 0
 ```bash
 cat /etc/exports
 
-echo "/home *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
-echo "/opt/ohpc/pub *(ro,no_subtree_check)" >> /etc/exports
+echo "/home         *(rw,no_subtree_check,no_root_squash)"  >> /etc/exports
+echo "/opt/ohpc/pub *(ro,no_subtree_check)"                 >> /etc/exports
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.  
 #echo "/data *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
@@ -817,7 +808,7 @@ cat /etc/exports
 
 
 ```bash
-systemctl enable nfs-server
+systemctl enable  nfs-server
 systemctl restart nfs-server
 
 exportfs
@@ -825,10 +816,9 @@ exportfs
 
 *output example>*
 ```
-/home          <world>  
+/home           <world>  
 /opt/ohpc/pub   <world>  
 ```
-
 
 ***
 
@@ -838,11 +828,15 @@ exportfs
 \# 기본 네트워크 구성이 InfiniBand 또는 Omni-Path를 로 되어 있을 경우에만 수행 합니다.
 ### # Add IB support and enable
 ```bash
-yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support"
-yum -y --installroot=${CHROOT} install infinipath-psm
+yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
+tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
+
+yum -y --installroot=${CHROOT} install infinipath-psm >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
+tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
 
 chroot ${CHROOT} systemctl enable rdma
 ```
+
 
 ## # 3.8.4.3 (Optional) Increase locked memory limits
 \# 기본 네트워크 구성이 InfiniBand 또는 Omni-Path를 로 되어 있을 경우에만 수행 합니다.
@@ -855,8 +849,11 @@ perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limi
 perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
 perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
 
+
 tail /etc/security/limits.conf
+
 tail ${CHROOT}/etc/security/limits.conf
+
 ```
 
 
@@ -873,7 +870,8 @@ yum -y --installroot=$CHROOT install lustre-client-ohpc
 ### # Include mount point and file system mount in compute image
 ```bash
 mkdir $CHROOT/lustre
-echo "10.xx.xx.x:/lustre /lustre lustre defaults,localflock,noauto,x-systemd.automount 0 0" \ >> $CHROOT/etc/fstab
+echo "10.xx.xx.x:/lustre /lustre lustre defaults,localflock,noauto,x-systemd.automount 0 0" \
+>> $CHROOT/etc/fstab
 ```
 
 ```bash
@@ -954,9 +952,13 @@ To import local file-based credentials, issue the following:
 
 ### # Default files
 ```bash
+wwsh file list
+
 wwsh file import /etc/passwd
 wwsh file import /etc/group
 wwsh file import /etc/shadow
+
+wwsh file list
 ```
 
 ### # (Optional) Files for Slurm Resource Manager
@@ -969,8 +971,8 @@ wwsh file import /etc/munge/munge.key
 ### # (Optional) Support for Controlling IPoIB Interfaces
 \# 인피니밴드 (InfiniBand) 사용시에만 수행.
 ```bash
-wwsh file import /opt/ohpc/pub/examples/network/centos/ifcfg-ib0.ww
-wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
+wwsh    file import /opt/ohpc/pub/examples/network/centos/ifcfg-ib0.ww
+wwsh -y file set ifcfg-ib0.ww  --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 
 ```
 
@@ -978,6 +980,8 @@ wwsh -y file set ifcfg-ib0.ww --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 
 ```bash
 cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
+
+cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#" | wc -l
 ```
 
 *output example>*
@@ -997,6 +1001,8 @@ hybridize += /usr/include
 hybridize += /usr/share/man
 hybridize += /usr/share/doc
 hybridize += /usr/share/locale
+
+15
 ```
 
 ***
@@ -1008,6 +1014,8 @@ sed -i "s#hybridize += /usr/include#\#hybridize += /usr/include#"           /etc
 sed -i "s#hybridize += /usr/share/locale#\#hybridize += /usr/share/locale#" /etc/warewulf/vnfs.conf
 
 cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
+
+cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#" | wc -l
 ```
 *output example>*
 ```
@@ -1022,6 +1030,8 @@ exclude += /usr/src
 hybridize += /usr/X11R6
 hybridize += /usr/share/man
 hybridize += /usr/share/doc
+
+11
 ```
 
 # # 3.9 Finalizing provisioning configuration
