@@ -502,7 +502,7 @@ ibhosts
 
 ### # (Optional) ib 방화벽 zone 설정 변경
 ```bash
-firewall-cmd --change-interface=$ib0  --zone=trusted   --permanent
+firewall-cmd --change-interface=ib0  --zone=trusted   --permanent
 
 firewall-cmd --reload
 systemctl restart firewalld
