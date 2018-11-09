@@ -47,7 +47,7 @@ export CHROOT=/opt/ohpc/admin/images/centos7.5
 
 # MASTER 의 이름 과 IP.
 export MASTER_HOSTNAME=$(hostname -s)
-export MASTER_IP=10.1.1.1
+export MASTER_IP=10.1.1.200
 export MASTER_PREFIX=24
 
 # 인터페이스 이름.
@@ -59,6 +59,9 @@ export NODE_INT_NIC=eth0  # node 들의 내부망 인터페이스 명.
 export NODE_NAME=node
 export NODE_NUM=<전체 노드 수>
 export NODE_RANGE="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
+
+export sms_ipoib="10.1.1.201"
+export ipoib_netmask="255.255.255.0"
 
 # NODE 의 CPU 사양에 맞게 조정. - Slurm.conf 용
 # 물리 CPU가 2개 이고, CPU 당 코어가 10개, 하이퍼스레딩은 켜진(Enable) 상태 인 경우.  
@@ -438,12 +441,15 @@ tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 ### # (Optional) 3.5 Optionally add InfiniBand support services on master node
 
 ```bash
-yum -y groupinstall "InfiniBand Support"
-yum -y install infinipath-psm opensm
+yum -y groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
+tail -1 ~/dasan_log_ohpc_IBSupport.txt
+
+yum -y install infinipath-psm opensm >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
+tail -1 ~/dasan_log_ohpc_IBSupport.txt
 
 ```
 
-### (Optional) Load InfiniBand drivers
+### # (Optional) Load InfiniBand drivers
 ```bash
 systemctl enable opensm
 systemctl start opensm
@@ -452,20 +458,20 @@ systemctl start rdma
 systemctl enable rdma
 ```
 
-### (Optional) Copy ib0 template to master
+### # (Optional) Copy ib0 template to master
 ```bash
-cp /opt/ohpc/pub/examples/network/centos/ifcfg-ib0     /etc/sysconfig/network-scripts
+cp  /opt/ohpc/pub/examples/network/centos/ifcfg-ib0   /etc/sysconfig/network-scripts
 ```
 
-### (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
+### # (Optional) Define local IPoIB(IP Over InfiniBand) address and netmask
 ```bash
 sed -i "s/master_ipoib/${sms_ipoib}/"      /etc/sysconfig/network-scripts/ifcfg-ib0
 sed -i "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 
-echo  “MTU=4096”  >>  /
+echo  “MTU=4096”  >>  /etc/sysconfig/network-scripts/ifcfg-ib0
 ```
 
-### (Optional) Initiate ib0 (InfiniBand Interface 0)
+### # (Optional) Initiate ib0 (InfiniBand Interface 0)
 ```bash
 ifup ib0
 
