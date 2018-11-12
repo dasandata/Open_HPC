@@ -1126,6 +1126,10 @@ wwsh node new node1 --netdev eth0 \
 --ipaddr=10.1.1.10 --hwaddr=<기입> --gateway ${MASTER_IP} --netmask=255.255.255.0
 ```
 
+```bash
+wwsh node list
+```
+
 ### # Additional step required if desiring to use predictable network interface
 ### # # naming schemes (e.g. en4s0f0). Skip if using eth# style names.
 ```bash
@@ -1328,9 +1332,13 @@ tail -1 ~/dasan_log_ohpc_gnu5MPI.txt
 
 ### # Fast way ;)  (use script)
 ```bash
-cd
+cd ~
+
 git clone https://github.com/dasandata/Open_HPC
-bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components.sh
+
+cat ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components.sh
+
+bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components.sh]
 ```
 ***
 
