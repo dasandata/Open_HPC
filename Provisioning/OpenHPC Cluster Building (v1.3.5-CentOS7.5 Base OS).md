@@ -1282,7 +1282,7 @@ tail -1 ~/dasan_log_ohpc_Compilers.txt
 
 ## # 4.3 MPI Stacks
 ```bash
-yum -y install  openmpi-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc \
+yum -y install  openmpi-gnu7-ohpc openmpi3-gnu7-ohpc mvapich2-gnu7-ohpc mpich-gnu7-ohpc \
  >> ~/dasan_log_ohpc_MPI-Stacks.txt 2>&1
 tail -1 ~/dasan_log_ohpc_MPI-Stacks.txt
 ```
