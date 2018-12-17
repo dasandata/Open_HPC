@@ -111,7 +111,7 @@ node2: Complete!
 
 ```
 [root@Master:~]#
-[root@Master:~]# yum --installroot=/opt/ohpc/admin/images/centos7.4/  install  -y  git
+[root@Master:~]# yum --installroot=/opt/ohpc/admin/images/centos7.6/  install  -y  git
 Loaded plugins: fastestmirror, langpacks, priorities
 OpenHPC                                                      | 1.6 kB  00:00:00     
 OpenHPC-updates                                                                                    | 1.2 kB  00:00:00     
@@ -148,9 +148,9 @@ Complete!
 
 #### 2-3. 노드의 부팅 이미를 갱신 시킵니다.
 ```
-[root@Master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.4
-Using 'centos7.4' as the VNFS name
-Creating VNFS image from centos7.4
+[root@Master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.6
+Using 'centos7.6' as the VNFS name
+Creating VNFS image from centos7.6
 Compiling hybridization link tree                           : 2.88 s
 Building file list                                          : 2.11 s
 Compiling and compressing VNFS                              : 53.87 s
@@ -216,7 +216,7 @@ node1: master:/opt/ohpc/pub nfs       899G   34G  865G   4% /opt/ohpc/pub
 [root@master:~]# pwd
 /root
 [root@master:~]#
-[root@master:~]# chroot /opt/ohpc/admin/images/centos7.4
+[root@master:~]# chroot /opt/ohpc/admin/images/centos7.6
 [root@master:/]# pwd
 /
 [root@master:/]#
@@ -250,9 +250,9 @@ exit
 /root
 [root@master:~]#
 [root@master:~]#
-[root@master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.4  
-Using 'centos7.4' as the VNFS name
-Creating VNFS image from centos7.4
+[root@master:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.6  
+Using 'centos7.6' as the VNFS name
+Creating VNFS image from centos7.6
 Compiling hybridization link tree                           : 0.33 s
 Building file list                                          : 0.54 s
 Compiling and compressing VNFS                              : 29.60 s
@@ -485,7 +485,7 @@ sed -i
 ```bash
 wwsh node new node1 --netdev eth0 --ipaddr=10.1.1.11 --hwaddr=xx:xx:xx:xx:xx:xx --gateway=10.1.1.1 --netmask=255.255.255.0
 
-wwsh provision set node1 --vnfs=centos7.4 --bootstrap=3.10.0-693.21.1.el7.x86_64 --files=dynamic_hosts,passwd,group,shadow,network
+wwsh provision set node1 --vnfs=centos7.6 --bootstrap=3.10.0-693.21.1.el7.x86_64 --files=dynamic_hosts,passwd,group,shadow,network
 
 wwsh pxe update
 systemctl restart dhcpd
