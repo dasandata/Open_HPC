@@ -1,0 +1,29 @@
+#%Module1.0#####################################################################
+
+proc ModulesHelp { } {
+
+puts stderr " "
+puts stderr "This module loads the CUDA compiler collection"
+puts stderr " "
+puts stderr "See the man pages for CUDA for detailed information"
+puts stderr "on available compiler options and command-line syntax."
+puts stderr " "
+
+puts stderr "\nVersion 9.0\n"
+
+}
+module-whatis "Name: CUDA  Collection"
+module-whatis "Version: 9.0"
+module-whatis "Category: compiler, runtime support"
+module-whatis "Description: CUDA  Compiler Family "
+module-whatis "URL: http://nvidia.com"
+
+set     version                     9.0
+
+prepend-path    PATH                /opt/ohpc/pub/apps/cuda/9.0/bin
+prepend-path    PATH                /opt/ohpc/pub/apps/cuda/9.0/samples-bin
+prepend-path    MANPATH             /opt/ohpc/pub/apps/cuda/9.0/doc
+prepend-path    INCLUDE             /opt/ohpc/pub/apps/cuda/9.0/include
+prepend-path    LD_LIBRARY_PATH     /opt/ohpc/pub/apps/cuda/9.0/lib64
+
+family "apps"
