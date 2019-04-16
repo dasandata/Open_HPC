@@ -1107,8 +1107,8 @@ centos7.6            268.5      x86_64     /opt/ohpc/admin/images/centos7.6
 
 ### # Set provisioning interface as the default networking device
 ```bash
-echo "GATEWAYDEV=${NODE_INT_NIC}" > /tmp/network.$$
-wwsh -y file import /tmp/network.$$ --name network
+echo "GATEWAYDEV=${NODE_INT_NIC}" > /etc/network.wwsh
+wwsh -y file import /etc/network.wwsh --name network
 wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
 ```
 ### # Set New node Number
