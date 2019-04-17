@@ -1,4 +1,5 @@
-# Install VASP on OpenHPC. (VASP 5.4.1 Compile with gfortran + openmpi)
+# Install VASP on OpenHPC.
+## VASP 5.4.1 Compile with gfortran + openmp
 ##### dasandata. 2019-04.
 참조 링크 : https://cms.mpi.univie.ac.at/wiki/index.php/Installing_VASP  
 
