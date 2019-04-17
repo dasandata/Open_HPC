@@ -297,11 +297,6 @@ drwxr-xr-x 4 root root 29 Apr 17 16:18 share
 
 ##### Module make for fftw 3.3.8
 ```bash
-# file copy.
-mkdir -p /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/
-cp  *.a  /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/
-
-
 # make module file.
 mkdir -p /opt/ohpc/pub/moduledeps/gnu7-openmpi/fftw/
 
@@ -323,14 +318,14 @@ module-whatis "URL http://www.fftw.org"
 
 set     version    3.3.8
 
-prepend-path    PATH                /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/bin
-prepend-path    MANPATH             /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/share/man
-prepend-path    INCLUDE             /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/include
-prepend-path    LD_LIBRARY_PATH     /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/lib
+prepend-path    PATH               /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/bin
+prepend-path    MANPATH            /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/share/man
+prepend-path    INCLUDE            /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/include
+prepend-path    LD_LIBRARY_PATH    /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/lib
 
-setenv          FFTW_DIR        /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8
-setenv          FFTW_LIB        /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/lib
-setenv          FFTW_INC        /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/include
+setenv          FFTW_DIR           /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8
+setenv          FFTW_LIB           /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/lib
+setenv          FFTW_INC           /opt/ohpc/pub/libs/gnu7/openmpi/fftw/3.3.8/include
 
 ' > /opt/ohpc/pub/moduledeps/gnu7-openmpi/fftw/3.3.8
 
