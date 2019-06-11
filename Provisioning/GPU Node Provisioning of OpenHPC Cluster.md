@@ -53,10 +53,8 @@ export CHROOT=/opt/ohpc/admin/images/centos7.4
 
 ## # Install cuda-repo to Master
 ```bash
-curl  -L -o  cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
- http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-8.0.61-1.x86_64.rpm
-
-yum -y install cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
+yum -y install \
+ http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
  >> dasan_log_ohpc_cudarepo-on-master.txt
 tail dasan_log_ohpc_cudarepo-on-master.txt
 
@@ -65,7 +63,8 @@ cat /etc/yum.repos.d/cuda.repo
 
 ## # Install cuda-repo to node vnfs images
 ```bash
-yum -y install --installroot ${CHROOT} cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
+yum -y install --installroot ${CHROOT} \
+ http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
  >> dasan_log_ohpc_cudarepo-on-node.txt
 tail dasan_log_ohpc_cudarepo-on-node.txt
 
@@ -74,14 +73,9 @@ cat ${CHROOT}/etc/yum.repos.d/cuda.repo
 ```
 *output example>*
 ```bash
-[root@master:~]# curl  -L -o  cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
->  http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-8.0.61-1.x86_64.rpm
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100  6363  100  6363    0     0  21969      0 --:--:-- --:--:-- --:--:-- 22248
-[root@master:~]#
-[root@master:~]# yum -y install --installroot ${CHROOT} cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
->  >> dasan_log_ohpc_cudarepo-on-node.txt
+[root@master:~]# yum -y install --installroot ${CHROOT} \
+> http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-8.0.61-1.x86_64.rpm \
+> >> dasan_log_ohpc_cudarepo-on-node.txt
 [root@master:~]#
 [root@master:~]# tail dasan_log_ohpc_cudarepo-on-node.txt
 Running transaction test
@@ -160,6 +154,10 @@ libXmu-devel libX11-devel freeglut-devel libXm*   openmotif*  \
 tail dasan_log_ohpc_libGLU,libX-on-node.txt
 ```
 
+## # Mount /dev on CHROOT
+```bash
+mount -o bind /dev  ${CHROOT}/dev
+```
 
 ## # Install cuda 8.0, 9.0 to Master
 ```bash
