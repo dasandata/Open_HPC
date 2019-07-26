@@ -9,7 +9,7 @@ tail dasan_log_uninstall_python34.txt
 
 ## # Pre installation package
 ```bash
-yum -y install zlib-devel bzip2-devel sqlite sqlite-devel openssl-devel \
+yum -y install zlib-devel bzip2-devel sqlite sqlite-devel openssl-devel libffi-devel \
 >> dasan_log_install_python-prepackage.txt 2>&1
 tail dasan_log_install_python-prepackage.txt
 ```
