@@ -111,7 +111,6 @@ Use "module keyword key1 key2 ..." to search for all possible modules matching a
 [root@master:~]#
 ```
 
-
 ## # Test of Python Module
 ```bash
 [root@master:~]# ml list
@@ -155,8 +154,37 @@ Successfully installed pip
 Cleaning up...
 [root@master:~]#
 [root@master:~]# rm /opt/ohpc/pub/apps/python3/3.4.0/bin/pip
-[root@master:~]# 
+[root@master:~]#
 ```
+
+## # Install to pip3
+```bash
+[root@master:~]# which pip
+/bin/pip
+[root@master:~]#
+[root@master:~]# which pip3
+/usr/bin/which: no pip3 in (/opt/ohpc/pub/apps/python3/3.7.4/bin:/opt/ohpc/pub/compiler/gcc/5.4.0/bin:/usr/local/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin)
+[root@master:~]#
+[root@master:~]# python3 -m pip
+/opt/ohpc/pub/apps/python3/3.7.4/bin/python3: No module named pip
+[root@master:~]#
+[root@master:~]# wget https://bootstrap.pypa.io/get-pip.py
+
+[root@master:~]#
+[root@master:~]# python3 get-pip.py
+
+Installing collected packages: pip, setuptools, wheel
+Successfully installed pip-19.2.1 setuptools-41.0.1 wheel-0.33.4
+
+[root@master:~]#
+[root@master:~]# which pip3
+/opt/ohpc/pub/apps/python3/3.7.4/bin/pip3
+[root@master:~]#
+[root@master:~]# pip3 -V
+pip 19.2.1 from /opt/ohpc/pub/apps/python3/3.7.4/lib/python3.7/site-packages/pip (python 3.7)
+[root@master:~]#
+```
+
 
 ## # Default Load Module 설정 파일 2가지
 
