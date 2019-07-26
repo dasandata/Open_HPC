@@ -157,6 +157,8 @@ tail dasan_log_ohpc_libGLU,libX-on-node.txt
 ## # Mount /dev on CHROOT
 ```bash
 mount -o bind /dev  ${CHROOT}/dev
+
+mount | grep ${CHROOT}
 ```
 
 ## # Install cuda 8.0, 9.0 to Master
@@ -533,6 +535,12 @@ wwvnfs --chroot ${CHROOT}
 wwsh vnfs list
 ```
 
+## # UnMount /dev on CHROOT
+```bash
+umount ${CHROOT}/dev
+
+mount | grep ${CHROOT}
+```
 
 ## # Apply update imgae to nodes (rebooting)
 ```bash
