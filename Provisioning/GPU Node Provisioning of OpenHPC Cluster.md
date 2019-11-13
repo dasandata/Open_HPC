@@ -951,10 +951,12 @@ Nodename=node[1-2]  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
 ***
 
 ```bash
-cp /etc/slurm/gres.conf /opt/ohpc/admin/images/centos7.4/etc/slurm/
-cp /etc/slurm/slurm.conf /opt/ohpc/admin/images/centos7.4/etc/slurm/
+wwsh file import /etc/slurm/gres.conf
+wwsh file import /etc/slurm/slurm.conf
 
-wwvnfs --chroot /opt/ohpc/admin/images/centos7.4  # 추후 노드에 적용 되도록 이미지 생성.
+wwsh file resync
+
+wwvnfs --chroot /opt/ohpc/admin/images/centos7.4  
 
 pdsh -w node[1-2] reboot
 ```
