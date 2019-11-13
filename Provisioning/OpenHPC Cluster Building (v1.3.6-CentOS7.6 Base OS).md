@@ -1131,11 +1131,6 @@ wwsh node list
 ```
 
 ### # Additional step required if desiring to use predictable network interface
-### # # naming schemes (e.g. en4s0f0). Skip if using eth# style names.
-```bash
-wwsh provision set ${NODE_NAME}${NEW_NODE_NUM} --kargs "net.ifnames=1,biosdevname=1"
-wwsh provision set --postnetdown=1 ${NODE_NAME}${NEW_NODE_NUM}
-```
 
 ### # Define provisioning image for hosts
 ```bash
