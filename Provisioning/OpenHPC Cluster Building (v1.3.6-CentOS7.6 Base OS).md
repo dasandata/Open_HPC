@@ -629,7 +629,7 @@ tail ~/dasan_log_ohpc_update_nodeimage.txt
 ```bash
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel kernel-headers kernel-devel kernel-tools parted xfsprogs python-devel \
- yum htop ipmitool glibc* perl perl-CPAN perl-CPAN >> ~/dasan_log_ohpc_meta-package.txt 2>&1
+ yum htop ipmitool glibc* perl perl-CPAN perl-CPAN sysstat >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 tail ~/dasan_log_ohpc_meta-package.txt  
 
 ```
