@@ -368,8 +368,8 @@ grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 ControlMachine=linux0   
 
 ```bash
-sed -i "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/"  /etc/slurm/slurm.conf
-sed -i "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" /etc/slurm/slurm.conf
+sed -Ei "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/"  /etc/slurm/slurm.conf
+sed -Ei "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" /etc/slurm/slurm.conf
 grep 'ClusterName\|ControlMachine' /etc/slurm/slurm.conf
 
 ```
