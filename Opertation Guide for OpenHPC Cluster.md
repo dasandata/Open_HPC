@@ -8,17 +8,13 @@
 [2. 계산 노드에 프로그램 추가 (Install App on nodes)][2]  
 [3. 네트워크 마운트 포인트 추가 (Add NFS Mount on nodes)][3]  
 [4. Example to Add Python3 Module on OpenHPC][4]  
-[5. Nodes Power On / Off][5]  
-[6. 마스터(로그인) 노드의 hostname or IP Address 변경.][6]  
-[7. 계산 노드 추가 및 변경 (mac address)][7]  
+
 
 [1]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#1-%EC%82%AC%EC%9A%A9%EC%9E%90-%EA%B3%84%EC%A0%95-%EA%B4%80%EB%A6%AC-%EC%B6%94%EA%B0%80-%EB%B0%8F-%EC%A0%9C%EA%B1%B0
 [2]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#2-%EA%B3%84%EC%82%B0-%EB%85%B8%EB%93%9C%EC%97%90-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%B6%94%EA%B0%80-install-app-on-nodes
 [3]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#3-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%A7%88%EC%9A%B4%ED%8A%B8-%ED%8F%AC%EC%9D%B8%ED%8A%B8-%EC%B6%94%EA%B0%80-add-nfs-mount-on-nodes
 [4]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#4-example-to-add-python3-module-on-openhpc
-[5]: https://github.com/dasandata/Open_HPC
-[6]: https://github.com/dasandata/Open_HPC
-[7]: https://github.com/dasandata/Open_HPC
+
 [contents]: https://github.com/dasandata/Open_HPC/blob/master/Opertation%20Guide%20for%20OpenHPC%20Cluster.md#-%EB%AA%A9%EC%B0%A8
 
 
@@ -30,20 +26,24 @@
 새로운 사용자가 계산 노드들을 사용할 수 있게 합니다.  
 ```
 # testuser 계정 추가.
-[root@master:~]# wwuseradd testuser
-Adding user to this master
-Syncing user data to Warewulf
-Updating nodes...
-
+# -m : crate user home dir,  --uid : user ID
+[root@master:~]# useradd -m --uid 2001 testuser  
+[root@master:~]#
 [root@master:~]# passwd testuser
 Changing password for user testuser.
 New password:
 Retype new password:
 passwd: all authentication tokens updated successfully.
 
-[root@master:~]# wwsh file resync group passwd shadow
+# Account files sync.
+[root@master:~]# wwsh file resync    
 [root@master:~]#
+
+# Download account file from master to node.
+[root@master:~]# pdsh -w node[1-3] 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+
 ```
+
 #### 1-2. 사용자 계정 제거
 더이상 사용되지 않는 사용자 계정을 제거 합니다.  
 ```
@@ -52,21 +52,8 @@ passwd: all authentication tokens updated successfully.
 
 # testuser 사용자 home 디렉토리 제거
 [root@master:~]# rm -rf /home/testuser/
-```
 
-#### 1-3. es error 가 발생한 경우
-```
-# error 발생한노드 접속
-[root@master:~]# ssh node1
-
-# wwgetfiles  확인
-[root@node1 ~]# ls -l /tmp/.wwgetfiles.lock
-
-# wwgetfiles 지우기
-[root@node1 ~]# rm -rf /tmp/.wwgetfiles.lock
-
-# wwgetfiles 생성
-[root@node1 ~]# /warewulf/bin/wwgetfiles
+[root@master:~]# wwsh file resync
 ```
 
 
@@ -479,7 +466,7 @@ sed -i
 ```
 
 
-### [7. -예정- 계산 노드 추가 및 정보 변경][contents]
+### [7. 계산 노드 추가 및 정보 변경][contents]
 새로운 계산노드가 추가 되거나, 고장 등으로 노드를 교체해야 할 때   
 마스터(로그인) 노드에 새로운 노드 정보를 추가 / 변경하는 방법 입니다.   
 ```bash
