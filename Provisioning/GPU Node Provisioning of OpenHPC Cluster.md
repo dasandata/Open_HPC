@@ -168,6 +168,12 @@ yum -y install cuda-8-0 cuda-9-0 \
 tail dasan_log_ohpc_cuda8,9-master.txt
 ```
 
+## # Install gcc, make to node nvfs images
+```bash
+yum -y install --installroot ${CHROOT} gcc, make \
+>> dasan_log_ohpc_cuda8,9-node-vnfs.txt 2>&1
+tail dasan_log_ohpc_cuda8,9-node-vnfs.txt
+```
 
 ## # Install cuda 8.0, 9.0 to node vnfs images
 ```bash
