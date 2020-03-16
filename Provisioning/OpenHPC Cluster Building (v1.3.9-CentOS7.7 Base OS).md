@@ -2039,6 +2039,10 @@ wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
 
 ### # 7.3.4 IPoIB nfs RDMA
 ```bash
+
+echo rdma 20049 > /proc/fs/nfsd/portlist
+echo "echo rdma 20049 > /proc/fs/nfsd/portlist" >> /etc/rc.local
+
 ${CHROOT}/etc/fstab
 
 master:/home         /home         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
