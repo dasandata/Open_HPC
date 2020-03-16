@@ -2037,6 +2037,16 @@ wwsh -y node set ${NODE_NAME}${NEW_NODE_NUM} -D ib0 --ipaddr=${c_ipoib[$i]} \
 wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
 ```
 
+### # 7.3.4 IPoIB nfs RDMA
+```bash
+${CHROOT}/etc/fstab
+
+master:/home         /home         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
+master:/opt/ohpc/pub /opt/ohpc/pub nfs  nfsvers=3,nodev,proto=rdma,port=20049         0 0
+master:/data         /data         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
+```
+
+
 # # 8. Add Lustre client
 
 ## # 8.1 Add Lustre client software to master host
