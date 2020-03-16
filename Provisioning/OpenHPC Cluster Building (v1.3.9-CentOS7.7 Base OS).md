@@ -1,4 +1,4 @@
-# Dasandata Standard Recipes of OpenHPC Cluster Building (v1.3.9-centos7.7 Base OS)[2018.10]
+# Dasandata Standard Recipes of OpenHPC Cluster Building (v1.3.9-centos7.7 Base OS)[2020.03]
 
 \# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인 하여 설치를 시작 합니다.  
