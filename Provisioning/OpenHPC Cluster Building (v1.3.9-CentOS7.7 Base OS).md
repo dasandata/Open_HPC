@@ -537,7 +537,7 @@ tail ~/dasan_log_ohpc_initial-BaseOS.txt
 Complete!  
 
 
-### # Build 된 node image 와 master 의 kernel version 비교.
+#### # Build 된 node image 와 master 의 kernel version 비교.
 
 ```bash
 uname -r
@@ -554,14 +554,14 @@ chroot ${CHROOT} uname -r
 3.10.0-1062.12.1.el7.x86_64
 ```
 
-### # Build 된 node provision image 의 업데이트
+#### # Build 된 node provision image 의 업데이트
 ```bash
 yum -y --installroot=${CHROOT} update  >> ~/dasan_log_ohpc_update_nodeimage.txt 2>&1
 tail ~/dasan_log_ohpc_update_nodeimage.txt
 ```
 
-## # 3.6.2 Add OpenHPC components
-### # Install compute node base meta-package.
+### # 3.6.2 Add OpenHPC components
+#### # 3.6.2.1 Install compute node base meta-package.
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
@@ -584,7 +584,7 @@ tail ~/dasan_log_ohpc_meta-package.txt
 Complete!  
 
 
-### # updated to enable DNS resolution.
+#### # 3.6.2.2 updated to enable DNS resolution.
 ```bash
 cat /etc/resolv.conf
 cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf  
@@ -592,7 +592,7 @@ cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 
 ***
 
-### # Add Slurm client support meta-package
+#### # 3.6.2.3-A Add Slurm client support meta-package
 \# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt 2>&1
@@ -603,7 +603,7 @@ chroot ${CHROOT} systemctl enable slurmd
 
 ***
 
-### # Add PBS Professional client support
+#### # 3.6.2.3-B Add PBS Professional client support
 \# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install pbspro-execution-ohpc >> ~/dasan_log_ohpc_pbsprolient.txt 2>&1
@@ -639,7 +639,7 @@ chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 chroot ${CHROOT} systemctl enable pbs
 ```
 
-### # Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
+#### # 3.6.2.4 Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
 yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc \
  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt 2>&1
