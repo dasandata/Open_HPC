@@ -1096,7 +1096,14 @@ Locating the kernel object
 Bootstrap image '3.10.0-1062.12.1.el7.x86_64' is ready
 Done.
 
-### # 3.7.2 Assemble Virtual Node File System (VNFS) image
+#### # check bootstrap list
+'''bash
+[root@master:~]# wwsh bootstrap list
+BOOTSTRAP NAME            SIZE (M)      ARCH
+3.10.0-1062.12.1.el7.x86_64 30.2          x86_64
+'''
+
+### # 3.9.2 Assemble Virtual Node File System (VNFS) image
 
 ```bash
 echo ${CHROOT}
@@ -1124,11 +1131,10 @@ Total elapsed time
 wwsh vnfs list
 ```
 *output example>*
->VNFS NAME            SIZE (M)   ARCH       CHROOT LOCATION  
-centos7.7            268.5      x86_64     /opt/ohpc/admin/images/centos7.7  
+>VNFS NAME            SIZE (M)   ARCH       CHROOT LOCATION
+centos7.7            425.3      x86_64     /opt/ohpc/admin/images/centos7.7
 
-
-### # 3.7.3 Register nodes for provisioning
+### # 3.9.3 Register nodes for provisioning
 
 #### # Set provisioning interface as the default networking device
 ```bash
@@ -1158,6 +1164,7 @@ wwsh node set node1 --netdev eth0 \
 wwsh node list
 ```
 
+#### # (Optional)
 #### # Additional step required if desiring to use predictable network interface
 #### # naming schemes (e.g. en4s0f0). Skip if using eth# style names.
 #### # "이것을 적용하면 네트워크 인터페이스 명이 ens4s0f0 과 같은 형태로 표시됩니다."
