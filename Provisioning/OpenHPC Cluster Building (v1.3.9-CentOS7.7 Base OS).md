@@ -1245,11 +1245,9 @@ wwsh -y node set ${NODE_NAME}${NEW_NODE_NUM} -D ib0 --ipaddr=${c_ipoib[$i]} \
 
 wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
 ```
-
 ***
 
 ### # 3.7.5 Optionally configure stateful provisioning
-
 
 #### # Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
