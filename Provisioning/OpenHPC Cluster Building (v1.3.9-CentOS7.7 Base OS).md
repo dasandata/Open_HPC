@@ -440,10 +440,85 @@ grep NodeName= /etc/slurm/slurm.conf
 yum -y install pbspro-server-ohpc >> ~/dasan_log_ohpc_resourcemanager_pbspro.txt 2>&1
 tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 ```
-
 ***
 
-## # 3.5 Complete basic Warewulf setup for master node
+## # 3.5 Optionally add InfiniBand support services on master node
+
+### # 3.5.1 Install InfiniBand support on master node
+
+```bash
+yum -y groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
+tail -1 ~/dasan_log_ohpc_IBSupport.txt
+
+yum -y install infinipath-psm opensm     >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
+tail -1 ~/dasan_log_ohpc_IBSupport.txt
+
+```
+
+### # 3.5.2 Load InfiniBand drivers
+```bash
+systemctl enable opensm
+systemctl start opensm
+
+systemctl start rdma
+systemctl enable rdma
+
+```
+
+### # 3.5.3 Copy ib0 template to master for IPoIB(IP Over InfiniBand)
+```bash
+cp  /opt/ohpc/pub/examples/network/centos/ifcfg-ib0   /etc/sysconfig/network-scripts
+
+```
+
+### # 3.5.4 Define local IPoIB(IP Over InfiniBand) address and netmask
+```bash
+sed -i "s/master_ipoib/${sms_ipoib}/"      /etc/sysconfig/network-scripts/ifcfg-ib0
+sed -i "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
+
+echo  “MTU=4096”  >>  /etc/sysconfig/network-scripts/ifcfg-ib0
+
+```
+
+### # 3.5.5 Initiate ib0 (InfiniBand Interface 0)
+```bash
+ifup ib0
+
+ibstat
+
+ibhosts
+```
+*output example>*
+>CA 'mlx4_0'  
+	CA type: MT4099  
+	Number of ports: 1  
+	Firmware version: 2.31.5050  
+	Hardware version: 1  
+	Node GUID: 0x0002c90300197120  
+	System image GUID: 0x0002c90300197123  
+	Port 1:  
+		State: Active  
+		Physical state: LinkUp  
+		Rate: 56  
+		Base lid: 1  
+		LMC: 0  
+		SM lid: 1  
+		Capability mask: 0x0259486a  
+		Port GUID: 0x0002c90300197121  
+		Link layer: InfiniBand  
+
+
+### # 3.5.6 ib 방화벽 zone 설정 변경
+```bash
+firewall-cmd --change-interface=ib0  --zone=trusted   --permanent
+
+firewall-cmd --reload && systemctl restart firewalld
+
+firewall-cmd --list-all --zone=trusted
+
+```
+
+## # 3.7 Complete basic Warewulf setup for master node
 
 ### # Configure Warewulf provisioning to use desired internal interface
 \# 내부망 인터페이스 설정 내용 확인.  
@@ -509,7 +584,7 @@ systemctl restart httpd
 bash /tmp/provisioning_service_run.sh
 ```
 
-## # 3.6 Define compute image for provisioning
+## # 3.8 Define compute image for provisioning
 
 ### # Check chroot location.
 \# chroot 작업을 하기 전에 항상, ${CHROOT} 변수가 알맞게 선언 되어 있는지 확인하는 것을 권장합니다.
@@ -519,7 +594,7 @@ echo ${CHROOT}
 *output example>*
 >/opt/ohpc/admin/images/centos7.7
 
-### # 3.6.1 Build initial BOS (Base OS) image
+### # 3.8.1 Build initial BOS (Base OS) image
 ```bash
 wwmkchroot centos-7 ${CHROOT} >> ~/dasan_log_ohpc_initial-BaseOS.txt 2>&1
 tail ~/dasan_log_ohpc_initial-BaseOS.txt
@@ -560,8 +635,8 @@ yum -y --installroot=${CHROOT} update  >> ~/dasan_log_ohpc_update_nodeimage.txt 
 tail ~/dasan_log_ohpc_update_nodeimage.txt
 ```
 
-### # 3.6.2 Add OpenHPC components
-#### # 3.6.2.1 Install compute node base meta-package.
+### # 3.8.2 Add OpenHPC components
+#### # 3.8.2.1 Install compute node base meta-package.
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
@@ -584,7 +659,7 @@ tail ~/dasan_log_ohpc_meta-package.txt
 Complete!  
 
 
-#### # 3.6.2.2 updated to enable DNS resolution.
+#### # 3.8.2.2 updated to enable DNS resolution.
 ```bash
 cat /etc/resolv.conf
 cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf  
@@ -592,7 +667,7 @@ cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 
 ***
 
-#### # 3.6.2.3-A Add Slurm client support meta-package
+#### # 3.8.2.3-A Add Slurm client support meta-package
 \# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt 2>&1
@@ -603,7 +678,7 @@ chroot ${CHROOT} systemctl enable slurmd
 
 ***
 
-#### # 3.6.2.3-B Add PBS Professional client support
+#### # 3.8.2.3-B Add PBS Professional client support
 \# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install pbspro-execution-ohpc >> ~/dasan_log_ohpc_pbsprolient.txt 2>&1
@@ -639,7 +714,7 @@ chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 chroot ${CHROOT} systemctl enable pbs
 ```
 
-#### # 3.6.2.4 Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
+#### # 3.8.2.4 Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
 yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc \
  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt 2>&1
@@ -648,9 +723,9 @@ tail ~/dasan_log_ohpc_ntp,kernel,modules.txt
 
 ***
 
-### # 3.6.3 Customize system configuration
+### # 3.8.3 Customize system configuration
 
-### # Initialize warewulf database and ssh_keys
+#### # Initialize warewulf database and ssh_keys
 ```bash
 wwinit database && wwinit ssh_keys
 ```
@@ -682,7 +757,7 @@ ssh_keys:     Creating default node ssh_host_ed25519_key:
                                                                              OK
 Done.
 
-### # Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image.
+#### # Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image.
 
 ```bash
 df -hT | grep -v tmpfs
@@ -715,7 +790,7 @@ master:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev 0 0
 [root@master:\~]#  
 
 
-### # Export /home and OpenHPC public packages from master server.
+#### # Export /home and OpenHPC public packages from master server.
 
 ```bash
 cat /etc/exports
@@ -745,8 +820,23 @@ systemctl enable  nfs-server && systemctl restart nfs-server && exportfs
 /opt/ohpc/pub   <world>  
 ```
 
+#### # (Optional) nfs by IPoIB with RDMA
+```bash
 
-### # Enable NTP time service on computes and identify master host as local NTP server.
+echo rdma 20049 > /proc/fs/nfsd/portlist
+echo "echo rdma 20049 > /proc/fs/nfsd/portlist" >> /etc/rc.local
+
+vi ${CHROOT}/etc/fstab
+
+master:/home         /home         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
+master:/opt/ohpc/pub /opt/ohpc/pub nfs  nfsvers=3,nodev,proto=rdma,port=20049         0 0
+master:/data         /data         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
+
+systemctl enable  nfs-server && systemctl restart nfs-server && exportfs
+```
+
+
+#### # Enable NTP time service on computes and identify master host as local NTP server.
 
 ```bash
 chroot ${CHROOT} systemctl enable ntpd
@@ -755,7 +845,78 @@ echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 
 ***
 
-### # 3.6.4 Additional Customization (Optional)
+### # 3.8.4 Additional Customization (Optional)
+
+#### # 3.8.4.1 Enable InfiniBand drivers
+
+##### # Add IB support and enable on nodes
+```bash
+yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
+tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
+
+yum -y --installroot=${CHROOT} install infinipath-psm >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
+tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
+
+chroot ${CHROOT} systemctl enable rdma
+```
+
+##### # Import File for IPoIB Interfaces
+```bash
+wwsh    file import /opt/ohpc/pub/examples/network/centos/ifcfg-ib0.ww
+wwsh -y file set ifcfg-ib0.ww  --path=/etc/sysconfig/network-scripts/ifcfg-ib0
+
+```
+
+#### # 3.8.4.3 Increase locked memory limits
+
+##### # Update memlock settings on master
+```bash
+perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
+perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
+
+tail /etc/security/limits.conf
+```
+##### # Update memlock settings on compute nodes  
+```bash
+perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
+perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
+
+tail ${CHROOT}/etc/security/limits.conf
+```
+
+
+#### # 3.8.4.5 Add Lustre client
+
+##### # Add Lustre client software to master host
+```bash
+yum -y install lustre-client-ohpc
+```
+
+##### # Add Lustre client software in compute image
+```bash
+yum -y --installroot=$CHROOT install lustre-client-ohpc
+```
+
+##### # Include mount point and file system mount in compute image
+```bash
+mkdir $CHROOT/lustre
+
+echo "10.xx.xx.x:/lustre  /lustre  lustre  defaults,localflock,noauto,x-systemd.automount 0 0" \
+>> $CHROOT/etc/fstab
+```
+
+##### # Make file of lustre.conf (lnet config)
+```bash
+echo "options lnet networks=o2ib(ib0)" >> /etc/modprobe.d/lustre.conf
+echo "options lnet networks=o2ib(ib0)" >> $CHROOT/etc/modprobe.d/lustre.conf
+```
+
+##### # Lustre Mount test.
+```bash
+mkdir /lustre
+
+mount -t lustre -o localflock 10.xx.xx.x:/lustre /lustre
+```
 
 #### # 3.6.4.4 Add Ganglia monitoring
 \# Ganglia Monitoring System : https://en.wikipedia.org/wiki/Ganglia_(software)
@@ -845,7 +1006,7 @@ wwsh file import /etc/slurm/slurm.conf
 wwsh file import /etc/munge/munge.key
 ```
 
-## # 3.7 Finalizing provisioning configuration
+## # 3.9 Finalizing provisioning configuration
 
 
 ### # 3.7.0 /etc/warewulf/vnfs.conf 수정.
@@ -1067,6 +1228,15 @@ wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --vnfs=centos7.7 \
 --bootstrap=`uname -r `  --kargs="${kargs}" \
 --files=dynamic_hosts,passwd,group,shadow,network ;
 done
+```
+
+
+#### # define IPoIB network settings (if planning to mount NFS by IPoIB)
+```bash
+wwsh -y node set ${NODE_NAME}${NEW_NODE_NUM} -D ib0 --ipaddr=${c_ipoib[$i]} \
+ --netmask=${ipoib_netmask}
+
+wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
 ```
 
 ***
@@ -1926,177 +2096,19 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 
 ***
 
-# # 7. InfiniBand support
-
-## # 7.1 Increase locked memory limits
-
-### # Update memlock settings on master and compute image
-```bash
-perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' /etc/security/limits.conf
-perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' /etc/security/limits.conf
-
-perl -pi -e 's/# End of file/\* soft memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
-perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/security/limits.conf
-
-tail /etc/security/limits.conf
-
-tail ${CHROOT}/etc/security/limits.conf
-```
-
-## # 7.2 Add InfiniBand support services on master node
-### # 7.2.1 Install InfiniBand support on master node
-
-```bash
-yum -y groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
-tail -1 ~/dasan_log_ohpc_IBSupport.txt
-
-yum -y install infinipath-psm opensm >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
-tail -1 ~/dasan_log_ohpc_IBSupport.txt
-
-```
-
-### # 7.2.2 Load InfiniBand drivers
-```bash
-systemctl enable opensm
-systemctl start opensm
-
-systemctl start rdma
-systemctl enable rdma
-```
-
-### # 7.2.3 Copy ib0 template to master
-```bash
-cp  /opt/ohpc/pub/examples/network/centos/ifcfg-ib0   /etc/sysconfig/network-scripts
-```
-
-### # 7.2.4 Define local IPoIB(IP Over InfiniBand) address and netmask
-```bash
-sed -i "s/master_ipoib/${sms_ipoib}/"      /etc/sysconfig/network-scripts/ifcfg-ib0
-sed -i "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
-
-echo  “MTU=4096”  >>  /etc/sysconfig/network-scripts/ifcfg-ib0
-```
-
-### # 7.2.5 Initiate ib0 (InfiniBand Interface 0)
-```bash
-ifup ib0
-
-ibstat
-
-ibhosts
-```
-*output example>*
->CA 'mlx4_0'  
-	CA type: MT4099  
-	Number of ports: 1  
-	Firmware version: 2.31.5050  
-	Hardware version: 1  
-	Node GUID: 0x0002c90300197120  
-	System image GUID: 0x0002c90300197123  
-	Port 1:  
-		State: Active  
-		Physical state: LinkUp  
-		Rate: 56  
-		Base lid: 1  
-		LMC: 0  
-		SM lid: 1  
-		Capability mask: 0x0259486a  
-		Port GUID: 0x0002c90300197121  
-		Link layer: InfiniBand  
-
-
-### # 7.2.6 ib 방화벽 zone 설정 변경
-```bash
-firewall-cmd --change-interface=ib0  --zone=trusted   --permanent
-
-firewall-cmd --reload
-systemctl restart firewalld
-
-firewall-cmd --list-all --zone=trusted
-```
-
-## # 7.3 Add InfiniBand support services on Compute nodes
-
-### # 7.3.1 Add IB support and enable on nodes
-```bash
-yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
-tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
-
-yum -y --installroot=${CHROOT} install infinipath-psm >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
-tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
-
-chroot ${CHROOT} systemctl enable rdma
-```
-
-
-### # 7.3.2 Import File for IPoIB Interfaces
-```bash
-wwsh    file import /opt/ohpc/pub/examples/network/centos/ifcfg-ib0.ww
-wwsh -y file set ifcfg-ib0.ww  --path=/etc/sysconfig/network-scripts/ifcfg-ib0
-
-```
-
-### # 7.3.3 define IPoIB network settings (if planning to mount NFS by IPoIB)
-```bash
-wwsh -y node set ${NODE_NAME}${NEW_NODE_NUM} -D ib0 --ipaddr=${c_ipoib[$i]} \
- --netmask=${ipoib_netmask}
-
-wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
-```
-
-### # 7.3.4 IPoIB nfs RDMA
-```bash
-
-echo rdma 20049 > /proc/fs/nfsd/portlist
-echo "echo rdma 20049 > /proc/fs/nfsd/portlist" >> /etc/rc.local
-
-${CHROOT}/etc/fstab
-
-master:/home         /home         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
-master:/opt/ohpc/pub /opt/ohpc/pub nfs  nfsvers=3,nodev,proto=rdma,port=20049         0 0
-master:/data         /data         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
-```
-
-
-# # 8. Add Lustre client
-
-## # 8.1 Add Lustre client software to master host
-```bash
-yum -y install lustre-client-ohpc
-```
-
-## # 8.2 Add Lustre client software in compute image
-```bash
-yum -y --installroot=$CHROOT install lustre-client-ohpc
-```
-
-## # 8.3 Make file of lustre.conf (lnet config)
-```bash
-echo "options lnet networks=o2ib(ib0)" >> /etc/modprobe.d/lustre.conf
-echo "options lnet networks=o2ib(ib0)" >> $CHROOT/etc/modprobe.d/lustre.conf
-```
-
-## # 8.4 Lustre Mount test.
-```bash
-mkdir /lustre
-
-mount -t lustre -o localflock 10.xx.xx.x:/lustre /lustre
-```
-
-## # 8.5 Include mount point and file system mount in compute image
-```bash
-mkdir $CHROOT/lustre
-
-echo "10.xx.xx.x:/lustre  /lustre  lustre  defaults,localflock,noauto,x-systemd.automount 0 0" \
->> $CHROOT/etc/fstab
-```
-
 ### # etc..
 
 #### # root 가 패스워드 없이 node 에 로그인 할 수 있도록 sshkey 를 복사 합니다.
 ```bash
 cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
 ```
+
+
+
+
+
+
+
 
 
 
