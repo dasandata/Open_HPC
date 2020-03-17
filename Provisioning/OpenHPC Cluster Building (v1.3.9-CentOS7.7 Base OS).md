@@ -918,10 +918,10 @@ mkdir /lustre
 mount -t lustre -o localflock 10.xx.xx.x:/lustre /lustre
 ```
 
-#### # 3.6.4.4 Add Ganglia monitoring
+#### # 3.8.4.8  Add Ganglia monitoring
 \# Ganglia Monitoring System : https://en.wikipedia.org/wiki/Ganglia_(software)
 
-#### # Install Ganglia meta-package on master
+##### # Install Ganglia meta-package on master
 ```bash
 yum -y install ohpc-ganglia >> ~/dasan_log_ohpc_ganglia.txt 2>&1
 tail -1 ~/dasan_log_ohpc_ganglia.txt
@@ -984,11 +984,11 @@ firewall-cmd --reload
 \# Open to http://localhost/ganglia or http://<expternal ip address>/ganglia
 
 
-## 3.6.5 Import files
+### # 3.8.5 Import files
 The Warewulf system includes functionality to import arbitrary files from the provisioning server for distribution to managed hosts. This is one way to distribute user credentials to compute nodes.  
 To import local file-based credentials, issue the following:  
 
-### # Default files
+#### # Default files
 ```bash
 wwsh file list
 
@@ -999,7 +999,7 @@ wwsh file import /etc/shadow
 wwsh file list
 ```
 
-### # (Optional) Files for Slurm Resource Manager
+#### # (Optional) Files for Slurm Resource Manager
 \# Slurm 을 사용하는 경우에만 실행 합니다.
 ```bash
 wwsh file import /etc/slurm/slurm.conf
@@ -1009,7 +1009,7 @@ wwsh file import /etc/munge/munge.key
 ## # 3.9 Finalizing provisioning configuration
 
 
-### # 3.7.0 /etc/warewulf/vnfs.conf 수정.
+### # 3.9.0 /etc/warewulf/vnfs.conf 수정.
 
 ```bash
 cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
@@ -1066,7 +1066,7 @@ hybridize += /usr/share/doc
 11
 ```
 
-### # 3.7.1 Assemble bootstrap image
+### # 3.9.1 Assemble bootstrap image
 
 #### # Include drivers from kernel updates; needed if enabling additional kernel modules on computes
 
@@ -1080,20 +1080,21 @@ echo "drivers += updates/kernel/" >> $WW_CONF
 wwbootstrap  `uname -r`
 ```
 *output example>*
->Number of drivers included in bootstrap: 513  
-Number of firmware images included in bootstrap: 96  
-Building and compressing bootstrap  
-Integrating the Warewulf bootstrap: 3.10.0-862.14.4.el7.x86_64  
-Including capability: provision-adhoc  
-Including capability: provision-files  
-Including capability: provision-selinux  
-Including capability: provision-vnfs  
-Including capability: setup-filesystems  
-Including capability: transport-http  
-Compressing the initramfs  
-Locating the kernel object  
-Bootstrap image '3.10.0-862.14.4.el7.x86_64' is ready  
-Done.  
+> Number of drivers included in bootstrap: 540
+Number of firmware images included in bootstrap: 99
+Building and compressing bootstrap
+Integrating the Warewulf bootstrap: 3.10.0-1062.12.1.el7.x86_64
+Including capability: provision-adhoc
+Including capability: provision-files
+Including capability: provision-selinux
+Including capability: provision-vnfs
+Including capability: setup-filesystems
+Including capability: setup-ipmi
+Including capability: transport-http
+Compressing the initramfs
+Locating the kernel object
+Bootstrap image '3.10.0-1062.12.1.el7.x86_64' is ready
+Done.
 
 ### # 3.7.2 Assemble Virtual Node File System (VNFS) image
 
