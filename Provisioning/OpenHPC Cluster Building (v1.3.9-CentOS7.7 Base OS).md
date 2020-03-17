@@ -793,11 +793,15 @@ grep gridname /etc/ganglia/gmetad.conf
 ```
 #### # Start and enable Ganglia services
 ```bash
+echo "
 systemctl enable gmond
 systemctl enable gmetad
 systemctl start gmond
 systemctl start gmetad
 chroot ${CHROOT} systemctl enable gmond
+" > /tmp/start_ganglia_service.sh
+
+bash /tmp/start_ganglia_service.sh
 ```
 #### # php TimeZone setup
 ```bash
