@@ -1486,7 +1486,7 @@ systemctl status munge
 systemctl status slurmctld
 " > /tmp/slurm_service.sh
 
-bash /tmp/slurm_service.sh 
+bash /tmp/slurm_service.sh
 
 ```
 \# slurmctld 의 상태가 failed 인 경우 /etc/slurm/slurm.conf 파일 설정상태를 점검해야 합니다.
@@ -1551,7 +1551,7 @@ qstat -ans
 ## # 6. Run a Test Job
 ```bash
 wwsh file list
-wwsh file resync passwd shadow group # 필요한 경우 - slurm.conf 추가
+wwsh file resync 
 ```
 
 ```bash
