@@ -185,7 +185,11 @@ firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 
 firewall-cmd --reload
 systemctl restart firewalld
+```
 
+### # 방화벽 설정 변경 확인.
+
+```bash
 firewall-cmd --list-all --zone=external
 firewall-cmd --list-all --zone=trusted
 ```
