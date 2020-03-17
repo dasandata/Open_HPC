@@ -548,10 +548,10 @@ chroot ${CHROOT} uname -r
 ```
 [root@master:~]#
 [root@master:~]# uname -r
-3.10.0-862.14.4.el7.x86_64
+3.10.0-1062.12.1.el7.x86_64
 [root@master:~]#
 [root@master:~]# chroot ${CHROOT}  uname -r
-3.10.0-862.14.4.el7.x86_64
+3.10.0-1062.12.1.el7.x86_64
 ```
 
 ### # Build 된 node provision image 의 업데이트
