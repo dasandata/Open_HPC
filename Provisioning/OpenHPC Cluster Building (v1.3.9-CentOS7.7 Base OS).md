@@ -1474,6 +1474,8 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.6.sh
 ## # 5-A. Start munge and slurm controller on master host
 \# 참조 링크: https://slurm.schedmd.com/
 ```bash
+
+echo "
 systemctl enable munge
 systemctl enable slurmctld
 
@@ -1482,6 +1484,10 @@ systemctl start slurmctld
 
 systemctl status munge
 systemctl status slurmctld
+" > /tmp/slurm_service.sh
+
+bash /tmp/slurm_service.sh 
+
 ```
 \# slurmctld 의 상태가 failed 인 경우 /etc/slurm/slurm.conf 파일 설정상태를 점검해야 합니다.
 
