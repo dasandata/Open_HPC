@@ -443,17 +443,6 @@ tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 
 ***
 
-### # (Optional) ib 방화벽 zone 설정 변경
-```bash
-firewall-cmd --change-interface=ib0  --zone=trusted   --permanent
-
-firewall-cmd --reload
-systemctl restart firewalld
-
-firewall-cmd --list-all --zone=trusted
-```
-
-
 ## # 3.5 Complete basic Warewulf setup for master node
 
 ### # Configure Warewulf provisioning to use desired internal interface
@@ -2012,6 +2001,17 @@ ibhosts
 		Capability mask: 0x0259486a  
 		Port GUID: 0x0002c90300197121  
 		Link layer: InfiniBand  
+
+
+### # 7.2.6 ib 방화벽 zone 설정 변경
+```bash
+firewall-cmd --change-interface=ib0  --zone=trusted   --permanent
+
+firewall-cmd --reload
+systemctl restart firewalld
+
+firewall-cmd --list-all --zone=trusted
+```
 
 ## # 7.3 Add InfiniBand support services on Compute nodes
 
