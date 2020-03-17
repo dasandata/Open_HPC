@@ -652,39 +652,35 @@ tail ~/dasan_log_ohpc_ntp,kernel,modules.txt
 
 ### # Initialize warewulf database and ssh_keys
 ```bash
-wwinit database
-wwinit ssh_keys
+wwinit database && wwinit ssh_keys
 ```
 *output example>*
->[root@master:\~]# wwinit database  
-database:     Checking to see if RPM 'mysql-server' is installed             NO  
-database:     Checking to see if RPM 'mariadb-server' is installed           OK  
-database:     Activating Systemd unit: mariadb  
-database:      + /bin/systemctl -q enable mariadb.service                    OK  
-database:      + /bin/systemctl -q restart mariadb.service                   OK  
-database:      + mysqladmin --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf OK  
-database:     Database version: UNDEF (need to create database)  
-database:      + mysql --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf ware OK  
-database:      + mysql --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf ware OK  
-database:      + mysql --defaults-extra-file=/tmp/0.QNPo6o3qrQus/my.cnf ware OK  
-database:     Checking binstore kind                                    SUCCESS  
-Done.  
-[root@master:\~]# wwinit ssh_keys  
-ssh_keys:     Checking ssh keys for root                                     OK  
-ssh_keys:     Checking root's ssh config                                     OK  
-ssh_keys:     Checking for default RSA1 host key for nodes                   NO  
-ssh_keys:     Creating default node ssh_host_key:  
-                                                                             OK  
-ssh_keys:     Checking for default RSA host key for nodes                    NO  
-ssh_keys:     Creating default node ssh_host_rsa_key:  
-ssh_keys:      + ssh-keygen -q -t rsa -f /etc/warewulf/vnfs/ssh/ssh_host_rsa OK  
-ssh_keys:     Checking for default DSA host key for nodes                    NO  
-ssh_keys:     Creating default node ssh_host_dsa_key:  
-ssh_keys:      + ssh-keygen -q -t dsa -f /etc/warewulf/vnfs/ssh/ssh_host_dsa OK  
-ssh_keys:     Checking for default ECDSA host key for nodes                  NO  
-ssh_keys:     Creating default node ssh_host_ecdsa_key:  
-                                                                             OK  
-Done.  
+>[root@master:\~]# wwinit database && wwinit ssh_keys
+database:     Checking to see if RPM 'mysql-server' is installed             NO
+database:     Checking to see if RPM 'mariadb-server' is installed           OK
+database:     Activating Systemd unit: mariadb
+database:      + /bin/systemctl -q enable mariadb.service                    OK
+database:      + /bin/systemctl -q restart mariadb.service                   OK
+database:     Database version: 1
+database:      + mysql --defaults-extra-file=/tmp/0.Yy6oMadA3BQa/my.cnf ware OK
+database:      + mysql --defaults-extra-file=/tmp/0.Yy6oMadA3BQa/my.cnf ware OK
+database:     Checking binstore kind                                    SUCCESS
+Done.
+ssh_keys:     Checking ssh keys for root                                     OK
+ssh_keys:     Checking root's ssh config                                     OK
+ssh_keys:     Checking for default RSA host key for nodes                    NO
+ssh_keys:     Creating default node ssh_host_rsa_key:
+ssh_keys:      + ssh-keygen -q -t rsa -f /etc/warewulf/vnfs/ssh/ssh_host_rsa OK
+ssh_keys:     Checking for default DSA host key for nodes                    NO
+ssh_keys:     Creating default node ssh_host_dsa_key:
+ssh_keys:      + ssh-keygen -q -t dsa -f /etc/warewulf/vnfs/ssh/ssh_host_dsa OK
+ssh_keys:     Checking for default ECDSA host key for nodes                  NO
+ssh_keys:     Creating default node ssh_host_ecdsa_key:
+                                                                             OK
+ssh_keys:     Checking for default Ed25519 host key for nodes                NO
+ssh_keys:     Creating default node ssh_host_ed25519_key:
+                                                                             OK
+Done.
 
 ### # Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image.
 
