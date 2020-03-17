@@ -1187,8 +1187,7 @@ wwsh -y provision set node1 --vnfs=centos7.7 --bootstrap=`uname -r ` \
 #### # Restart dhcp / update PXE
 
 ```bash
-systemctl restart dhcpd
-wwsh pxe update
+systemctl restart dhcpd && wwsh pxe update
 ```
 
 
