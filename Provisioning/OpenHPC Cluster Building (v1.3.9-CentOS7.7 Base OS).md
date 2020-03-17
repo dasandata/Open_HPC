@@ -234,11 +234,12 @@ Loading mirror speeds from cached hostfile
  \* updates: data.nicehosting.co.kr  
 116 packages excluded due to repository priority protections  
 repo id             repo name                                         status  
-!base/7/x86_64      CentOS-7 - Base                                        9,591  
-!epel/x86_64        Extra Packages for Enterprise Linux 7 - x86_64    12,182+116  
-!extras/7/x86_64    CentOS-7 - Extras                                        388  
-!updates/7/x86_64   CentOS-7 - Updates                                     1,929  
-repolist: 24,090  
+base/7/x86_64       CentOS-7 - Base                                       10,097
+\*epel/x86_64        Extra Packages for Enterprise Linux 7 - x86_64    13,045+165
+extras/7/x86_64     CentOS-7 - Extras                                        335
+updates/7/x86_64    CentOS-7 - Updates                                     1,487
+repolist: 26,102
+
 
 ### # Install to OpenHPC repository.
 ```bash
@@ -280,13 +281,13 @@ OpenHPC                                                                 821/821
 OpenHPC-updates                                                       1010/1010  
 139 packages excluded due to repository priority protections  
 repo id             repo name                                         status  
-OpenHPC             OpenHPC-1.3 - Base                                   321+500  
-OpenHPC-updates     OpenHPC-1.3 - Updates                                428+582  
-base/7/x86_64       CentOS-7 - Base                                        9,591  
-epel/x86_64         Extra Packages for Enterprise Linux 7 - x86_64    12,182+116  
-extras/7/x86_64     CentOS-7 - Extras                                        388  
-updates/7/x86_64    CentOS-7 - Updates                                     1,929  
-repolist: 24,839  
+OpenHPC             OpenHPC-1.3 - Base                                   321+500
+OpenHPC-updates     OpenHPC-1.3 - Updates                              817+1,113
+base/7/x86_64       CentOS-7 - Base                                       10,097
+\*epel/x86_64        Extra Packages for Enterprise Linux 7 - x86_64    13,045+165
+extras/7/x86_64     CentOS-7 - Extras                                        335
+updates/7/x86_64    CentOS-7 - Updates                                     1,487
+repolist: 26,102
 
 
 ## # 3.3 Add provisioning services on master node
@@ -298,15 +299,16 @@ yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt 2
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
 *output example>*  
->  tftp-server.x86_64 0:5.2-13.el7                     
-  warewulf-cluster-ohpc.x86_64 0:3.8pre-9.2                                     
-  warewulf-common-ohpc.x86_64 0:3.8pre-11.1                                     
-  warewulf-ipmi-ohpc.x86_64 0:3.8pre-9.1                                        
-  warewulf-provision-ohpc.x86_64 0:3.8pre-28.1                                  
-  warewulf-provision-server-ohpc.x86_64 0:3.8pre-28.1                           
-  warewulf-vnfs-ohpc.x86_64 0:3.8pre-19.1                                       
-  xinetd.x86_64 2:2.3.15-13.el7                                                 
+>  warewulf-common-ohpc.x86_64 0:3.8.1-14.2.ohpc.1.3.6                           
+  warewulf-ipmi-ohpc.x86_64 0:3.8.1-12.3.ohpc.1.3.6                             
+  warewulf-provision-initramfs-x86_64-ohpc.noarch 0:3.8.1-56.1.ohpc.1.3.9       
+  warewulf-provision-ohpc.x86_64 0:3.8.1-56.1.ohpc.1.3.9                        
+  warewulf-provision-server-ipxe-x86_64-ohpc.noarch 0:3.8.1-56.1.ohpc.1.3.9     
+  warewulf-provision-server-ohpc.x86_64 0:3.8.1-56.1.ohpc.1.3.9                 
+  warewulf-vnfs-ohpc.x86_64 0:3.8.1-33.1.ohpc.1.3.7                             
+  xinetd.x86_64 2:2.3.15-13.el7                                               
 Complete!  
+
 
 ### # NTP Server 설정
 
@@ -331,8 +333,7 @@ echo "server time.bora.net" >> /etc/ntp.conf
 
 cat /etc/ntp.conf | grep -v "#\|^$"
 
-systemctl enable ntpd.service
-systemctl restart ntpd
+systemctl enable ntpd.service && systemctl restart ntpd
 ```
 
 
