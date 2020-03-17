@@ -525,12 +525,15 @@ wwmkchroot centos-7 ${CHROOT} >> ~/dasan_log_ohpc_initial-BaseOS.txt 2>&1
 tail ~/dasan_log_ohpc_initial-BaseOS.txt
 ```
 *output example>*
->================================================================================  
-Install  43 Packages (+132 Dependent packages)  
-Total download size: 85 M  
-Installed size: 363 M  
-Downloading packages:  
-<일부 생략>  
+>  sqlite.x86_64 0:3.7.17-8.el7                                                                
+  systemd.x86_64 0:219-67.el7                                                                 
+  systemd-libs.x86_64 0:219-67.el7                                                            
+  systemd-sysv.x86_64 0:219-67.el7                                                            
+  sysvinit-tools.x86_64 0:2.88-14.dsf.el7                                                     
+  tcp_wrappers-libs.x86_64 0:7.6-77.el7                                                       
+  ustr.x86_64 0:1.0.4-16.el7                                                                  
+  xz.x86_64 0:5.2.2-1.el7                                                                     
+  xz-libs.x86_64 0:5.2.2-1.el7  
 Complete!  
 
 
