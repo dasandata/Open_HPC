@@ -2110,22 +2110,4 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 ```
 
 
-***
-
-### # etc..
-
-#### # root 가 패스워드 없이 node 에 로그인 할 수 있도록 sshkey 를 복사 합니다.
-```bash
-cat ~/.ssh/cluster.pub >> ${CHROOT}/root/.ssh/authorized_keys
-```
-
-
-
-
-
-
-
-
-
-
 # END.
