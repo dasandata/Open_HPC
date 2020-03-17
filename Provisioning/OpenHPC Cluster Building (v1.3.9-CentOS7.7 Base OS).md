@@ -497,11 +497,16 @@ grep disable /etc/xinetd.d/tftp
 
 ### # Restart/enable relevant services to support provisioning
 ```bash
-systemctl enable dhcpd && systemctl restart xinetd
+echo "
+systemctl enable  dhcpd
+systemctl restart xinetd
+systemctl enable  mariadb
+systemctl restart mariadb
+systemctl enable  httpd
+systemctl restart httpd
+" > /tmp/provisioning_service_run.sh
 
-systemctl enable mariadb.service && systemctl restart mariadb
-
-systemctl enable httpd.service && systemctl restart httpd
+bash /tmp/provisioning_service_run.sh
 ```
 
 ## # 3.6 Define compute image for provisioning
