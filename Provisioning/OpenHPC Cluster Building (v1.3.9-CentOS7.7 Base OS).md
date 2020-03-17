@@ -573,14 +573,14 @@ tail ~/dasan_log_ohpc_meta-package.txt
 
 ```
 *output example>*
->  python-urlgrabber.noarch 0:3.10-8.el7                                         
-  pyxattr.x86_64 0:0.5.1-5.el7                                                  
-  rpm-build-libs.x86_64 0:4.11.3-25.el7                                         
-  rpm-python.x86_64 0:4.11.3-25.el7                                             
-  xorg-x11-proto-devel.noarch 0:7.7-20.el7                                      
+>  pyxattr.x86_64 0:0.5.1-5.el7                                                  
+  rpm-build-libs.x86_64 0:4.11.3-40.el7                                         
+  rpm-python.x86_64 0:4.11.3-40.el7                                             
+  systemtap-sdt-devel.x86_64 0:4.0-10.el7_7                                     
+  xorg-x11-proto-devel.noarch 0:2018.4-1.el7                                    
   yum-metadata-parser.x86_64 0:1.1.4-10.el7                                     
-  yum-plugin-fastestmirror.noarch 0:1.1.31-42.el7                               
-  zlib-devel.x86_64 0:1.2.7-17.el7                                              
+  yum-plugin-fastestmirror.noarch 0:1.1.31-52.el7                               
+  zlib-devel.x86_64 0:1.2.7-18.el7                                             
 Complete!  
 
 
