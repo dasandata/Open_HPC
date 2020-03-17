@@ -351,14 +351,14 @@ yum -y install ohpc-slurm-server \
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
 *output example>*
->  pmix-ohpc.x86_64 0:1.2.3-20.1                                                 
-  slurm-devel-ohpc.x86_64 0:17.02.9-69.2                                        
-  slurm-munge-ohpc.x86_64 0:17.02.9-69.2                                        
-  slurm-ohpc.x86_64 0:17.02.9-69.2                                              
-  slurm-perlapi-ohpc.x86_64 0:17.02.9-69.2                                      
-  slurm-plugins-ohpc.x86_64 0:17.02.9-69.2                                      
-  slurm-slurmdbd-ohpc.x86_64 0:17.02.9-69.2                                     
-  slurm-sql-ohpc.x86_64 0:17.02.9-69.2                                          
+>  pdsh-mod-slurm-ohpc.x86_64 0:2.33-97.1.ohpc.1.3.7                             
+  pmix-ohpc.x86_64 0:2.2.2-9.1.ohpc.1.3.7                                       
+  slurm-devel-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                            
+  slurm-example-configs-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                  
+  slurm-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                                  
+  slurm-perlapi-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                          
+  slurm-slurmctld-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                        
+  slurm-slurmdbd-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                                          
 Complete!  
 
 ### # Identify resource manager hostname on master host
