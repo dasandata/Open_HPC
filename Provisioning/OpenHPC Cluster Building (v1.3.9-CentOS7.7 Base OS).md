@@ -1179,7 +1179,7 @@ wwsh -y provision set --postnetdown=1  node1
 #### # Define provisioning image for hosts
 ```bash
 wwsh -y provision set node1 --vnfs=centos7.7 --bootstrap=`uname -r ` \
---files=dynamic_hosts,passwd,group,shadow,network --kargs="${kargs}"
+--files=dynamic_hosts,passwd,group,shadow,network
 ```
 \# Slurm 을 사용할 경우 - files= 에 slurm.conf,munge.key 도 추가.
 
