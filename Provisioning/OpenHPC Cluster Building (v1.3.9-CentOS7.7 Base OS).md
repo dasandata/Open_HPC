@@ -736,10 +736,7 @@ cat /etc/exports
 
 
 ```bash
-systemctl enable  nfs-server
-systemctl restart nfs-server
-
-exportfs
+systemctl enable  nfs-server && systemctl restart nfs-server && exportfs
 ```
 
 *output example>*
