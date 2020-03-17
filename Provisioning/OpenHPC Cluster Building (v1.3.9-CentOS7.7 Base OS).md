@@ -1551,17 +1551,22 @@ qstat -ans
 ## # 6. Run a Test Job
 ```bash
 wwsh file list
-wwsh file resync 
+wwsh file resync
 ```
 
 ```bash
 pdsh -w node1 uptime
-pdsh -w node1 /warewulf/bin/wwgetfiles
+pdsh -w node1 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+
+# pbspro 인 경우
 pdsh -w node1 systemctl status pbs | grep active
+
+# slurm 인 경우
+pdsh -w node1 systemctl status slurmd | grep active
 
 # node가 여러대 인 경우
 pdsh -w node[1-4] uptime
-pdsh -w node[1-4] /warewulf/bin/wwgetfiles
+pdsh -w node[1-4] 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 pdsh -w node[1-4] systemctl status pbs | grep active
 ```
 
