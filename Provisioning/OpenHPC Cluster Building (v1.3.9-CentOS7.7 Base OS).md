@@ -800,7 +800,7 @@ echo "/opt/ohpc/pub *(ro,no_subtree_check)"                 >> /etc/exports
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.  
 #echo "/data *(rw,no_subtree_check,no_root_squash)" >> /etc/exports
-#mkdir ${CHRROT}/data
+#mkdir ${CHROOT}/data
 
 cat /etc/exports
 ```
