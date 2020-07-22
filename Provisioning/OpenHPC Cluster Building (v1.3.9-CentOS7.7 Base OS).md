@@ -346,7 +346,7 @@ systemctl enable ntpd.service && systemctl restart ntpd
 
 ### # Install slurm server meta-package
 ```bash
-yum -y install ohpc-slurm-server \
+yum -y install ohpc-slurm-server slurm-sview-ohpc slurm-torque-ohpc  \
   >> ~/dasan_log_ohpc_resourcemanager_slurm.txt 2>&1
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
