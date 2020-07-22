@@ -450,7 +450,7 @@ tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 yum -y groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
 tail -1 ~/dasan_log_ohpc_IBSupport.txt
 
-yum -y install infinipath-psm opensm     >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
+yum -y install infinipath-psm opensm libibverbs-utils >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
 tail -1 ~/dasan_log_ohpc_IBSupport.txt
 
 ```
@@ -854,7 +854,7 @@ echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
 tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
 
-yum -y --installroot=${CHROOT} install infinipath-psm >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
+yum -y --installroot=${CHROOT} install infinipath-psm  libibverbs-utils >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
 tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
 
 chroot ${CHROOT} systemctl enable rdma
