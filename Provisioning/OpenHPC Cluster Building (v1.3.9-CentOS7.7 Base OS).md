@@ -642,7 +642,7 @@ tail ~/dasan_log_ohpc_update_nodeimage.txt
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel kernel-headers kernel-devel kernel-tools parted \
  xfsprogs python-devel yum htop ipmitool glibc* perl perl-CPAN perl-CPAN \
- sysstat gcc make >> ~/dasan_log_ohpc_meta-package.txt 2>&1
+ sysstat gcc make xauth firefox >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 
 tail ~/dasan_log_ohpc_meta-package.txt  
 
