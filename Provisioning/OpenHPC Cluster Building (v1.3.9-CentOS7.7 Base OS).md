@@ -13,6 +13,9 @@
 
 [3. Install OpenHPC Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-3-install-openhpc-components)
 
+[3-4. A (Slurm) Resource Management Services Install.](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-34-a-slurm-resource-management-services-install)
+
+
 [4. Install OpenHPC Development Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-4-install-openhpc-development-components)
 
 [5. Resource Manager Startup ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-resource-manager-startup)
@@ -362,7 +365,7 @@ systemctl enable ntpd.service && systemctl restart ntpd
 \# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
 \# GPU Cluster 의 경우 3.4-A. Slurm 을 설치해야 합니다.  
 
-## # 3.4-A (Slurm) Resource Management Services Install.
+## # [3.4-A (Slurm) Resource Management Services Install.](#목차)
 \# 참조 링크: https://slurm.schedmd.com/
 
 ### # Install slurm server meta-package
