@@ -13,7 +13,7 @@
 
 [3. Install OpenHPC Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-3-install-openhpc-components)
 
-              [3-4. A (Slurm) Resource Management Services Install.](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-34-a-slurm-resource-management-services-install)
+<br> <br>[3-4. A (Slurm) Resource Management Services Install.](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-34-a-slurm-resource-management-services-install)
 
 
 [4. Install OpenHPC Development Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-4-install-openhpc-development-components)
