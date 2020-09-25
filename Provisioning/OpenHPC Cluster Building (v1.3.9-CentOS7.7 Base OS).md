@@ -11,6 +11,10 @@
 <br>[2. Network and Firewall Setup to Base Operating System (BOS) ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos)
 <br>[3. Install OpenHPC Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-3-install-openhpc-components)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;[3-4. A (Slurm) Resource Management Services Install.](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-34-a-slurm-resource-management-services-install)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;[3.4-B (PBS Pro) Resource Management Services Install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-34-b-pbs-pro-resource-management-services-install)
+
+
+
 <br>[4. Install OpenHPC Development Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-4-install-openhpc-development-components)
 <br>[5. Resource Manager Startup ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-resource-manager-startup)
 <br>[6. Run a Test Job ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-run-a-test-job)
@@ -450,7 +454,7 @@ grep NodeName= /etc/slurm/slurm.conf
 >NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
-## # 3.4-B (PBS Pro) Resource Management Services Install
+## # [3.4-B (PBS Pro) Resource Management Services Install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#%EB%AA%A9%EC%B0%A8)
 
 ### # Install to pbspro-server-ohpc
 ```bash
