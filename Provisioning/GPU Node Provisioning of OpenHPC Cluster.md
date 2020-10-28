@@ -229,6 +229,38 @@ mv  cuda/lib64/libcudnn*  /usr/local/cuda-9.0/lib64/
 cd
 ```
 
+## # multiple CUDNN to MASTER
+
+```
+echo "cudnn-8.0-linux-x64-v7.1.tgz"        > cudnn.txt
+echo "cudnn-9.0-linux-x64-v7.6.5.32.tgz"  >> cudnn.txt
+echo "cudnn-10.0-linux-x64-v7.6.5.32.tgz" >> cudnn.txt
+echo "cudnn-10.1-linux-x64-v7.6.5.32.tgz" >> cudnn.txt
+echo "cudnn-10.2-linux-x64-v7.6.5.32.tgz" >> cudnn.txt
+echo "cudnn-11.0-linux-x64-v8.0.2.39.tgz" >> cudnn.txt
+
+for I in $(cat cudnn.txt)
+
+do  echo "$I"
+VER=$(echo "$I" | cut -d '-' -f 2)
+
+tar -xzf $I
+
+chmod a+r  cuda/include/*
+chmod a+r  cuda/lib64/*
+
+mv  cuda/include/cudnn.h  /opt/ohpc/pub/apps/cuda/$VER/include/
+mv  cuda/lib64/libcudnn*  /opt/ohpc/pub/apps/cuda/$VER/lib64/
+
+rm -rf   cuda/
+
+done
+```
+
+```
+rm cudnn.txt
+```
+
 
 ## # wwsh vnfs.con 파일을 아래와 같이 수정.
 ```bash
