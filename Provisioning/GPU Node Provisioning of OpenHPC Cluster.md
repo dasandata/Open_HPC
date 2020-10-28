@@ -964,6 +964,7 @@ JobCompType=jobcomp/none
 PropagateResourceLimitsExcept=MEMLOCK
 AccountingStorageType=accounting_storage/filetxt
 ReturnToService=1
+PrologFlags=x11
 
 ClusterName=OpenHPC_dasandata
 ControlMachine=ohpc-master
