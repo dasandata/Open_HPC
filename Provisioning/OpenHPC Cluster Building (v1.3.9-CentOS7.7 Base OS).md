@@ -2207,9 +2207,9 @@ Docker version 20.10.2, build 2291f61
 
 [root@newton2:~]# chroot /opt/ohpc/admin/images/centos7.9
 
-[root@newton2:~]# sed -i 's/SELINUX=enforcing/SELINUX=disabled/' etc/sysconfig/selinux
+[root@newton2:/]# sed -i 's/SELINUX=enforcing/SELINUX=disabled/' etc/sysconfig/selinux
 
-[root@newton2:~]# grep 'SELINUX=' etc/sysconfig/selinux  
+[root@newton2:/]# grep 'SELINUX=' etc/sysconfig/selinux  
 
 [root@newton2:/]# systemctl enable docker.service
 
