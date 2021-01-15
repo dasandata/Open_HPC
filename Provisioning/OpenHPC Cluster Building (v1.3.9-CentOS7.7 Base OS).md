@@ -2145,9 +2145,9 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 
 ```bash
 
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+[root@newton2:~]# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
-yum install -y docker-ce docker-ce-cli containerd.io
+[root@newton2:~]# yum install -y docker-ce docker-ce-cli containerd.io
 
 [root@newton2:~]# systemctl status docker.service
 ● docker.service - Docker Application Container Engine
@@ -2197,17 +2197,23 @@ Docker version 20.10.2, build 2291f61
 
 ```bash
 
-ll /etc/yum.repos.d/docker-ce.repo
+[root@newton2:~]# ll /etc/yum.repos.d/docker-ce.repo
 
-cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/
+[root@newton2:~]# cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/
 
-ll /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/docker-ce.repo
+[root@newton2:~]# ll /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/docker-ce.repo
 
-yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-ce-cli containerd.io
+[root@newton2:~]# yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-ce-cli containerd.io
 
-wwsh file resync
+[root@newton2:~]# chroot /opt/ohpc/admin/images/centos7.9
 
-wwvnfs --chroot /opt/ohpc/admin/images/centos7.9
+[root@newton2:/]# systemctl enable docker.service
+
+[root@newton2:/]# exit
+
+[root@newton2:~]# wwsh file resync
+
+[root@newton2:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.9
 
 ```
 
