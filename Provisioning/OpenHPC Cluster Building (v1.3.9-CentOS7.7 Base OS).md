@@ -20,7 +20,9 @@
 <br>[6. Run a Test Job ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-run-a-test-job)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-A. Slurm Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-B. PBS Pro Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executable)
-
+<br>[7. Docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-docker-install)   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-1. Master install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-1-master-install)   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-2. vnfs docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-2-vnfs-docker-install)
 
 
 
@@ -1268,7 +1270,7 @@ wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
 ```
 ***
 
-### # 3.7.5 Optionally configure stateful provisioning
+### # 3.7.5 configure stateful provisioning
 
 #### # Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
@@ -1278,7 +1280,11 @@ wwvnfs --chroot ${CHROOT}
 
 #### # Select (and customize) appropriate parted layout example
 ```bash
-cp /etc/warewulf/filesystem/examples/gpt_example.cmds /etc/warewulf/filesystem/gpt.cmds
+
+git clone https://github.com/dasandata/Open_HPC
+
+cp /root/Open_HPC/Provisioning/gpt.cmds /etc/warewulf/filesystem/
+
 wwsh provision set --filesystem=gpt  node1
 wwsh provision set --bootloader=sda  node1
 ```
@@ -1287,6 +1293,8 @@ wwsh provision set --bootloader=sda  node1
 
 ```bash
 # BIOS / GPT Example
+
+ll /etc/warewulf/filesystem/examples/gpt_example.cmds
 
 # Parted specific commands
 \select /dev/sda
@@ -1315,15 +1323,18 @@ fstab 3 swap swap defaults 0 0
 
 #### In UEFI, Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
-yum -y --installroot=${CHROOT} install grub2-efi grub2-efi-modules
+yum -y --installroot=${CHROOT} install grub2 grub2-efi grub2-efi-modules
 wwvnfs --chroot $CHROOT
 
-cp /etc/warewulf/filesystem/examples/efi_example.cmds /etc/warewulf/filesystem/efi.cmds
+git clone https://github.com/dasandata/Open_HPC
+
+cp /root/Open_HPC/Provisioning/efi.cmds /etc/warewulf/filesystem/
+
 wwsh provision set --filesystem=efi  node1
 wwsh provision set --bootloader=sda  node1
 ```
 
-#### # Configure local boot (after successful provisioning)
+#### # Optionally Configure local boot (after successful provisioning)
 ```bash
 wwsh provision set --bootlocal=normal  node1
 ```
@@ -2129,6 +2140,90 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 [sonic@Master:~]$
 [sonic@Master:~]$
 ```
+
+## # 7. [Docker install](#목차)
+
+### # 7-1. [Master install](#목차)
+
+```bash
+
+[root@newton2:~]# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+[root@newton2:~]# yum install -y docker-ce docker-ce-cli containerd.io
+
+[root@newton2:~]# systemctl status docker.service
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+     Docs: https://docs.docker.com
+[root@newton2:~]#
+[root@newton2:~]# systemctl enable docker.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+[root@newton2:~]#
+[root@newton2:~]# systemctl restart docker.service
+[root@newton2:~]#
+[root@newton2:~]# systemctl status docker.service
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2021-01-14 18:08:23 KST; 5s ago
+     Docs: https://docs.docker.com
+ Main PID: 12216 (dockerd)
+    Tasks: 12
+   Memory: 47.2M
+   CGroup: /system.slice/docker.service
+           └─12216 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Jan 14 18:08:22 newton2 dockerd[12216]: time="2021-01-14T18:08:22.697911441+09:00" level=info msg="Loading containers: start."
+
+[root@newton2:~]#
+[root@newton2:~]# usermod -G docker sonic
+[root@newton2:~]#
+[root@newton2:~]# cat /etc/group | grep -i docker
+docker:x:978:sonic
+[root@newton2:~]#
+[root@newton2:~]# su - sonic
+Last login: Thu Jan 14 18:03:04 KST 2021 from 192.168.0.116 on pts/0
+[sonic@newton2:~]$
+[sonic@newton2:~]$ docker images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+[sonic@newton2:~]$
+[sonic@newton2:~]$ docker -v
+Docker version 20.10.2, build 2291f61
+[sonic@newton2:~]$
+[sonic@newton2:~]$ exit
+[root@newton2:~]#
+
+```
+
+### # 7-2. [vnfs docker install](#목차)
+
+```bash
+
+[root@newton2:~]# ll /etc/yum.repos.d/docker-ce.repo
+
+[root@newton2:~]# cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/
+
+[root@newton2:~]# ll /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/docker-ce.repo
+
+[root@newton2:~]# yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-ce-cli containerd.io
+
+[root@newton2:~]# chroot /opt/ohpc/admin/images/centos7.9
+
+[root@newton2:/]# sed -i 's/SELINUX=enforcing/SELINUX=disabled/' etc/sysconfig/selinux
+
+[root@newton2:/]# grep 'SELINUX=' etc/sysconfig/selinux  
+
+[root@newton2:/]# systemctl enable docker.service
+
+[root@newton2:/]# exit
+
+[root@newton2:~]# wwsh file resync
+
+[root@newton2:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.9
+
+```
+
+
 
 
 # END.
