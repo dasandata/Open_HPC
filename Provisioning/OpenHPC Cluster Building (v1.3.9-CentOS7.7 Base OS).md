@@ -1278,7 +1278,11 @@ wwvnfs --chroot ${CHROOT}
 
 #### # Select (and customize) appropriate parted layout example
 ```bash
-cp /root/Open_HPC/Provisioning/gpu.cmds /etc/warewulf/filesystem/
+
+git clone https://github.com/dasandata/Open_HPC
+
+cp /root/Open_HPC/Provisioning/gpt.cmds /etc/warewulf/filesystem/
+
 wwsh provision set --filesystem=gpt  node1
 wwsh provision set --bootloader=sda  node1
 ```
@@ -1320,7 +1324,10 @@ fstab 3 swap swap defaults 0 0
 yum -y --installroot=${CHROOT} install grub2 grub2-efi grub2-efi-modules
 wwvnfs --chroot $CHROOT
 
+git clone https://github.com/dasandata/Open_HPC
+
 cp /root/Open_HPC/Provisioning/efi.cmds /etc/warewulf/filesystem/
+
 wwsh provision set --filesystem=efi  node1
 wwsh provision set --bootloader=sda  node1
 ```
