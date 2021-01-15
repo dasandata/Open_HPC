@@ -2193,7 +2193,7 @@ Docker version 20.10.2, build 2291f61
 
 ```
 
-### # 7-2. Node install
+### # 7-2. vnfs docker install
 
 ```bash
 
