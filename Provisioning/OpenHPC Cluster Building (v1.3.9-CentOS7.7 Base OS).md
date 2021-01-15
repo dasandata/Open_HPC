@@ -1268,7 +1268,7 @@ wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
 ```
 ***
 
-### # 3.7.5 Optionally configure stateful provisioning
+### # 3.7.5 configure stateful provisioning
 
 #### # Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
@@ -1278,7 +1278,7 @@ wwvnfs --chroot ${CHROOT}
 
 #### # Select (and customize) appropriate parted layout example
 ```bash
-cp /etc/warewulf/filesystem/examples/gpt_example.cmds /etc/warewulf/filesystem/gpt.cmds
+cp /root/Open_HPC/Provisioning/gpu.cmds /etc/warewulf/filesystem/
 wwsh provision set --filesystem=gpt  node1
 wwsh provision set --bootloader=sda  node1
 ```
@@ -1287,6 +1287,8 @@ wwsh provision set --bootloader=sda  node1
 
 ```bash
 # BIOS / GPT Example
+
+ll /etc/warewulf/filesystem/examples/gpt_example.cmds
 
 # Parted specific commands
 \select /dev/sda
@@ -1315,15 +1317,15 @@ fstab 3 swap swap defaults 0 0
 
 #### In UEFI, Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
-yum -y --installroot=${CHROOT} install grub2-efi grub2-efi-modules
+yum -y --installroot=${CHROOT} install grub2 grub2-efi grub2-efi-modules
 wwvnfs --chroot $CHROOT
 
-cp /etc/warewulf/filesystem/examples/efi_example.cmds /etc/warewulf/filesystem/efi.cmds
+cp /root/Open_HPC/Provisioning/efi.cmds /etc/warewulf/filesystem/
 wwsh provision set --filesystem=efi  node1
 wwsh provision set --bootloader=sda  node1
 ```
 
-#### # Configure local boot (after successful provisioning)
+#### # Optionally Configure local boot (after successful provisioning)
 ```bash
 wwsh provision set --bootlocal=normal  node1
 ```
