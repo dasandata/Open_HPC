@@ -2139,5 +2139,79 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 [sonic@Master:~]$
 ```
 
+## # 7. [Docker install](#목차)
+
+### # 7-1. Master install
+
+```bash
+
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+yum install -y docker-ce docker-ce-cli containerd.io
+
+[root@newton2:~]# systemctl status docker.service
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+     Docs: https://docs.docker.com
+[root@newton2:~]#
+[root@newton2:~]# systemctl enable docker.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+[root@newton2:~]#
+[root@newton2:~]# systemctl restart docker.service
+[root@newton2:~]#
+[root@newton2:~]# systemctl status docker.service
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2021-01-14 18:08:23 KST; 5s ago
+     Docs: https://docs.docker.com
+ Main PID: 12216 (dockerd)
+    Tasks: 12
+   Memory: 47.2M
+   CGroup: /system.slice/docker.service
+           └─12216 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+Jan 14 18:08:22 newton2 dockerd[12216]: time="2021-01-14T18:08:22.697911441+09:00" level=info msg="Loading containers: start."
+
+[root@newton2:~]#
+[root@newton2:~]# usermod -G docker sonic
+[root@newton2:~]#
+[root@newton2:~]# cat /etc/group | grep -i docker
+docker:x:978:sonic
+[root@newton2:~]#
+[root@newton2:~]# su - sonic
+Last login: Thu Jan 14 18:03:04 KST 2021 from 192.168.0.116 on pts/0
+[sonic@newton2:~]$
+[sonic@newton2:~]$ docker images
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+[sonic@newton2:~]$
+[sonic@newton2:~]$ docker -v
+Docker version 20.10.2, build 2291f61
+[sonic@newton2:~]$
+[sonic@newton2:~]$ exit
+[root@newton2:~]#
+
+```
+
+### # 7-2. Node install
+
+```bash
+
+ll /etc/yum.repos.d/docker-ce.repo
+
+cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/
+
+ll /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/docker-ce.repo
+
+yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-ce-cli containerd.io
+
+wwsh file resync
+
+wwvnfs --chroot /opt/ohpc/admin/images/centos7.9
+
+```
+
+
+
 
 # END.
