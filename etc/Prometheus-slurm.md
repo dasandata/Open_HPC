@@ -22,7 +22,7 @@ go build -o bin/prometheus-slurm-exporter {main,accounts,cpus,nodes,partitions,q
 
 go test -v *.go
 
-cp bin/prometheus-slurm-exporter /usr/bin/  ## service 파일 복사 
+cp bin/prometheus-slurm-exporter /usr/bin/  ## service 파일 복사
 
 bin/prometheus-slurm-exporter  ## 테스트 커맨드 입력 하여도 되고 테스트 하지 않아도 됩니다
 
@@ -64,4 +64,24 @@ systemctl daemon-reload
 systemctl enable prometheus-slurm-exporter.service
 
 systemctl restart prometheus-slurm-exporter.service
+```
+
+### prometheus-config file Modified
+
+```bash
+ll -ld /etc/prometheus/prometheus.yml
+
+vi /etc/prometheus/prometheus.yml
+
+### 아래 내용 추가
+
+- job_name: 'slurm'
+  scrape_interval:  5s
+  scrape_timeout:   5s
+
+  static_configs:
+  - targets: ['xxx.xxx.xxx.xxx:8080']
+
+docker restart prometheus
+  
 ```
