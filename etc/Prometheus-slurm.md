@@ -1,4 +1,4 @@
-# prometheus-slurm export ( Centos7 )
+# Prometheus-slurm export ( Centos7 )
 
 ```bash
 export VERSION=1.15 OS=linux ARCH=amd64
@@ -29,7 +29,7 @@ bin/prometheus-slurm-exporter  ## 테스트 커맨드 입력 하여도 되고 �
 cd
 ```
 
-## firewall port add
+## Firewall port add
 
 ```bash
 firewall-cmd --add-port=8080/tcp --permanent
@@ -39,7 +39,7 @@ firewall-cmd --reload
 firewall-cmd --list-all
 ```
 
-### prometheus-slurm service add
+### Prometheus-slurm service add
 
 ```bash
 vi /lib/systemd/system/prometheus-slurm-exporter.service
@@ -66,7 +66,7 @@ systemctl enable prometheus-slurm-exporter.service
 systemctl restart prometheus-slurm-exporter.service
 ```
 
-### prometheus-config file Modified
+### Prometheus-config file Modified
 
 ```bash
 ll -ld /etc/prometheus/prometheus.yml
@@ -83,5 +83,5 @@ vi /etc/prometheus/prometheus.yml
   - targets: ['xxx.xxx.xxx.xxx:8080']
 
 docker restart prometheus
-  
+
 ```
