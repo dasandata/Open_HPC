@@ -68,10 +68,7 @@ wwvnfs --chroot  ${CHROOT}
 ```
 
 
-
-
-
-## prometheus docker run
+## Prometheus docker run on master.
 ```bash
 # Make Prometheus Config file (yaml).
 
@@ -119,7 +116,7 @@ docker update --restart=always prometheus
 
 
 
-## Install on node prometheus node expoter
+## Run on node prometheus-node-expoter
 
 ```bash
 # on node. run expoter
@@ -134,7 +131,7 @@ netstat  -tnlp  | grep node_exporter
 
 ```
 
-##
+## add scrape node info to master
 
 ```bash
 # on master, add scrape node info. * targets is node ip address.
@@ -173,6 +170,37 @@ docker restart prometheus
 
 
 ```
+
+## Add script & Crontab, for Start Docker process at reboot node  
+
+```bash
+mkdir /opt/ohpc/pub/script
+
+cat << EOF > /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
+docker run -d --restart=always --name prometheus-node-exporter \
+  --net="host" --pid="host" \
+  -v "/:/host:ro,rslave" \
+  quay.io/prometheus/node-exporter:latest \
+  --path.rootfs=/host
+EOF
+
+chmod u+x  /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
+
+wwsh vnfs list
+export CHROOT=/opt/ohpc/admin/images/centos7.5-gpu
+
+cat << EOF >> ${CHROOT}/etc/crontab
+
+# docker-run-prometheus-node-exporter at Reboot.
+@reboot    root    /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
+
+EOF
+
+cat  ${CHROOT}/etc/crontab
+
+```
+
+
 
 
 ## Grafana Docker
