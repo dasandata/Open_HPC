@@ -171,7 +171,7 @@ docker restart prometheus
 
 ```
 
-## Add script & Crontab, for Start Docker process at reboot node  
+## Add script & Crontab, for Start docker process after node reboot   
 
 ```bash
 mkdir /opt/ohpc/pub/script
