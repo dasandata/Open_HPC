@@ -184,7 +184,7 @@ docker run -d --restart=always --name prometheus-node-exporter \
   --path.rootfs=/host
 EOF
 
-chmod u+x  /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
+chmod a+x  /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
 
 wwsh vnfs list
 export CHROOT=/opt/ohpc/admin/images/centos7.5-gpu
@@ -198,6 +198,7 @@ EOF
 
 cat  ${CHROOT}/etc/crontab
 
+wwvnfs --chroot  ${CHROOT}
 ```
 
 
