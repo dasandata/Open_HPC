@@ -42,7 +42,7 @@ OpenHPC Cluster 의 설치 방법 입니다.
 자세한 내용은 공식 Install Recipe 를 참조 하시면 좋습니다 :)  
 http://openhpc.community/downloads/  
 
-궁금하신 점이나 오류, 오탈자 등을 발견 하시면 아래 주소로 메일 부탁 드립니다 ^^;  
+궁금하신 점이나 오류, 오탈자 등을 발견 하시면 아래 주소로 메일 부탁 드립니다.
 mail@dasandata.co.kr  
 
 감사합니다.  
@@ -66,7 +66,7 @@ vi /root/dasan_ohpc_variable.sh
 export CLUSTER_NAME=OpenHPC_Dasandata # 변경 필요
 
 # 노드 배포 이미지 경로 (chroot)
-export CHROOT=/opt/ohpc/admin/images/centos7.7
+export CHROOT=/opt/ohpc/admin/images/centos7
 
 # MASTER 의 이름 과 IP.
 export MASTER_HOSTNAME=$(hostname -s)
