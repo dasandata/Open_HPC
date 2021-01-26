@@ -70,7 +70,7 @@ export CHROOT=/opt/ohpc/admin/images/centos7
 
 # MASTER 의 이름 과 IP.
 export MASTER_HOSTNAME=$(hostname -s)
-export MASTER_IP=10.1.1.200
+export MASTER_IP=10.1.1.254
 export MASTER_PREFIX=24
 
 # 인터페이스 이름.
@@ -1297,7 +1297,7 @@ wwsh provision set --bootloader=sda  node1
 ll /etc/warewulf/filesystem/examples/gpt_example.cmds
 
 # Parted specific commands
-\select /dev/sda
+select /dev/sda
 mklabel gpt
 mkpart primary 1MiB 3MiB
 mkpart primary ext4 3MiB 513MiB
