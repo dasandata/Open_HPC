@@ -153,7 +153,7 @@ docker restart prometheus
 
 ```bash
 # on node.
-docker run -d --restart=always --name dcgm-exporter \
+docker run -d --restart=always --name prometheus-dcgm-exporter \
   --gpus all -p 9400:9400 nvidia/dcgm-exporter:2.0.13-2.1.1-ubuntu18.04
 
 
@@ -168,36 +168,47 @@ EOF
 
 docker restart prometheus
 
-
 ```
 
 ## Add script & Crontab, for Start docker process after node reboot   
 
 ```bash
+# make script folder
 mkdir /opt/ohpc/pub/script
 
-cat << EOF > /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
-docker run -d --restart=always --name prometheus-node-exporter \
-  --net="host" --pid="host" \
-  -v "/:/host:ro,rslave" \
-  quay.io/prometheus/node-exporter:latest \
+cat << EOF > /opt/ohpc/pub/script/docker-run-prometheus-exporter.sh
+
+# node-exporter
+docker run -d --restart=always --name prometheus-node-exporter \\
+  --net="host" --pid="host" \\
+  -v "/:/host:ro,rslave" \\
+  quay.io/prometheus/node-exporter:latest \\
   --path.rootfs=/host
+
+# dcgm-exporter
+docker run -d --restart=always --name dcgm-exporter \\
+  --gpus all -p 9400:9400 \\
+  nvidia/dcgm-exporter:2.0.13-2.1.1-ubuntu18.04
+
 EOF
 
-chmod a+x  /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
+chmod a+x  /opt/ohpc/pub/script/docker-run-prometheus-exporter.sh
 
+# Check vnfs PATH to chaing export CHROOT.
 wwsh vnfs list
-export CHROOT=/opt/ohpc/admin/images/centos7.5-gpu
+export CHROOT=/opt/ohpc/admin/images/centos7
 
+# add crontab node vnfs
 cat << EOF >> ${CHROOT}/etc/crontab
 
 # docker-run-prometheus-node-exporter at Reboot.
-@reboot    root    /opt/ohpc/pub/script/docker-run-prometheus-node-exporter.sh
+@reboot    root    /opt/ohpc/pub/script/docker-run-prometheus-exporter.sh
 
 EOF
 
 cat  ${CHROOT}/etc/crontab
 
+# vnfs update.
 wwvnfs --chroot  ${CHROOT}
 ```
 
