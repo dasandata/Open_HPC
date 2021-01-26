@@ -1,9 +1,11 @@
 
-
 # OpenHPC Performace Monitoring using Prometheus + Grafana (based docker)
+
+
 
 ## Requirements  
  - openhpc node staeful setup  # docker image in physical disk and save docker config on nodes.
+
 
 
 ## Insatll Docker to Master & VNFS of openhpc nodes.
@@ -44,6 +46,7 @@ wwsh file resync  # docker /etc/group sync.
 
 
 
+
 ## Install Nvidia Docker to Master & VNFS of openhpc nodes.
 ```bash
 # Nvidia-Docker Install on master server.
@@ -66,6 +69,7 @@ yum -y --installroot=${CHROOT}  install   nvidia-docker2
 
 wwvnfs --chroot  ${CHROOT}
 ```
+
 
 
 ## Prometheus docker run on master.
@@ -117,7 +121,6 @@ docker update --restart=always prometheus
 
 
 ## Run on node prometheus-node-expoter
-
 ```bash
 # on node. run expoter
 docker run -d --restart=always --name prometheus-node-exporter \
@@ -149,8 +152,9 @@ docker restart prometheus
 
 
 
-## Run prometheus nvidia dcgm expoter (prometheus-dcgm)
 
+
+## Run prometheus nvidia dcgm expoter (prometheus-dcgm)
 ```bash
 # on node.
 docker run -d --restart=always --name prometheus-dcgm-exporter \
@@ -171,7 +175,6 @@ docker restart prometheus
 ```
 
 ## Add script & Crontab, for Start docker process after node reboot   
-
 ```bash
 # make script folder
 mkdir /opt/ohpc/pub/script
@@ -214,9 +217,91 @@ wwvnfs --chroot  ${CHROOT}
 
 
 
+## Prometheus-slurm exporter ( Centos7 )
+```bash
+# only master.
+
+cd /tmp/
+
+# Donwload go 1.15
+export VERSION=1.15 OS=linux ARCH=amd64
+wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
+
+tar -xzf go$VERSION.$OS-$ARCH.tar.gz
+export PATH=$PWD/go/bin:$PATH
+
+git clone https://github.com/vpenso/prometheus-slurm-exporter.git
+
+# Change listen on for HTTP requests.
+grep -n -r 8080 prometheus-slurm-exporter/main.go
+sed -i 's/:8080/:9800/'  prometheus-slurm-exporter/main.go
+grep -n -r 9800  prometheus-slurm-exporter/main.go
+
+# make slurm expoter
+cd prometheus-slurm-exporter
+pwd
+export GOPATH=$PWD/go/modules
+
+go mod download
+go build -o bin/prometheus-slurm-exporter {main,accounts,cpus,nodes,partitions,queue,scheduler,users}.go
+go test -v *.go
+
+# copy make file
+cp bin/prometheus-slurm-exporter /usr/bin/
+
+# for test.
+/usr/bin/prometheus-slurm-exporter
+
+
+# Firewall port add
+firewall-cmd --add-port=9800/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-all
+
+# Prometheus-slurm service add
+cat << EOF > /lib/systemd/system/prometheus-slurm-exporter.service
+[Unit]
+Description=Prometheus SLURM Exporter
+
+[Service]
+ExecStart=/usr/bin/prometheus-slurm-exporter
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+ll /lib/systemd/system/prometheus-slurm-exporter.service
+chmod +x /lib/systemd/system/prometheus-slurm-exporter.service
+
+systemctl daemon-reload
+systemctl enable prometheus-slurm-exporter.service
+systemctl start  prometheus-slurm-exporter.service
+systemctl status prometheus-slurm-exporter.service
+netstat -tnlp | grep 9800
+
+# Prometheus-config file Modified
+ll -ld /etc/prometheus/prometheus.yml
+cp /etc/prometheus/prometheus.yml{,.bak}
+
+cat << EOF >> /etc/prometheus/prometheus.yml
+
+  - job_name: 'slurm-exporter'
+    scrape_interval:  5s
+    scrape_timeout:   5s
+
+    static_configs:
+      - targets: ['localhost:9800']
+EOF
+
+# restart prometheus
+docker restart prometheus
+```
+
+
 
 ## Grafana Docker
-
 ```bash
 # on master.
 docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
@@ -236,8 +321,9 @@ firewall-cmd --list-all | grep 3000
 # id : admin / pass : admin
 ```
 
-## Grafana dashboard
 
+
+## Grafana dashboard
 https://grafana.com/grafana/dashboards
 
 
