@@ -333,6 +333,9 @@ https://grafana.com/grafana/dashboards/1860
 #### Node Exporter Full with Node Name
 https://grafana.com/grafana/dashboards/10242
 
+#### Node Exporter Server Metrics
+https://grafana.com/grafana/dashboards/405
+
 #### GPU Nodes v2
 https://grafana.com/grafana/dashboards/11752
 
