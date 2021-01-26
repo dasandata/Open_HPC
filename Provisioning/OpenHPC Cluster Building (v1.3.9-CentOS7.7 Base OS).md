@@ -2145,11 +2145,11 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 ### # 7-1. [Master install](#목차)
 
 ```bash
-
+[root@newton2:~]#
 [root@newton2:~]# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
+[root@newton2:~]#
 [root@newton2:~]# yum install -y docker-ce docker-ce-cli containerd.io
-
+[root@newton2:~]#
 [root@newton2:~]# systemctl status docker.service
 ● docker.service - Docker Application Container Engine
    Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
@@ -2191,25 +2191,22 @@ Docker version 20.10.2, build 2291f61
 [sonic@newton2:~]$
 [sonic@newton2:~]$ exit
 [root@newton2:~]#
-
-[root@master:~]#
-[root@master:~]# curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+[root@newton2:~]# curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   651  100   651    0     0   1378      0 --:--:-- --:--:-- --:--:--  1388
 100 11.6M  100 11.6M    0     0  2048k      0  0:00:05  0:00:05 --:--:-- 2463k
-[root@master:~]#
-[root@master:~]# chmod +x /usr/local/bin/docker-compose
-[root@master:~]#
-[root@master:~]# ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-[root@master:~]#
-[root@master:~]# docker-compose --version
+[root@newton2:~]#
+[root@newton2:~]# chmod +x /usr/local/bin/docker-compose
+[root@newton2:~]#
+[root@newton2:~]# ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+[root@newton2:~]#
+[root@newton2:~]# docker-compose --version
 docker-compose version 1.27.4, build 40524192
-[root@master:~]#
-[root@master:~]# ll /usr/local/bin/docker-compose
+[root@newton2:~]#
+[root@newton2:~]# ll /usr/local/bin/docker-compose
 -rwxr-xr-x 1 root root 12M Jan 25 19:56 /usr/local/bin/docker-compose
-[root@master:~]#
-
+[root@newton2:~]#
 
 ```
 
