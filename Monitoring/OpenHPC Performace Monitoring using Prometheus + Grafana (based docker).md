@@ -307,7 +307,6 @@ docker restart prometheus
 docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
 
 docker ps | grep grafana
-
 netstat  -tnlp | grep 3000
 
 # Firewall Port Open 9090
@@ -316,16 +315,32 @@ firewall-cmd --add-port=3000/tcp
 firewall-cmd --add-port=3000/tcp --permanent
 firewall-cmd --list-all | grep 3000
 
-
 # Open Broser to http://localhost:3000
 # id : admin / pass : admin
+
+# Plugin Install to clock-panel
+docker exec grafana grafana-cli plugins install grafana-clock-panel
+docker restart grafana
+
 ```
 
-
-
-## Grafana dashboard
+### Grafana dashboard
 https://grafana.com/grafana/dashboards
 
+#### Prometheus Node Exporter Full
+https://grafana.com/grafana/dashboards/1860
+
+#### Node Exporter Full with Node Name
+https://grafana.com/grafana/dashboards/10242
+
+#### GPU Nodes v2
+https://grafana.com/grafana/dashboards/11752
+
+#### NVIDIA DCGM Exporter Dashboard
+https://grafana.com/grafana/dashboards/12239
+
+#### slurm
+https://grafana.com/grafana/dashboards/4323
 
 
 ## END.
