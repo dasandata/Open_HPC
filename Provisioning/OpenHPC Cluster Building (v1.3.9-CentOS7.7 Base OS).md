@@ -23,7 +23,7 @@
 <br>[7. Docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-docker-install)   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-1. Master install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-1-master-install)   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-2. vnfs docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-2-vnfs-docker-install)   
-<br>[8. gpustat install vnfs](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#8-gpustat-install-vnfs)
+[8. gpustat install vnfs](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#8-gpustat-install-vnfs)
 
 
 ***
