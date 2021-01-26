@@ -22,9 +22,8 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-B. PBS Pro Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executable)
 <br>[7. Docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-docker-install)   
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-1. Master install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-1-master-install)   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-2. vnfs docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-2-vnfs-docker-install)
-
-
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-2. vnfs docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-2-vnfs-docker-install)   
+<br>[8. gpustat install vnfs](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#8-gpustat-install-vnfs)
 
 
 ***
@@ -2260,7 +2259,7 @@ docker-compose version 1.27.4, build 40524192
 ```bash
 [root@cseedu-master:~]#
 [root@cseedu-master:~]# yum install --installroot=/opt/ohpc/admin/images/centos7.9/ python3-devel  python3-pip ncurses-devel   -y
-
+[root@cseedu-master:~]#
 [root@cseedu-master:~]# chroot  /opt/ohpc/admin/images/centos7.9/
 [root@cseedu-master:/]#
 [root@cseedu-master:/]# pip3 list
@@ -2290,6 +2289,7 @@ Successfully installed blessings-1.7 gpustat-0.6.0 nvidia-ml-py3-7.352.0 psutil-
 [root@cseedu-master:/]#
 [root@cseedu-master:/]# pip3   -V
 pip 9.0.3 from /usr/lib/python3.6/site-packages (python 3.6)
+[root@cseedu-master:/]#
 [root@cseedu-master:/]# pip3 list
 DEPRECATION: The default format will switch to columns in the future. You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf under the [list] section) to disable this warning.
 blessings (1.7)
