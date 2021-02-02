@@ -1282,73 +1282,36 @@ wwsh -y node set ${NODE_NAME}${NEW_NODE_NUM} -D ib0 --ipaddr=${c_ipoib[$i]} \
 
 wwsh -y provision set ${NODE_NAME}${NEW_NODE_NUM} --fileadd=ifcfg-ib0.ww
 ```
-***
 
 ### # 3.7.5 configure stateful provisioning
 
 #### # Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
-yum -y --installroot=${CHROOT} install grub2
+yum -y --installroot=${CHROOT} install  grub2 grub2-efi grub2-efi-modules
 wwvnfs --chroot ${CHROOT}
 ```
 
-#### # Select (and customize) appropriate parted layout example
+#### # In GPT, Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
-
 git clone https://github.com/dasandata/Open_HPC
 
-cp /root/Open_HPC/Provisioning/gpt.cmds /etc/warewulf/filesystem/
+cp   /root/Open_HPC/Provisioning/gpt.cmds   /etc/warewulf/filesystem/
 
-wwsh provision set --filesystem=gpt  node1
-wwsh provision set --bootloader=sda  node1
+wwsh -y provision set --filesystem=gpt  node1
+wwsh -y provision set --bootloader=sda  node1
 ```
 
-#### # gpt.cmds Example
-
+#### # In UEFI, Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
-# BIOS / GPT Example
-
-ll /etc/warewulf/filesystem/examples/gpt_example.cmds
-
-# Parted specific commands
-select /dev/sda
-mklabel gpt
-mkpart primary 1MiB 3MiB
-mkpart primary ext4 3MiB 513MiB
-mkpart primary linux-swap 513MiB 33GiB
-mkpart primary ext4 33Gib 100%
-name 1 grub
-name 2 boot
-name 3 swap
-name 4 root
-set 1 bios_grub on
-set 2 boot on
-
-# mkfs NUMBER FS-TYPE [ARGS...]
-mkfs 2 ext4 -L boot
-mkfs 3 swap
-mkfs 4 ext4 -L root
-
-# fstab NUMBER fs_file fs_vfstype fs_mntops fs_freq fs_passno
-fstab 4 / ext4 defaults 0 0
-fstab 2 /boot ext4 defaults 0 0
-fstab 3 swap swap defaults 0 0
-```
-
-#### In UEFI, Add GRUB2 bootloader and re-assemble VNFS image
-```bash
-yum -y --installroot=${CHROOT} install grub2 grub2-efi grub2-efi-modules
-wwvnfs --chroot $CHROOT
-
 git clone https://github.com/dasandata/Open_HPC
 
-cp /root/Open_HPC/Provisioning/efi.cmds /etc/warewulf/filesystem/
+cp /root/Open_HPC/Provisioning/efi.cmds   /etc/warewulf/filesystem/
 
-wwsh provision set --filesystem=efi  node1
-wwsh provision set --bootloader=sda  node1
+wwsh -y provision set --filesystem=efi  node1
+wwsh -y provision set --bootloader=sda  node1
 ```
 
-#### # Optionally Configure local boot (after successful provisioning)
+#### # Configure local boot (after successful provisioning)
 ```bash
 wwsh provision set --bootlocal=normal  node1
 ```
@@ -1365,6 +1328,7 @@ wwsh object modify -s FS=           -t node   n1
 wwsh object modify -s BOOTLOADER=   -t node   n1
 wwsh object modify -s BOOTLOCAL=    -t node   n1
 ```
+
 
 ## # 3.8 Boot compute nodes
 ### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
