@@ -1455,7 +1455,8 @@ tail -1 ~/dasan_log_ohpc_MPI-Stacks_gnu8.txt
 ## # 4.4 Performance Tools
 ### # Install perf-tools meta-package
 ```bash
-yum -y install ohpc-gnu8-perf-tools >> ~/dasan_log_ohpc_perf-tools-gnu8.txt 2>&1
+yum -y install       ohpc-gnu8-perf-tools >> ~/dasan_log_ohpc_perf-tools-gnu8.txt 2>&1
+yum -y groupinstall  ohpc-perf-tools-gnu  >> ~/dasan_log_ohpc_perf-tools-gnu.txt 2>&1
 tail -1 ~/dasan_log_ohpc_perf-tools-gnu8.txt
 ```
 
