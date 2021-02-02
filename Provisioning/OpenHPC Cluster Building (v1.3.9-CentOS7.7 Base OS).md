@@ -1506,9 +1506,9 @@ tail -1  ~/dasan_log_ohpc_compatibility.txt
 ```bash
 cd ~
 git clone https://github.com/dasandata/Open_HPC
-cat ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.6.sh
+cat ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.9.sh
 
-bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.6.sh
+bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.9.sh
 ```
 ***
 
