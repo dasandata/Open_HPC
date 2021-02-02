@@ -1577,6 +1577,14 @@ qmgr -c "set server job_history_enable=True"
 qmgr -c "create node node1"
 ```
 
+### # add queue name for compute hosts (if you have))
+```bash
+qmgr -c "create queue $QUEUENAME"
+
+qmgr -c "set node  $NODENAME  queue=$QUEUENAME"
+```
+
+
 ### # x4 register compute hosts with pbspro
 ```bash
 for NEW_NODE_NUM in "$(seq 1 4)"; do
