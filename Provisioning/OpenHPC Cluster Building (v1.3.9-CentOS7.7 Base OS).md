@@ -2159,23 +2159,25 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 ### # 7-1. [Master install](#목차)
 
 ```bash
-[root@newton2:~]#
-[root@newton2:~]# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-[root@newton2:~]#
-[root@newton2:~]# yum install -y docker-ce docker-ce-cli containerd.io
-[root@newton2:~]#
-[root@newton2:~]# systemctl status docker.service
+
+# root command
+
+ yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+ yum install -y docker-ce docker-ce-cli containerd.io
+
+ systemctl status docker.service
 ● docker.service - Docker Application Container Engine
    Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
    Active: inactive (dead)
      Docs: https://docs.docker.com
-[root@newton2:~]#
-[root@newton2:~]# systemctl enable docker.service
+
+ systemctl enable docker.service
 Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
-[root@newton2:~]#
-[root@newton2:~]# systemctl restart docker.service
-[root@newton2:~]#
-[root@newton2:~]# systemctl status docker.service
+
+ systemctl restart docker.service
+
+ systemctl status docker.service
 ● docker.service - Docker Application Container Engine
    Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
    Active: active (running) since Thu 2021-01-14 18:08:23 KST; 5s ago
@@ -2188,97 +2190,103 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service 
 
 Jan 14 18:08:22 newton2 dockerd[12216]: time="2021-01-14T18:08:22.697911441+09:00" level=info msg="Loading containers: start."
 
-[root@newton2:~]#
-[root@newton2:~]# usermod -G docker sonic
-[root@newton2:~]#
-[root@newton2:~]# cat /etc/group | grep -i docker
+ usermod -G docker sonic
+
+cat /etc/group | grep -i docker
 docker:x:978:sonic
-[root@newton2:~]#
-[root@newton2:~]# su - sonic
-Last login: Thu Jan 14 18:03:04 KST 2021 from 192.168.0.116 on pts/0
-[sonic@newton2:~]$
-[sonic@newton2:~]$ docker images
+
+# user command
+
+su - sonic
+
+docker images
+
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
-[sonic@newton2:~]$
-[sonic@newton2:~]$ docker -v
+
+docker -v
 Docker version 20.10.2, build 2291f61
-[sonic@newton2:~]$
-[sonic@newton2:~]$ exit
-[root@newton2:~]#
-[root@newton2:~]# curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+exit
+
+# root command
+
+curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100   651  100   651    0     0   1378      0 --:--:-- --:--:-- --:--:--  1388
 100 11.6M  100 11.6M    0     0  2048k      0  0:00:05  0:00:05 --:--:-- 2463k
-[root@newton2:~]#
-[root@newton2:~]# chmod +x /usr/local/bin/docker-compose
-[root@newton2:~]#
-[root@newton2:~]# ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-[root@newton2:~]#
-[root@newton2:~]# docker-compose --version
+
+chmod +x /usr/local/bin/docker-compose
+
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+docker-compose --version
 docker-compose version 1.27.4, build 40524192
-[root@newton2:~]#
-[root@newton2:~]# ll /usr/local/bin/docker-compose
+
+ll /usr/local/bin/docker-compose
 -rwxr-xr-x 1 root root 12M Jan 25 19:56 /usr/local/bin/docker-compose
-[root@newton2:~]#
 
 ```
 
 ### # 7-2. [vnfs docker install](#목차)
 
 ```bash
-[root@newton2:~]#
-[root@newton2:~]# ll /etc/yum.repos.d/docker-ce.repo
-[root@newton2:~]#
-[root@newton2:~]# cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/
-[root@newton2:~]#
-[root@newton2:~]# ll /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/docker-ce.repo
-[root@newton2:~]#
-[root@newton2:~]# yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-ce-cli containerd.io
-[root@newton2:~]#
-[root@newton2:~]# chroot /opt/ohpc/admin/images/centos7.9
-[root@newton2:/]#
-[root@newton2:/]# sed -i 's/SELINUX=enforcing/SELINUX=disabled/' etc/sysconfig/selinux
-[root@newton2:/]#
-[root@newton2:/]# grep 'SELINUX=' etc/sysconfig/selinux  
-[root@newton2:/]#
-[root@newton2:/]# systemctl enable docker.service
-[root@newton2:/]#
-[root@newton2:/]# exit
-[root@newton2:~]#
-[root@newton2:~]# cp /usr/local/bin/docker-compose /opt/ohpc/admin/images/centos7.9/usr/local/bin/
-[root@newton2:~]#
-[root@newton2:~]# ll /opt/ohpc/admin/images/centos7.9/usr/local/bin/
-[root@newton2:~]#
-[root@newton2:~]# chroot /opt/ohpc/admin/images/centos7.9
-[root@newton2:/]#
-[root@newton2:/]# ln -s usr/local/bin/docker-compose usr/bin/docker-compose
-[root@newton2:/]#
-[root@newton2:/]# docker-compose --version
-[root@newton2:/]#
-[root@newton2:/]# exit
-[root@newton2:~]#
-[root@newton2:~]# wwsh file resync
-[root@newton2:~]#
-[root@newton2:~]# wwvnfs --chroot /opt/ohpc/admin/images/centos7.9
-[root@newton2:~]#
+
+# root command
+
+ll /etc/yum.repos.d/docker-ce.repo
+
+cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/
+
+ll /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/docker-ce.repo
+
+yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-ce-cli containerd.io
+
+# vnfs image login
+
+chroot /opt/ohpc/admin/images/centos7.9
+
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/' etc/sysconfig/selinux
+
+grep 'SELINUX=' etc/sysconfig/selinux  
+
+systemctl enable docker.service
+
+exit
+
+cp /usr/local/bin/docker-compose /opt/ohpc/admin/images/centos7.9/usr/local/bin/
+
+ll /opt/ohpc/admin/images/centos7.9/usr/local/bin/
+
+# vnfs image login
+
+chroot /opt/ohpc/admin/images/centos7.9
+
+ln -s usr/local/bin/docker-compose usr/bin/docker-compose
+
+docker-compose --version
+
+exit
+
+wwsh file resync
+
+wwvnfs --chroot /opt/ohpc/admin/images/centos7.9
 
 ```
 
 # 8. [gpustat install vnfs](#목차)
 
 ```bash
-[root@cseedu-master:~]#
-[root@cseedu-master:~]# yum install --installroot=/opt/ohpc/admin/images/centos7.9/ python3-devel  python3-pip ncurses-devel   -y
-[root@cseedu-master:~]#
-[root@cseedu-master:~]# chroot  /opt/ohpc/admin/images/centos7.9/
-[root@cseedu-master:/]#
-[root@cseedu-master:/]# pip3 list
+
+yum install --installroot=/opt/ohpc/admin/images/centos7.9/ python3-devel  python3-pip ncurses-devel   -y
+
+chroot  /opt/ohpc/admin/images/centos7.9/
+
+pip3 list
 DEPRECATION: The default format will switch to columns in the future. You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf under the [list] section) to disable this warning.
 pip (9.0.3)
 setuptools (39.2.0)
-[root@cseedu-master:/]#
-[root@cseedu-master:/]# pip3 install --upgrade gpustat
+
+pip3 install --upgrade gpustat
 WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.
 Collecting gpustat
   Downloading https://files.pythonhosted.org/packages/b4/69/d8c849715171aeabd61af7da080fdc60948b5a396d2422f1f4672e43d008/gpustat-0.6.0.tar.gz (78kB)
@@ -2297,11 +2305,11 @@ Installing collected packages: six, nvidia-ml-py3, psutil, blessings, gpustat
   Running setup.py install for psutil ... done
   Running setup.py install for gpustat ... done
 Successfully installed blessings-1.7 gpustat-0.6.0 nvidia-ml-py3-7.352.0 psutil-5.8.0 six-1.15.0
-[root@cseedu-master:/]#
-[root@cseedu-master:/]# pip3   -V
+
+pip3   -V
 pip 9.0.3 from /usr/lib/python3.6/site-packages (python 3.6)
-[root@cseedu-master:/]#
-[root@cseedu-master:/]# pip3 list
+
+pip3 list
 DEPRECATION: The default format will switch to columns in the future. You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf under the [list] section) to disable this warning.
 blessings (1.7)
 gpustat (0.6.0)
@@ -2310,11 +2318,10 @@ pip (9.0.3)
 psutil (5.8.0)
 setuptools (39.2.0)
 six (1.15.0)
-[root@cseedu-master:/]#
-[root@cseedu-master:/]# exit
+
 exit
-[root@cseedu-master:~]#
-[root@cseedu-master:~]# wwvnfs --chroot  /opt/ohpc/admin/images/centos7.9/
+
+wwvnfs --chroot  /opt/ohpc/admin/images/centos7.9/
 Using 'centos7.7' as the VNFS name
 Creating VNFS image from centos7.9
 Compiling hybridization link tree                       	: 1.68 s
@@ -2322,17 +2329,18 @@ Building file list                                      	: 7.17 s
 Compiling and compressing VNFS                          	: 97.21 s
 Adding image to datastore                               	: 90.58 s
 Total elapsed time                 	                     : 196.64 s
-[root@cseedu-master:~]#
-[root@cseedu-master:~]# ssh n2
-[root@n2 ~]#
-[root@n2 ~]# gpustat
+
+ssh n2
+
+gpustat
 n2               	Mon Jan 25 21:50:45 2021  460.27.04
 [0] TITAN Xp     	| 33'C,   0 % | 	0 / 12194 MB |
 [1] TITAN Xp     	| 33'C,   0 % | 	0 / 12196 MB |
-[root@n2 ~]#
-[root@n2 ~]#exit
-[root@cseedu-master:~]#
-[root@cseedu-master:~]# pdsh -w n[1-10]  gpustat  --force-color   | sort  -V
+
+exit
+
+
+pdsh -w n[1-10]  gpustat  --force-color   | sort  -V
 n1: n1                   Mon Jan 25 21:54:41 2021  460.27.04
 n1: [0] TITAN Xp         | 35'C,   0 % |     0 / 12194 MB |
 n1: [1] TITAN Xp         | 31'C,   0 % |     0 / 12196 MB |
@@ -2363,7 +2371,7 @@ n9: [1] TITAN Xp         | 26'C,   0 % |     0 / 12196 MB |
 n10: n10                  Mon Jan 25 21:54:41 2021  460.27.04
 n10: [0] TITAN Xp         | 34'C,   0 % |     0 / 12194 MB |
 n10: [1] TITAN Xp         | 31'C,   0 % |     0 / 12196 MB |
-[root@cseedu-master:~]#
+
 ```
 
 
