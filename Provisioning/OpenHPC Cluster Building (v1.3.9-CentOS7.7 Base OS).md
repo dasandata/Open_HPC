@@ -317,7 +317,7 @@ repolist: 26,102
 ### # Install base meta-packages
 
 ```bash
-yum -y install ohpc-base ohpc-warewulf  >>  ~/dasan_log_ohpc_base,warewulf.txt 2>&1
+yum -y install ohpc-base ohpc-warewulf squashfs-tools >>  ~/dasan_log_ohpc_base,warewulf.txt 2>&1
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
 *output example>*  
@@ -664,7 +664,7 @@ tail ~/dasan_log_ohpc_update_nodeimage.txt
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel kernel-headers kernel-devel kernel-tools parted \
  xfsprogs python-devel yum htop ipmitool glibc* perl perl-CPAN perl-CPAN \
- sysstat gcc make xauth firefox >> ~/dasan_log_ohpc_meta-package.txt 2>&1
+ sysstat gcc make xauth firefox squashfs-tools >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 
 tail ~/dasan_log_ohpc_meta-package.txt  
 
