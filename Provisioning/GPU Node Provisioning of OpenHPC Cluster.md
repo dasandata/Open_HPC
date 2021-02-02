@@ -964,7 +964,7 @@ JobCompType=jobcomp/none
 PropagateResourceLimitsExcept=MEMLOCK
 AccountingStorageType=accounting_storage/filetxt
 ReturnToService=1
-PrologFlags=x11
+PrologFlags=x11        # X11 Forwarding for interactive job "srun --x11 --pty /bin/bash"
 
 ClusterName=OpenHPC_dasandata
 ControlMachine=ohpc-master
