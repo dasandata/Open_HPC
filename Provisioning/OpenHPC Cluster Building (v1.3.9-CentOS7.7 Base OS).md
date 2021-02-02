@@ -907,6 +907,20 @@ tail ${CHROOT}/etc/security/limits.conf
 ```
 
 
+#### # 3.8.4.4 Enable ssh control via resource manager (only Slurm)
+
+An additional optional customization that is recommended is to restrict ssh access on    
+compute nodes to only allow access by users who have an active job associated with the node.   
+This can be enabled via the use of a pluggable authentication module (PAM)   
+provided as part of the Slurm package installs.  
+
+To enable this feature within the compute image, issue the following:  
+
+```bash
+echo "account required pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
+```
+
+
 #### # 3.8.4.5 Add Lustre client
 
 ##### # Add Lustre client software to master host
