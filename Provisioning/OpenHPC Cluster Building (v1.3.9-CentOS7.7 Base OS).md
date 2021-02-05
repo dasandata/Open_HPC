@@ -1048,6 +1048,8 @@ wwsh file import /etc/munge/munge.key
 ### # 3.9.0 /etc/warewulf/vnfs.conf 수정.
 
 ```bash
+cp  /etc/warewulf/vnfs.conf{,.org}  # conf file backup.
+
 cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
 
 cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#" | wc -l
@@ -1080,6 +1082,7 @@ sed -i "s#hybridize += /usr/lib/locale#\#hybridize += /usr/lib/locale#"     /etc
 sed -i "s#hybridize += /usr/lib64/locale#\#hybridize += /usr/lib64/locale#" /etc/warewulf/vnfs.conf
 sed -i "s#hybridize += /usr/include#\#hybridize += /usr/include#"           /etc/warewulf/vnfs.conf
 sed -i "s#hybridize += /usr/share/locale#\#hybridize += /usr/share/locale#" /etc/warewulf/vnfs.conf
+sed -i "s#exclude += /usr/src#\#exclude += /usr/src#" /etc/warewulf/vnfs.conf
 
 cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
 
@@ -1094,12 +1097,11 @@ exclude += /tmp/*
 exclude += /var/log/*
 exclude += /var/chroots/*
 exclude += /var/cache
-exclude += /usr/src
 hybridize += /usr/X11R6
 hybridize += /usr/share/man
 hybridize += /usr/share/doc
 
-11
+10
 ```
 
 ### # 3.9.1 Assemble bootstrap image
