@@ -1295,9 +1295,9 @@ wwvnfs --chroot ${CHROOT}
 ```bash
 git clone https://github.com/dasandata/Open_HPC
 
-cp   /root/Open_HPC/Provisioning/gpt.cmds   /etc/warewulf/filesystem/
+cp   /root/Open_HPC/Provisioning/gpt_sda.cmds   /etc/warewulf/filesystem/
 
-wwsh -y provision set --filesystem=gpt  node1
+wwsh -y provision set --filesystem=gpt_sda  node1
 wwsh -y provision set --bootloader=sda  node1
 ```
 
@@ -1305,9 +1305,9 @@ wwsh -y provision set --bootloader=sda  node1
 ```bash
 git clone https://github.com/dasandata/Open_HPC
 
-cp /root/Open_HPC/Provisioning/efi.cmds   /etc/warewulf/filesystem/
+cp /root/Open_HPC/Provisioning/efi_sda.cmds   /etc/warewulf/filesystem/
 
-wwsh -y provision set --filesystem=efi  node1
+wwsh -y provision set --filesystem=efi_sda  node1
 wwsh -y provision set --bootloader=sda  node1
 ```
 
@@ -1324,9 +1324,9 @@ wwsh provision print  | grep "BOOTLOCAL"
 
 #### # Remove Stateful config.
 ```bash
-wwsh object modify -s FS=           -t node   n1
-wwsh object modify -s BOOTLOADER=   -t node   n1
-wwsh object modify -s BOOTLOCAL=    -t node   n1
+wwsh object modify -s FS=           -t node   node1
+wwsh object modify -s BOOTLOADER=   -t node   node1
+wwsh object modify -s BOOTLOCAL=    -t node   node1
 ```
 
 
