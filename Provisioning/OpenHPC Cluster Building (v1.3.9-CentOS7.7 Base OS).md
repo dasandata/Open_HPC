@@ -1109,7 +1109,7 @@ hybridize += /usr/share/doc
 ```bash
 export WW_CONF=/etc/warewulf/bootstrap.conf
 echo "drivers += updates/kernel/" >> $WW_CONF
-echo "modprobe += ahci"           >> $WW_CONF
+echo "modprobe += ahci nvme"           >> $WW_CONF
 ```
 
 #### # Build bootstrap image
