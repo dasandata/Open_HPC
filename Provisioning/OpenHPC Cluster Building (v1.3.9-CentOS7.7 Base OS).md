@@ -1291,24 +1291,29 @@ yum -y --installroot=${CHROOT} install  grub2 grub2-efi grub2-efi-modules
 wwvnfs --chroot ${CHROOT}
 ```
 
-#### # In GPT, Add GRUB2 bootloader and re-assemble VNFS image
+#### # Copy Filesystem cmds files
 ```bash
+cd /root/
 git clone https://github.com/dasandata/Open_HPC
-
-cp   /root/Open_HPC/Provisioning/gpt_sda.cmds   /etc/warewulf/filesystem/
-
-wwsh -y provision set --filesystem=gpt_sda  node1
-wwsh -y provision set --bootloader=sda  node1
+cp   /root/Open_HPC/Provisioning/*.cmds   /etc/warewulf/filesystem/
 ```
 
-#### # In UEFI, Add GRUB2 bootloader and re-assemble VNFS image
+#### # In GPT, Add GRUB2 bootloader for sda
 ```bash
-git clone https://github.com/dasandata/Open_HPC
+wwsh -y provision set --filesystem=gpt_sda  node1
+wwsh -y provision set --bootloader=sda      node1
+```
 
-cp /root/Open_HPC/Provisioning/efi_sda.cmds   /etc/warewulf/filesystem/
-
+#### # In UEFI, Add GRUB2 bootloader for sda
+```bash
 wwsh -y provision set --filesystem=efi_sda  node1
-wwsh -y provision set --bootloader=sda  node1
+wwsh -y provision set --bootloader=sda      node1
+```
+
+#### # In UEFI, Add GRUB2 bootloader for NVME
+```bash
+wwsh -y provision set --filesystem=efi_nvme  node1
+wwsh -y provision set --bootloader=nvme0n1   node1
 ```
 
 #### # Configure local boot (after successful provisioning)
