@@ -217,7 +217,7 @@ wwvnfs --chroot  ${CHROOT}
 
 
 
-## Prometheus-slurm exporter ( Centos7 )
+## Prometheus-slurm exporter ( For Centos7, Only Master )
 ```bash
 # only master.
 
@@ -301,7 +301,7 @@ docker restart prometheus
 
 
 
-## Grafana Docker
+## Grafana Docker (on Master)
 ```bash
 # on master.
 docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
