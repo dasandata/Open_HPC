@@ -1377,6 +1377,11 @@ sed -i 's/#PermitRootLogin yes/PermitRootLogin without-password/'  ${CHROOT}/etc
 wwvnfs --chroot  ${CHROOT}
 ```
 
+#### # 외부 ip 접근이 허용된 장비를 로그인 노드로 운영할 경우 pam.d/sshd 설정 변경 필요.
+```bash
+sed -i 's/account required pam_slurm.so/#account required pam_slurm.so/'  /etc/pam.d/sshd
+```
+
 ## # 3.8 Boot compute nodes
 ### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
