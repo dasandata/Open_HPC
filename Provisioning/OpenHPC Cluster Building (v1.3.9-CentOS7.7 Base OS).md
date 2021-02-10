@@ -1342,6 +1342,41 @@ wwsh object modify -s BOOTLOCAL=    -t node   node1
 wwsh node set  node1   --netdev eth0  --netrename enp175s0f0
 ```
 
+#### # stateful 로 전환 후 외부 네트워크 접근을 허용시 필요한 ifcfg file 생성 및 import.
+```bash
+# eno1 ifcfg file add. (for Access from External Network)
+cat << EOF > /opt/ohpc/pub/examples/network/centos/ifcfg-eno1.ww
+DEVICE=eno1
+BOOTPROTO=static
+IPADDR=%{NETDEVS::eno1::IPADDR}
+NETMASK=%{NETDEVS::eno1::NETMASK}
+GATEWAY=%{NETDEVS::eno1::GATEWAY}
+HWADDR=%{NETDEVS::eno1::HWADDR}
+ONBOOT=yes
+NM_CONTROLLED=no
+DEVTIMEOUT=5
+DEFROUTE=yes
+EOF
+
+# file import
+wwsh -y file  import             /opt/ohpc/pub/examples/network/centos/ifcfg-eno1.ww
+wwsh -y file  set ifcfg-eno1.ww  --path=/etc/sysconfig/network-scripts/ifcfg-eno1
+
+# provision set
+wwsh provision set  node1  --filadd=ifcfg-eno1.ww
+wwsh node      set  node1  --netdev=eno1  --ipaddr=  --netmask=  --gateway=  --hwaddr=  
+
+```
+
+#### # node 에 root 계정이 password로 접근할 수 없도록 sshd 설정을 변경.
+```bash
+wwsh vnfs list
+export CHROOT=/opt/ohpc/admin/images/centos7
+
+sed -i 's/#PermitRootLogin yes/PermitRootLogin without-password/'  ${CHROOT}/etc/ssh/sshd_config
+wwvnfs --chroot  ${CHROOT}
+```
+
 ## # 3.8 Boot compute nodes
 ### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
