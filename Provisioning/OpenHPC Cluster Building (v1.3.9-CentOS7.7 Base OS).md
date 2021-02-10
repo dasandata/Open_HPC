@@ -1337,6 +1337,10 @@ wwsh object modify -s BOOTLOADER=   -t node   node1
 wwsh object modify -s BOOTLOCAL=    -t node   node1
 ```
 
+#### # stateful 로 전환할 경우, 원래의 네트워크 디바이스 이름으로 ifcfg 가 생성되도록 devname 을 변경.
+```bash
+wwsh node set  node1   --netdev eth0  --netrename enp175s0f0
+```
 
 ## # 3.8 Boot compute nodes
 ### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
