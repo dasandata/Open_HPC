@@ -1039,6 +1039,7 @@ wwsh file list
 \# Slurm 을 사용하는 경우에만 실행 합니다.
 ```bash
 wwsh file import /etc/slurm/slurm.conf
+wwsh file import /etc/slurm/gres.conf
 wwsh file import /etc/munge/munge.key
 ```
 
