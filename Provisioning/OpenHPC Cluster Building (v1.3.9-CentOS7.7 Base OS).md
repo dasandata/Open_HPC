@@ -1541,12 +1541,15 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.9.sh
 echo "
 systemctl enable munge
 systemctl enable slurmctld
+systemctl enable slurmdbd
 
 systemctl start munge
 systemctl start slurmctld
+systemctl start slurmdbd
 
 systemctl status munge
 systemctl status slurmctld
+systemctl status slurmdbd
 " > /tmp/slurm_service.sh
 
 bash /tmp/slurm_service.sh
