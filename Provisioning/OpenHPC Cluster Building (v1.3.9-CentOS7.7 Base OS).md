@@ -1387,6 +1387,16 @@ wwsh file import  /etc/pam.d/sshd  # master 와 동일한 pam.d 를 적용하기
 wwsh provision set  login-node  --fileadd=sshd
 ```
 
+#### # 외부 ip 접근이 허용된 로그인 노드에 대한 hosts.allow & deny 적용
+```bash
+ll   /etc/hosts.allow   /etc/hosts.deny
+
+wwsh file import  /etc/hosts.allow
+wwsh file import  /etc/hosts.deny
+
+wwsh provision set  login-node  --fileadd=hosts.allow,hosts.deny
+```
+
 ## # 3.8 Boot compute nodes
 ### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
