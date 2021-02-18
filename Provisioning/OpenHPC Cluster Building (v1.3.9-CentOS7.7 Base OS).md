@@ -1397,6 +1397,20 @@ wwsh file import  /etc/hosts.deny
 wwsh provision set  login-node  --fileadd=hosts.allow,hosts.deny
 ```
 
+#### # hosts.allow  hosts.deny 예제.
+```bash
+### /etc/hosts.deny
+sshd: ALL
+
+### /etc/hosts.allow
+# From Local
+sshd: 127., 172., 192.168., 10.1.
+# From organization (range)
+sshd: xxx.xx.
+# From Dasandata.
+sshd: xxx.xxx.xx.x
+```
+
 ## # 3.8 Boot compute nodes
 ### # 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
