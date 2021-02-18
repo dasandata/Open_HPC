@@ -15,7 +15,7 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;[3-5 Optionally add InfiniBand support services on master node](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node)
 <br>[4. Install OpenHPC Development Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-4-install-openhpc-development-components)
 <br>[5. Resource Manager Startup ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-resource-manager-startup)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-A. Start munge and slurm controller on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-a-start-munge-and-slurm-controller-on-master-host)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-A. Start slurm controller and munge on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-a-start-munge-and-slurm-controller-on-master-host)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-B. Start pbspro daemons on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-b-start-pbspro-daemons-on-master-host)
 <br>[6. Run a Test Job ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-run-a-test-job)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-A. Slurm Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable)
@@ -1534,7 +1534,7 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.9.sh
 # # 5. [Resource Manager Startup](#목차)
 \# **주의!** Resource Manager는 Slurm 과 PBSPro 중 선택하여 진행 합니다.  
 
-## # [5-A. Start munge and slurm controller on master host](#목차)
+## # [5-A. Start slurm controller and munge on master host](#목차)
 \# 참조 링크: https://slurm.schedmd.com/
 ```bash
 
