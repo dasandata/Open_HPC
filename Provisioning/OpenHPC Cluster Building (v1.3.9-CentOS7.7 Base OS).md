@@ -1377,9 +1377,14 @@ sed -i 's/#PermitRootLogin yes/PermitRootLogin without-password/'  ${CHROOT}/etc
 wwvnfs --chroot  ${CHROOT}
 ```
 
-#### # 외부 ip 접근이 허용된 장비를 로그인 노드로 운영할 경우 pam.d/sshd 설정 변경 필요.
+#### # 외부 ip 접근이 허용된 장비를 로그인 노드로 운영할 경우, pam.d 를 일반 노드와 다르게 적용.
 ```bash
-sed -i 's/account required pam_slurm.so/#account required pam_slurm.so/'  /etc/pam.d/sshd
+diff  ${CHROOT}/etc/pam.d/sshd   /etc/pam.d/sshd
+# 21d20
+# < account required pam_slurm.so
+
+wwsh file import  /etc/pam.d/sshd  # master 와 동일한 pam.d 를 적용하기 위함.
+wwsh provision set  login-node  --fileadd=sshd
 ```
 
 ## # 3.8 Boot compute nodes
