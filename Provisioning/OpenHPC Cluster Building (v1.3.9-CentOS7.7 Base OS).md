@@ -2220,38 +2220,23 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 
 # root command
 
- yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
- yum install -y docker-ce docker-ce-cli containerd.io
+yum install -y docker-ce docker-ce-cli containerd.io
 
- systemctl status docker.service
-● docker.service - Docker Application Container Engine
-   Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
-   Active: inactive (dead)
-     Docs: https://docs.docker.com
+systemctl status docker.service
 
- systemctl enable docker.service
-Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+systemctl enable docker.service
 
- systemctl restart docker.service
+systemctl restart docker.service
 
- systemctl status docker.service
-● docker.service - Docker Application Container Engine
-   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
-   Active: active (running) since Thu 2021-01-14 18:08:23 KST; 5s ago
-     Docs: https://docs.docker.com
- Main PID: 12216 (dockerd)
-    Tasks: 12
-   Memory: 47.2M
-   CGroup: /system.slice/docker.service
-           └─12216 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+systemctl status docker.service
 
-Jan 14 18:08:22 newton2 dockerd[12216]: time="2021-01-14T18:08:22.697911441+09:00" level=info msg="Loading containers: start."
 
- usermod -G docker sonic
+usermod -G docker sonic
 
 cat /etc/group | grep -i docker
-docker:x:978:sonic
+
 
 # user command
 
@@ -2259,29 +2244,21 @@ su - sonic
 
 docker images
 
-REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
-
 docker -v
-Docker version 20.10.2, build 2291f61
+
 exit
 
 # root command
 
 curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   651  100   651    0     0   1378      0 --:--:-- --:--:-- --:--:--  1388
-100 11.6M  100 11.6M    0     0  2048k      0  0:00:05  0:00:05 --:--:-- 2463k
 
 chmod +x /usr/local/bin/docker-compose
 
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 docker-compose --version
-docker-compose version 1.27.4, build 40524192
 
 ll /usr/local/bin/docker-compose
--rwxr-xr-x 1 root root 12M Jan 25 19:56 /usr/local/bin/docker-compose
 
 ```
 
@@ -2303,9 +2280,9 @@ yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-c
 
 chroot /opt/ohpc/admin/images/centos7.9
 
-sed -i 's/SELINUX=enforcing/SELINUX=disabled/' etc/sysconfig/selinux
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /opt/ohpc/admin/images/centos7.9/etc/selinux/config
 
-grep 'SELINUX=' etc/sysconfig/selinux  
+grep 'SELINUX=' /opt/ohpc/admin/images/centos7.9/etc/selinux/config  
 
 systemctl enable docker.service
 
@@ -2340,95 +2317,24 @@ yum install --installroot=/opt/ohpc/admin/images/centos7.9/ python3-devel  pytho
 chroot  /opt/ohpc/admin/images/centos7.9/
 
 pip3 list
-DEPRECATION: The default format will switch to columns in the future. You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf under the [list] section) to disable this warning.
-pip (9.0.3)
-setuptools (39.2.0)
 
 pip3 install --upgrade gpustat
-WARNING: Running pip install with root privileges is generally not a good idea. Try `pip3 install --user` instead.
-Collecting gpustat
-  Downloading https://files.pythonhosted.org/packages/b4/69/d8c849715171aeabd61af7da080fdc60948b5a396d2422f1f4672e43d008/gpustat-0.6.0.tar.gz (78kB)
-	100% |████████████████████████████████| 81kB 821kB/s
-Collecting six>=1.7 (from gpustat)
-  Downloading https://files.pythonhosted.org/packages/ee/ff/48bde5c0f013094d729fe4b0316ba2a24774b3ff1c52d924a8a4cb04078a/six-1.15.0-py2.py3-none-any.whl
-Collecting nvidia-ml-py3>=7.352.0 (from gpustat)
-  Downloading https://files.pythonhosted.org/packages/6d/64/cce82bddb80c0b0f5c703bbdafa94bfb69a1c5ad7a79cff00b482468f0d3/nvidia-ml-py3-7.352.0.tar.gz
-Collecting psutil (from gpustat)
-  Downloading https://files.pythonhosted.org/packages/e1/b0/7276de53321c12981717490516b7e612364f2cb372ee8901bd4a66a000d7/psutil-5.8.0.tar.gz (470kB)
-	100% |████████████████████████████████| 471kB 2.3MB/s
-Collecting blessings>=1.6 (from gpustat)
-  Downloading https://files.pythonhosted.org/packages/03/74/489f85a78247609c6b4f13733cbf3ba0d864b11aa565617b645d6fdf2a4a/blessings-1.7-py3-none-any.whl
-Installing collected packages: six, nvidia-ml-py3, psutil, blessings, gpustat
-  Running setup.py install for nvidia-ml-py3 ... done
-  Running setup.py install for psutil ... done
-  Running setup.py install for gpustat ... done
-Successfully installed blessings-1.7 gpustat-0.6.0 nvidia-ml-py3-7.352.0 psutil-5.8.0 six-1.15.0
 
 pip3   -V
-pip 9.0.3 from /usr/lib/python3.6/site-packages (python 3.6)
 
-pip3 list
-DEPRECATION: The default format will switch to columns in the future. You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf under the [list] section) to disable this warning.
-blessings (1.7)
-gpustat (0.6.0)
-nvidia-ml-py3 (7.352.0)
-pip (9.0.3)
-psutil (5.8.0)
-setuptools (39.2.0)
-six (1.15.0)
+pip3 list | grep -i gpustat
 
 exit
 
 wwvnfs --chroot  /opt/ohpc/admin/images/centos7.9/
-Using 'centos7.7' as the VNFS name
-Creating VNFS image from centos7.9
-Compiling hybridization link tree                       	: 1.68 s
-Building file list                                      	: 7.17 s
-Compiling and compressing VNFS                          	: 97.21 s
-Adding image to datastore                               	: 90.58 s
-Total elapsed time                 	                     : 196.64 s
 
 ssh n2
 
 gpustat
-n2               	Mon Jan 25 21:50:45 2021  460.27.04
-[0] TITAN Xp     	| 33'C,   0 % | 	0 / 12194 MB |
-[1] TITAN Xp     	| 33'C,   0 % | 	0 / 12196 MB |
 
 exit
 
-
 pdsh -w n[1-10]  gpustat  --force-color   | sort  -V
-n1: n1                   Mon Jan 25 21:54:41 2021  460.27.04
-n1: [0] TITAN Xp         | 35'C,   0 % |     0 / 12194 MB |
-n1: [1] TITAN Xp         | 31'C,   0 % |     0 / 12196 MB |
-n2: n2                   Mon Jan 25 21:54:41 2021  460.27.04
-n2: [0] TITAN Xp         | 33'C,   0 % |     0 / 12194 MB |
-n2: [1] TITAN Xp         | 33'C,   0 % |     0 / 12196 MB |
-n3: n3                   Mon Jan 25 21:54:41 2021  460.27.04
-n3: [0] TITAN Xp         | 34'C,   0 % |     0 / 12194 MB |
-n3: [1] TITAN Xp         | 29'C,   0 % |     0 / 12196 MB |
-n4: n4                   Mon Jan 25 21:54:41 2021  460.27.04
-n4: [0] TITAN Xp         | 33'C,   0 % |     0 / 12194 MB |
-n4: [1] TITAN Xp         | 30'C,   0 % |     0 / 12196 MB |
-n5: n5                   Mon Jan 25 21:54:41 2021  460.27.04
-n5: [0] TITAN Xp         | 33'C,   0 % |     0 / 12194 MB |
-n5: [1] TITAN Xp         | 32'C,   0 % |     0 / 12196 MB |
-n6: n6                   Mon Jan 25 21:54:41 2021  460.27.04
-n6: [0] TITAN Xp         | 31'C,   0 % |     0 / 12194 MB |
-n6: [1] TITAN Xp         | 28'C,   0 % |     0 / 12196 MB |
-n7: n7                   Mon Jan 25 21:54:41 2021  460.27.04
-n7: [0] TITAN Xp         | 38'C,   0 % |     0 / 12194 MB |
-n7: [1] TITAN Xp         | 36'C,   0 % |     0 / 12196 MB |
-n8: n8                   Mon Jan 25 21:54:41 2021  460.27.04
-n8: [0] TITAN Xp         | 35'C,   0 % |     0 / 12194 MB |
-n8: [1] TITAN Xp         | 30'C,   0 % |     0 / 12196 MB |
-n9: n9                   Mon Jan 25 21:54:41 2021  460.27.04
-n9: [0] TITAN Xp         | 35'C,   0 % |     0 / 12194 MB |
-n9: [1] TITAN Xp         | 26'C,   0 % |     0 / 12196 MB |
-n10: n10                  Mon Jan 25 21:54:41 2021  460.27.04
-n10: [0] TITAN Xp         | 34'C,   0 % |     0 / 12194 MB |
-n10: [1] TITAN Xp         | 31'C,   0 % |     0 / 12196 MB |
 
 ```
 
