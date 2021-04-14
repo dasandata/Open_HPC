@@ -8,9 +8,9 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 ***
 ## # 목차
 
-[1.   클러스터 개요][1]  
-[1.1. 클러스터의 사용 목적][1.1]  
-[1.2. 클러스터의 구성 요소][1.2]  
+### [1.   클러스터 개요][1]  
+#### [1.1. 클러스터의 사용 목적][1.1]  
+#### [1.2. 클러스터의 구성 요소][1.2]  
 
 [1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro
 [1.1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#11--%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EA%B5%AC%EC%B6%95-%EB%AA%A9%EC%A0%81
