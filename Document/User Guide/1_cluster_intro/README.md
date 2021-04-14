@@ -1,16 +1,17 @@
 # [1. 클러스터 개요][1]
 
 안녕하세요 다산데이타 입니다.   
-클러스터를 왜 구축하고 어떤 구성요소로 되어 있는지 알아 보겠습니다.  
+
+HPC 클러스터를 사용하는 목적과 어떤 구성요소로 되어 있는지 알아 보겠습니다.  
 
 
-## [1.1.  클러스터 구축 목적][1]
+## [1.1.  클러스터 사용 목적][1]
 
 |구 분|내  용|
 |:-:|---|
-| 1 | 다수의 사용자가 다수의 시스템을 사용하기 위해서.|
-| 2 | 운영체제 설치, 응용프로그램 및 라이브러리 설치, <br> 사용자 계정 동기화 등 시스템 사용환경을 구축하는 작업을 간소화.  |
-| 3 | 시스템을 좀더 효율적으로 사용.   
+| 1 | 다수의 사용자가 다수의 시스템을 사용.|
+| 2 | 운영체제 설치, 응용프로그램 및 라이브러리 설치, 사용자 계정 동기화 등 <br> 시스템 사용환경을 구축하는 작업을 간소화.  |
+| 3 | 다수의 시스템을 효율적으로 사용.|   
 
 
 ***
@@ -43,7 +44,7 @@ OS 와 프로그램 설치 작업이 반복되며,
 ***
 
 저희는 배포 및 관리도구 와 리소스 매니저를 손쉽게 설치하고 구성할 수 있는 구성도구인  
-**[OpenHPC][2]** 를 이용하여 **[Slurm][3]** 과 함께 클러스터를 구성하고 있습니다.
+**[OpenHPC][2]** 를 이용하여 **[Slurm][3]** 과 함께 클러스터를 구성하여 제공하고 있습니다.
 
 ***
 
@@ -76,10 +77,9 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif" width="600">  
 
 또한, 무분별한 자원 점유를 방지하고 자원을 공정하게 분배 하거나   
-특정 사용자 와 그룹의 작업을 우선 배정하는  
-**우선순위(Priority)** 조정 기능도 제공 합니다.  
+특정 사용자 와 그룹의 작업을 우선 배정하는 **우선순위(Priority)** 조정 기능도 제공 합니다.  
 
-### [SLURM Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
+### [SLURM - Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/SLURM_Priority_and_Fair_Trees.png" width="600">
 
