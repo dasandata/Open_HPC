@@ -6,12 +6,13 @@
 
 ## [1.1.  클러스터 구축 목적][1]
 
-첫째) 다수의 사용자가 다수의 시스템을 사용하기 위해서.  
+| HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.|
+|---|---|
+| 1 | 다수의 사용자가 다수의 시스템을 사용하기 위해서.|
+| 2 | 운영체제 설치, 응용프로그램 및 라이브러리 설치,  
+사용자 계정 동기화 등 시스템 사용환경을 구축하는 작업을 간소화.  |
+| 3 | 시스템을 좀더 효율적으로 사용.   
 
-둘째) 운영체제 설치, 응용프로그램 및 라이브러리 설치,  
-사용자 계정 동기화 등 시스템 사용환경을 구축하는 작업을 간소화.  
-
-셋째) 시스템을 좀더 효율적으로 사용.   
 
 ***
 
@@ -40,10 +41,6 @@ OS 와 프로그램 설치 작업이 반복되며, 변경사항이 발생할 때
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap4.png" width="600">  
 
-### [Resource Manager 의 Backfill][1]
-
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif" width="600">  
-
 ***
 
 저희는 배포 및 관리도구 와 리소스 매니저를 손쉽게 설치하고 구성할 수 있는 구성도구인  
@@ -60,15 +57,22 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 | H/W | 독립된 전용(내부) 네트워크    | Ethernet, InfiniBand|
 | H/W | 공유 저장소(스토리지)        | NFS(Network File Sytem), PFS(Parallel File System), DFS(Distributed File System)|
 | H/W | 자원(Resource)              | CPU, Memory(RAM), GPU(VGA Card)|
-| S/W | 응용프로그램 실행환경 관리도구 | Module, Anaconda, Docker, Singularity |
+| S/W | 응용프로그램 실행환경 관리도구 | Anaconda, Module, Container (Docker, Singularity) |
 | S/W | 응용프로그램                 | C, Python, Pytorch, Tensorflow|
-| S/W | 자원관리자(Resource Manager) | SLURM(Simple Linux Utility Resource Management), PBS(Portable Batch System)|
+| S/W | 자원 관리자(Resource Manager) | SLURM(Simple Linux Utility Resource Management), PBS(Portable Batch System)|
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
 
 ***
 
-이러한 구성요소중
+이러한 구성요소중 자원관리자(Resource Manager) 는  
+클러스터 환경에서만 접할 수 있는
+
+
+
+### [Resource Manager 의 Backfill][1]
+
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif" width="600">  
 
 
 ***

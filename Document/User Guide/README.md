@@ -1,12 +1,9 @@
 # User Guide for OpenHPC Cluster
-\# 참조 링크 : http://openhpc.community/  
-\# OpenHPC Cluster 사용자를 위한 안내서 입니다.
+Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_logo.png" width="600">  
-
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_logo.png" width="400">  
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
-
 
 ***
 ## # 목차
