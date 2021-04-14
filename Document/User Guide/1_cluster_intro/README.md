@@ -57,13 +57,13 @@ OS 와 프로그램 설치 작업이 반복되며, 변경사항이 발생할 때
 
 HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.  
 
-구분 | 요소 | 종류
-------------------
-1| 독립된 전용(내부) 네트워크 | Ethernet, InfiniBand
-2| 공유 저장소(스토리지) | NFS(NetworkFileSytem), DFS (DistributedFileSystem)
-3| 자원(Resource) | CPU, Memory, GPU
-4| 응용프로그램 | C, Python, Pytorch, Tensorflow
-5| 자원관리자(Resource Manager) | Slurm, PBS
+|구분 | 요소                         | 종류|
+|-----|-----------------------------|-------|
+| 1   | 독립된 전용(내부) 네트워크    | Ethernet, InfiniBand|
+| 2   | 공유 저장소(스토리지)        | NFS(NetworkFileSytem), DFS (DistributedFileSystem)|
+| 3   | 자원(Resource)              | CPU, Memory, GPU|
+| 4   | 응용프로그램                 | C, Python, Pytorch, Tensorflow|
+| 5   | 자원관리자(Resource Manager) | Slurm, PBS|
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
 
