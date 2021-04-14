@@ -17,7 +17,7 @@
 
 아래 표와 같이 네 가지 상황을 살펴 보겠습니다.  
 
-![dasandata_cluster_keymap1](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap1.png)  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap1.png" width="600">  
 
 ***
 
@@ -32,15 +32,15 @@ OS 와 프로그램 설치 작업이 반복되며, 변경사항이 발생할 때
 이러한 문제를 해결하기 위해 **배포 및 관리도구**를  
 그리고 자원을 효율적으로 분배하기 위한 **리소스 매니저**를 사용하게 됩니다.  
 
-![dasandata_cluster_keymap2](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap2.png)  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap2.png" width="600">  
 
 
-![dasandata_cluster_keymap3](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap3.png)  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap3.png" width="600">  
 
 
-![dasandata_cluster_keymap4](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap4.png)  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap4.png" width="600">  
 
-### Resource Manager 의 Backfill
+### [Resource Manager 의 Backfill][1]
 
 ![Backfill](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif)
 
