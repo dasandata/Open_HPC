@@ -24,7 +24,7 @@ git clone https://github.com/dragen1860/TensorFlow-2.x-Tutorials.git
 
 ## [## 4.1  Anaconda][4]
 
-### ### 4.1.1 Anaconda 설치.
+### ### 4.1.1 Anaconda 다운로드 및 설치.
 
 웹브라우져로 Anaconda download 페이지에서 [Linux] -> [64-Bit (x86) Installer (529 MB)] 를   
 마우스 포인터로 가르킨 후 오른쪽 클릭하여 "링크주소 복사" 를 합니다.  
@@ -41,9 +41,28 @@ git clone https://github.com/dragen1860/TensorFlow-2.x-Tutorials.git
 wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
 ```
 
+다운로드가 완료되면 저장된 파일을 확인 한 후 실행하여 설치를 진행 합니다.
 
+```bash
+ls -lh   # l = 목록(list) 형태로 출력  , h = human-readable (숫자를 사람이 읽기 쉬운 단위로 표시).
 
+file Anaconda3-2020.02-Linux-x86_64.sh   # 파일이 어떤 형식으로 되어있는시 확인할 수 있습니다.
 
+bash  Anaconda3-2020.02-Linux-x86_64.sh  # 스크립트 파일을 실행.
+```
+
+* license terms 는 yes 입력.   
+* 설치 경로는 기본값 "/home/<User ID>/anaconda3" 그대로 Enter.    
+* running conda init 는 yes 입력.   
+
+`conda env list` 명령을 입력하면 기본 설치된 "base" 환경(environments)이 확인 됩니다.  
+아래 명령을 입력해서 로그인시 base 환경이 자동으로 활성화 되지 않도록 합니다.   
+
+```bash
+conda config --set auto_activate_base false
+```
+
+### ### 4.1.2 Python + CUDA, tensorflow 환경 구성.
 
 TensorFlow
 Python
