@@ -1,6 +1,7 @@
 [userguide]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide#-%EB%AA%A9%EC%B0%A8
 [ohpc]: http://openhpc.community/
 [slurm]: https://slurm.schedmd.com/
+[1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro
 
 # [# 1. 클러스터 개요][userguide]
 
@@ -9,7 +10,7 @@
 HPC 클러스터를 사용하는 목적과 어떤 구성요소로 되어 있는지 알아 보겠습니다.  
 
 
-## [## 1.1.  클러스터 사용 목적][userguide]
+## [## 1.1.  클러스터 사용 목적][1]
 
 |구 분|내  용|
 |:-:|---|
@@ -51,7 +52,7 @@ OS 와 프로그램 설치 작업이 반복되며,
 
 ***
 
-## [## 1.2. 클러스터의 구성 요소][userguide]
+## [## 1.2. 클러스터의 구성 요소][1]
 
 HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.  
 
