@@ -12,7 +12,7 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [1.1. 클러스터의 사용 목적][1.1]  
 [1.2. 클러스터의 구성 요소][1.2]  
 
-[2.   용어 - 준비중...][2]  
+[2.   용어][2]  
 [2.1  ssh, scp, x11forwading][2.1]  
 [2.2  PATH, ENV(Environment)][2.2]  
 [2.3  Resource Manager][2.3]  
@@ -42,6 +42,11 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#readme
 [1.1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#11--%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EA%B5%AC%EC%B6%95-%EB%AA%A9%EC%A0%81
 [1.2]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#12-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EC%9D%98-%EA%B5%AC%EC%84%B1-%EC%9A%94%EC%86%8C
+
+[2]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/2_term#2---%EC%9A%A9%EC%96%B4
+[2.1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/2_term#21--ssh-scp-x11forwading
+[2.2]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/2_term#22--path-envenvironment
+[2.3]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/2_term#23--resource-manager
 
 
 
