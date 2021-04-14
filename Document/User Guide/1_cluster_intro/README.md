@@ -64,22 +64,22 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 
 ***
 
-이러한 구성요소중 자원관리자(Resource Manager) 는
+이러한 구성요소중 **자원관리자(Resource Manager)** 는  
 보통 HPC 클러스터 환경에서만 접할 수 있는 도구로,
 
 기본적으로 아래 그림과 같이(Backfil) 작업의 크기에 따라 가용한 자원에 작업을 분배하고  
-자원이 모두 사용중일 때는 대기열(queue) 에 작업을 쌓아 두었다가  
-사용가능한 자원이 확보되면 대기하고 있던 작업을 시작시켜주는 역할을 하게 됩니다.
+자원이 모두 사용중일 때는 **대기열(queue)** 에 작업을 쌓아 두었다가  
+사용가능한 자원이 확보되면, 대기하고 있던 작업을 시작시켜주는 역할을 하게 됩니다.
 
 ### [Resource Manager 의 Backfill][1]
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif" width="600">  
 
-또한 무분별한 자원 점유를 방지하고 공평한 자원분배 하거나   
-특정 사용자나 사용자 그룹의 작업을 우선 배정하는  
-작업배정 우선순위(Priority) 조정 기능도 제공 합니다.  
+또한, 무분별한 자원 점유를 방지하고 자원을 공정하게 분배 하거나   
+특정 사용자 와 그룹의 작업을 우선 배정하는  
+**우선순위(Priority)** 조정 기능도 제공 합니다.  
 
-[SLURM Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
+### [SLURM Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/SLURM_Priority_and_Fair_Trees.png" width="600">
 
