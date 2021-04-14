@@ -42,12 +42,12 @@ OS 와 프로그램 설치 작업이 반복되며, 변경사항이 발생할 때
 
 ### [Resource Manager 의 Backfill][1]
 
-![Backfill](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif)
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif" width="600">  
 
 ***
 
 저희는 배포 및 관리도구 와 리소스 매니저를 손쉽게 설치하고 구성할 수 있는 구성도구인  
-**[OpenHPC][2]** 를 통해 클러스터를 구성하고 있습니다.
+**[OpenHPC][2]** 를 이용하여 **[Slurm][3]** 과 함께 클러스터를 구성하고 있습니다.
 
 
 
@@ -55,11 +55,22 @@ OS 와 프로그램 설치 작업이 반복되며, 변경사항이 발생할 때
 
 ## [1.2. 클러스터의 구성 요소][1]
 
-  클러스터의 구성요소
+HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.  
+
+구분 | 요소 | 종류
+------------------
+1| 독립된 전용(내부) 네트워크 | Ethernet, InfiniBand
+2| 공유 저장소(스토리지) | NFS(NetworkFileSytem), DFS (DistributedFileSystem)
+3| 자원(Resource) | CPU, Memory, GPU
+4| 응용프로그램 | C, Python, Pytorch, Tensorflow
+5| 자원관리자(Resource Manager) | Slurm, PBS
+
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
 
 
-
+***
 
 
 [1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide#-%EB%AA%A9%EC%B0%A8
 [2]: http://openhpc.community/
+[3]: https://slurm.schedmd.com/

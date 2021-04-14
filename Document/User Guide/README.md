@@ -4,7 +4,9 @@
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_logo.png" width="600">  
 
-![Cluster Architecture](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg)  
+
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
+
 
 ***
 ## # 목차
