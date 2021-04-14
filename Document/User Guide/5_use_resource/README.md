@@ -2,11 +2,12 @@
 [ohpc]: http://openhpc.community/
 [slurm]: https://slurm.schedmd.com/
 
-# [3.   접속 방법][userguide]
+# [5.   클러스터 자원사용][userguide]
 
 안녕하세요 다산데이타 입니다.
 
-HPC 클러스터에 접속하는 방법을 알아 보겠습니다.
+HPC 클러스터에서 자원을 요청하고 할당 받아서
+사용하는 방법에 대해 알아 보겠습니다.
 
 
 

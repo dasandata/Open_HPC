@@ -2,11 +2,9 @@
 [ohpc]: http://openhpc.community/
 [slurm]: https://slurm.schedmd.com/
 
-# [3.   접속 방법][userguide]
+# [2.   용어][userguide]
 
-안녕하세요 다산데이타 입니다.
-
-HPC 클러스터에 접속하는 방법을 알아 보겠습니다.
+용어정리
 
 
 
