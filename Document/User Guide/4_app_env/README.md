@@ -120,8 +120,13 @@ python --version
 # 설치된 tensorflow-gpu 버젼 확인.
 pip list | grep tensorflow-gpu
 
-# Sample Code 실행
+# Sample Code 실행 1
 python  TensorFlow-2.x-Tutorials/07-Inception/main.py
+
+# Sample Code 실행 2
+pip install scipy
+python TensorFlow-2.x-Tutorials/13-DCGAN/main.py
+
 ```
 
 ***
@@ -131,10 +136,11 @@ Sample Code 가 gpu 에서 잘 작동 되는지 확인하기 위해
 
 ```bash
 # gpu 사용률 확인 1
-nvidia-smi
+gpustat
 
 # gpu 사용률 확인 2
-gpustat
+nvidia-smi
+nvidia-smi --loop=2
 ```
 
 ### ### 4.1.4 Anaconda 환경 yaml 로 내보내기, 환경 제거, yaml 으로 환경 만들기.
