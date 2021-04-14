@@ -2,16 +2,16 @@
 [ohpc]: http://openhpc.community/
 [slurm]: https://slurm.schedmd.com/
 
-# [2.   용어][userguide]
+# [# 2.   용어][userguide]
 
-## [2.1  ssh, scp, x11forwading][userguide]
+## [## 2.1  ssh, scp, x11forwading][userguide]
 | 용어           |  내용|
 |---------------|------|
 | ssh           | Secure Shell Protocol |
 | scp           | Secure Copy Protocol |
 | X11 Forwading | ssh로 접속한 서버의 GUI 어플리케이션을 내 컴퓨터의 화면으로 전송하는 기술 |
 
-## [2.2  PATH, ENV(Environment)][userguide]
+## [## 2.2  PATH, ENV(Environment)][userguide]
 | 용어         |  내용|
 |-------------|------|
 | Module      | 관리자에 의해 사전에 정의된 환경변수를 불러오거나(load) 전환(swap) 할 수 있는 도구 |
@@ -20,7 +20,7 @@
 | Docker      | 닷클라우드 dotCloud 의 솔로몬 하이크가 파이콘 2013 USPyCon 2013 US에서 처음 발표한 컨테이너 런타임 |
 | Singularity | 과학 및 애플리케이션 기반 워크로드의 필요성에 의해 생성 된 컨테이너 솔루션 <br> Docker 저장소의 이미지를 내려받을 수 있다. |
 
-## [2.3  Resource Manager][userguide]
+## [## 2.3  Resource Manager][userguide]
 | 용어         |  내용|
 |-------------|------|
 | OpenPBS     | Portable Batch System - OpenSource |
@@ -30,4 +30,4 @@
 
 
 ***
-## [끝][userguide]
+## [## 끝][userguide]
