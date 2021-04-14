@@ -1,13 +1,14 @@
 [userguide]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide#-%EB%AA%A9%EC%B0%A8
 [ohpc]: http://openhpc.community/
 [slurm]: https://slurm.schedmd.com/
+[3]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/3_access
 
 # [# 3.   접속 방법][userguide]
 
 안녕하세요 다산데이타 입니다.  
 HPC 클러스터에 접속하는 방법을 알아 보겠습니다.  
 
-## [## 3.1  윈도우즈용 Mobaxterm][userguide]
+## [## 3.1  윈도우즈용 Mobaxterm][3]
 
 윈도우즈의 경우 SSH 접속과 SCP를 통한 파일전송,  
 그리고 X11Forwading 기능을 한번에 사용할 수 있는 **mobaxterm** 을 사용 하는 것을 권장 하고 있습니다.  
@@ -28,7 +29,7 @@ ssh  -XCY  <USER ID>@<IP ADDRESS>
 ssh -XCY  honggildong@192.168.0.55
 ```
 
-## [## 3.2  Mac OS Terminal][userguide]
+## [## 3.2  Mac OS Terminal][3]
 
 Mac OS 는 terminal 프로그램이 기본적으로 제공되지만  
 X11Forwading 기능을 사용하기 위해 **xquartz** 가 설치되고 실행중이어야 합니다.  
@@ -46,7 +47,7 @@ ssh  -XCY  <USER ID>@<IP ADDRESS>
 ssh -XCY  honggildong@192.168.0.55
 ```
 
-## [## 3.3  Linux 의 Terminal][userguide]
+## [## 3.3  Linux 의 Terminal][3]
 
 Linux 는 별도의 프로그램 설치 없이도 X11Forwading 을 사용할 수 있습니다.  
 
@@ -59,6 +60,9 @@ ssh  -XCY  <USER ID>@<IP ADDRESS>
 # Exmple
 ssh -XCY  honggildong@192.168.0.55
 ```
+
+## [## 3.4 클러스터 접속 후 확인 사항][3]
+
 
 ***
 ## [## 끝][userguide]
