@@ -78,6 +78,9 @@ conda env list
 # 환경 활성화.
 conda activate   PY3-Ten2-Cuda10.0
 
+# cudatoolkit 설치 (cudnn 포함.)
+conda  install   -c anaconda   cudatoolkit=10.0
+
 # 활성화된 환경 안에서 python 과 pip 명령의 위치 확인.
 which   python
 which   pip
@@ -88,9 +91,6 @@ pip    --version
 
 # tensorflow-gpu 설치
 pip  install   tensorflow-gpu==2.0
-
-# cudatoolkit 설치 (cudnn 포함.)
-conda  install   -c anaconda   cudatoolkit=10.0
 
 # 설치된 tensorflow-gpu 버젼 확인.
 pip list | grep tensorflow-gpu
