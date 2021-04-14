@@ -79,7 +79,7 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 
 ### [Resource Manager 의 Backfill]
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/backfill.gif" width="600">  
+<img src="http://docs.adaptivecomputing.com/torque/5-0-1/Content/Resources/Graphics/backfill.gif">  
 
 ***
 
