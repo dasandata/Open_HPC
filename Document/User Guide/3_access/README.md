@@ -6,7 +6,7 @@
 # [# 3.   접속 방법][userguide]
 
 안녕하세요 다산데이타 입니다.  
-HPC 클러스터에 접속하는 방법을 알아 보겠습니다.  
+HPC 클러스터 로그인 노드 에 접속하는 방법을 알아 보겠습니다.  
 
 ## [## 3.1  윈도우즈용 Mobaxterm][3]
 
@@ -19,7 +19,7 @@ HPC 클러스터에 접속하는 방법을 알아 보겠습니다.
 (Home Edition / Installer edition 으로 설치)  
 
 설치가 끝나면 **"Start local terminal"** 버튼을 클릭하여 터미널 창을 열 수 있습니다.  
-터미널 창이 열리면 아래와 같은 형식으로 사용자 ID 와 IP를 입력하고 클러스터에 접속합니다.  
+터미널 창이 열리면 아래와 같은 형식으로 사용자 ID 와 IP 주소를 입력하고 로그인 노드에 접속합니다.  
 패스워드는 자릿수 유출방지를 위해 입력 중 표시되지 않습니다.  
 
 ```bash
@@ -63,6 +63,23 @@ ssh -XCY  honggildong@192.168.0.55
 
 ## [## 3.4 클러스터 접속 후 확인 사항][3]
 
+클러스터의 로그인 노드에 접속 되었다면 아래 명령을 통해
+현재 접속자 목록, 노드의 cpu 사용률, GPU 사용률, home directory 사용량 등을 확인할 수 있습니다.
+
+```bash
+# Show who is logged on and what they are doing.
+w
+
+# Tell how long the system has been running.
+uptime
+
+# provides monitoring and management capabilities for each of NVIDIA's devices
+nvidia-smi
+
+# estimate file space usage
+du --human-readable  --max-depth=0  $HOME
+
+```
 
 ***
 ## [## 끝][userguide]
