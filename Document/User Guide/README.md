@@ -33,8 +33,8 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 
 [3]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/3_access#3---%EC%A0%91%EC%86%8D-%EB%B0%A9%EB%B2%95
 [3.1]: http://google.com
-[3.1]: http://google.com
-[3.1]: http://google.com
+[3.2]: http://google.com
+[3.3]: http://google.com
 
 [4.   응용프로그램 사용환경 구성 및 시험][4]  
 [4.1  Module][4.1]  
