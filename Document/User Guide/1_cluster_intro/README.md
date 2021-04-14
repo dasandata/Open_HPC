@@ -6,8 +6,8 @@
 
 ## [1.1.  클러스터 구축 목적][1]
 
-|구분|내용|
-|---|---|
+|구 분|내  용|
+|:-:|---|
 | 1 | 다수의 사용자가 다수의 시스템을 사용하기 위해서.|
 | 2 | 운영체제 설치, 응용프로그램 및 라이브러리 설치, <br> 사용자 계정 동기화 등 시스템 사용환경을 구축하는 작업을 간소화.  |
 | 3 | 시스템을 좀더 효율적으로 사용.   
@@ -54,11 +54,11 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 |구분 | 요소                         | 종류|
 |:---:|-----------------------------|-------|
 | H/W | 독립된 전용(내부) 네트워크    | Ethernet, InfiniBand|
-| H/W | 공유 저장소(스토리지)        | NFS(Network File Sytem), PFS(Parallel File System), DFS(Distributed File System)|
+| H/W | 공유 저장소(스토리지)        | NFS(Network File Sytem), <br> PFS(Parallel File System), DFS(Distributed File System)|
 | H/W | 자원(Resource)              | CPU, Memory(RAM), GPU(VGA Card)|
 | S/W | 응용프로그램 실행환경 관리도구 | Anaconda, Module, Container (Docker, Singularity) |
 | S/W | 응용프로그램                 | C, Python, Pytorch, Tensorflow|
-| S/W | 자원 관리자(Resource Manager) | SLURM(Simple Linux Utility Resource Management), PBS(Portable Batch System)|
+| S/W | 자원 관리자(Resource Manager) | SLURM(Simple Linux Utility Resource Management), <br> PBS(Portable Batch System)|
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
 
