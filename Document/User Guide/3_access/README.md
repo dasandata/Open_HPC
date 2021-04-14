@@ -48,7 +48,7 @@ ssh -XCY  honggildong@192.168.0.55
 
 ## [## 3.3  Linux 의 Terminal][userguide]
 
-Linux 는 별도의 프로그램 설치 없이도 모든 기능을 사용할 수 있습니다.  
+Linux 는 별도의 프로그램 설치 없이도 X11Forwading 을 사용할 수 있습니다.  
 
 terminal 을 열고 아래와 같은 형식으로 사용자 ID 와 IP를 입력하고 클러스터에 접속합니다.  
 패스워드는 자릿수 유출방지를 위해 입력중 표시되지 않습니다.  
