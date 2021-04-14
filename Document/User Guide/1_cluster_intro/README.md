@@ -88,7 +88,7 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 
 ### [SLURM - Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/SLURM_Priority_and_Fair_Trees.png" width="600">
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/SLURM_Priority_and_Fair_Trees.png">
 
 ***
 ## [끝][1]
