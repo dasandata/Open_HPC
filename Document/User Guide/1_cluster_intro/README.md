@@ -15,19 +15,21 @@
 
 ***
 
-아래 표와 같이 네 가지 상황을 살펴 보겠습니다.
+아래 표와 같이 네 가지 상황을 살펴 보겠습니다.  
 
 ![dasandata_cluster_keymap1](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap1.png)  
+
+***
 
 시스템의 수가 많아질 경우  
 OS 와 프로그램 설치 작업이 반복되며, 변경사항이 발생할 때마다  
 모든 시스템에 반영하기 위한 작업도 반복 됩니다.   
 
 사용자의 수가 많아지는 경우  
-여러 사람들이 동시에 사용하게 되기 때문에 다른 사용자가 시스템을 사용중인지,
-언제까지 사용하는지 확인하고, 끝나기를 기다렸다가 작업을 시작해야 하는 상황이 발생 합니다.
+여러 사람들이 동시에 사용하게 되기 때문에 다른 사용자가 시스템을 사용중인지,  
+언제까지 사용하는지 확인하고, 끝나기를 기다렸다가 작업을 시작해야 하는 상황이 발생 합니다.  
 
-이러한 문제를 해결하기 위해 **배포 및 관리도구**를
+이러한 문제를 해결하기 위해 **배포 및 관리도구**를  
 그리고 자원을 효율적으로 분배하기 위한 **리소스 매니저**를 사용하게 됩니다.  
 
 ![dasandata_cluster_keymap2](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap2.png)  
