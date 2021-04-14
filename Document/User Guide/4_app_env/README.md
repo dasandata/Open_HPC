@@ -106,8 +106,6 @@ pip    --version
 ### ### 4.1.3 Anaconda 환경에서 TensorFlow Sample Code 실행.
 
 이제 방금 생성한 환경으로 TensorFlow Sample Code 를 실행해 보겠습니다.  
-Sample Code 가 gpu 에서 잘 작동 되는지 확인하기 위해  
-터미널 창을 하나 더 열어서 클러스터에 접속 합니다.  
 
 ```bash
 # 생성된 환경 목록 확인.
@@ -124,18 +122,27 @@ pip list | grep tensorflow-gpu
 
 # Sample Code 실행
 python  TensorFlow-2.x-Tutorials/07-Inception/main.py
+```
 
+***
+
+Sample Code 가 gpu 에서 잘 작동 되는지 확인하기 위해  
+터미널 창을 하나 더 열어서 클러스터에 접속 합니다.  
+
+```bash
 # gpu 사용률 확인 1
 nvidia-smi
 
 # gpu 사용률 확인 2
 gpustat
-
-
 ```
 
+### ### 4.1.4 Anaconda 환경 yaml 로 내보내기, 환경 제거, yaml 으로 환경 만들기.
 
-환경 yaml 로 내보내기 / 제거하기 / 내보낸 yaml 파일에서 환경 생성하기.
+
+
+
+
 
 
 ## [## 4.2  Module][4]  
