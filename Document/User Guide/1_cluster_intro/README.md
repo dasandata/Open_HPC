@@ -39,9 +39,7 @@ OS 와 프로그램 설치 작업이 반복되며,
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_cluster_keymap2.png" width="600">  
 
-
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_cluster_keymap3.png" width="600">  
-
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_cluster_keymap4.png" width="600">  
 
