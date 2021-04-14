@@ -42,7 +42,7 @@
 
 
 
-[1]: https://github.com/dasandata/Open_HPC/blob/master/Operation%20Guide%20for%20OpenHPC%20Cluster/ADD%20Account.md
+[1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#readme
 
 [1.1]: http://google.com
 [1.2]: http://naver.com
