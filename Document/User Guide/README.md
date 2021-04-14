@@ -37,8 +37,8 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [3.3]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/3_access#-33--linux-%EC%9D%98-terminal
 
 ### [4.   응용프로그램 사용환경 구성 및 시험][4]  
-[4.1  Module][4.1]  
-[4.2  Anaconda][4.2]  
+[4.1  Anaconda][4.1]  
+[4.2  Module][4.2]  
 [4.3  Docker][4.3]  
 [4.4  Singularity][4.4]  
 
