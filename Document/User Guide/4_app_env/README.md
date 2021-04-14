@@ -24,12 +24,26 @@ git clone https://github.com/dragen1860/TensorFlow-2.x-Tutorials.git
 
 ## [## 4.1  Anaconda][4]
 
-Anaconda download 페이지에서 [Linux] -> [64-Bit (x86) Installer (529 MB)] 를   
-mount pointer 로 가르킨 후 오른쪽 클릭하여 "링크주소 복사" 를 합니다.
+### ### 4.1.1 Anaconda 설치.
 
-<img src="http"
+웹브라우져로 Anaconda download 페이지에서 [Linux] -> [64-Bit (x86) Installer (529 MB)] 를   
+마우스 포인터로 가르킨 후 오른쪽 클릭하여 "링크주소 복사" 를 합니다.  
 
 ### https://www.anaconda.com/products/individual
+
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/anaconda_copy_download_link.png">
+
+***
+
+터미널 창에 wget 명령을 입력한 후, 복사된 링크를 붙여넣고 실행하면 다운로드가 시작 됩니다.
+
+```bash
+wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+```
+
+
+
+
 
 TensorFlow
 Python
