@@ -12,7 +12,7 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [1.1. 클러스터의 구축 목적][1.1]  
 [1.2. 클러스터의 구성 요소][1.2]  
 
-[2.   용어][2]  
+[2.   용어 - 준비중...][2]  
 [2.1  ssh, scp, x11forwading][2.1]  
 [2.2  PATH, ENV(Environment)][2.2]  
 [2.3  Resource Manager][2.3]  
@@ -44,12 +44,5 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [1.2]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#12-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EC%9D%98-%EA%B5%AC%EC%84%B1-%EC%9A%94%EC%86%8C
 
 
-
-
-[2]: https://github.com/dasandata/Open_HPC/blob/master/Operation%20Guide%20for%20OpenHPC%20Cluster/Install%20application%20on%20Cluster.md
-
-[3]: https://github.com/dasandata/Open_HPC/blob/master/Operation%20Guide%20for%20OpenHPC%20Cluster/Add%20NFS%20Mount%20on%20nodes.md
-
-[4]: https://github.com/dasandata/Open_HPC/blob/master/Operation%20Guide%20for%20OpenHPC%20Cluster/Add%20Python3%20Module%20on%20OpenHPC.md
 
 ***

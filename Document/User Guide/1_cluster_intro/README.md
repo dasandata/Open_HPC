@@ -27,11 +27,11 @@ OS 와 프로그램 설치 작업이 반복되며,
 변경사항이 발생할 때마다 모든 시스템에 반영하기 위한 작업도 반복적으로 해야 합니다.  
 
 사용자의 수가 많아지는 경우  
-다른 사용자가 시스템을 사용중인지, 언제까지 사용하는지 확인하고,
+다른 사용자가 시스템을 사용중인지, 언제까지 사용하는지 확인하고,  
 끝나기를 기다렸다가 작업을 시작해야 하는 상황이 발생 합니다.  
 
-이러한 문제를 해결하기 위해 **배포 및 관리도구**를  
-그리고 자원을 효율적으로 분배하기 위한 **리소스 매니저**를 사용하게 됩니다.  
+이러한 문제를 해결하고 자원을 효율적으로 사용하기 위해  
+ **배포 및 관리도구** 와 **리소스 매니저**가 필요 합니다.  
 
 <img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap2.png" width="600">  
 
@@ -43,8 +43,8 @@ OS 와 프로그램 설치 작업이 반복되며,
 
 ***
 
-저희는 배포 및 관리도구 와 리소스 매니저를 손쉽게 설치하고 구성할 수 있는 구성도구인  
-**[OpenHPC][2]** 를 이용하여 **[Slurm][3]** 과 함께 클러스터를 구성하여 제공하고 있습니다.
+저희는 배포 및 관리도구 와 리소스 매니저를 손쉽게 설치하고 구성할 수 있는  
+**[OpenHPC][2]** 를 사용해서 HPC 클러스터를 구성하여 제공하고 있습니다.
 
 ***
 
@@ -52,12 +52,12 @@ OS 와 프로그램 설치 작업이 반복되며,
 
 HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.  
 
-|구분 | 요소                         | 종류|
+|구분 | 요 소                       | 종 류|
 |:---:|-----------------------------|-------|
 | H/W | 독립된 전용(내부) 네트워크    | Ethernet, InfiniBand|
 | H/W | 공유 저장소(스토리지)        | NFS(Network File Sytem), <br> PFS(Parallel File System), DFS(Distributed File System)|
 | H/W | 자원(Resource)              | CPU, Memory(RAM), GPU(VGA Card)|
-| S/W | 응용프로그램 실행환경 관리도구 | Anaconda, Module, Container (Docker, Singularity) |
+| S/W | 응용프로그램 실행환경 관리도구 | Anaconda, Module, <br> Container (Docker, Singularity) |
 | S/W | 응용프로그램                 | C, Python, Pytorch, Tensorflow|
 | S/W | 자원 관리자(Resource Manager) | SLURM(Simple Linux Utility Resource Management), <br> PBS(Portable Batch System)|
 
@@ -85,7 +85,7 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 
 
 ***
-
+## [끝][1]
 
 [1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide#-%EB%AA%A9%EC%B0%A8
 [2]: http://openhpc.community/
