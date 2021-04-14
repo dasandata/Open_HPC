@@ -2,6 +2,10 @@
 \# 참조 링크 : http://openhpc.community/  
 \# OpenHPC Cluster 사용자를 위한 안내서 입니다.
 
+![Dasandata Logo](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_logo.png)  
+
+![Cluster Architecture](https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg)  
+
 ***
 ## # 목차
 
@@ -32,7 +36,7 @@
 
 [6.   기타][6]  
 [6.1  파일전송(scp, rsync)][6.1]  
-  
+
 
 
 
