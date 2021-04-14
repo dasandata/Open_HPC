@@ -4,7 +4,7 @@
 
 # [# 2.   용어][userguide]
 
-## [## 2.1  ssh, scp, x11forwading][userguide]
+## [## 2.1  ssh, scp, x11forwading 등][userguide]
 | 용어           |  내용|
 |---------------|------|
 | ssh           | Secure Shell Protocol |
@@ -30,10 +30,10 @@
 | Torque      | Terascale Open-source Resource and QUEue Manager - Adaptive Computing Enterprises |
 | SLURM       | Simple Linux Utility Resource Management -schedmd |
 
-## [## 2.4 File stream][userguide]
+## [## 2.4 Linux File stream][userguide]
 | 용어         |  내용|
 |-------------|------|
-| 추가예정 |
+| 추가예정 |   |
 
 ***
 ## [## 끝][userguide]

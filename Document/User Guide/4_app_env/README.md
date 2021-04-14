@@ -10,14 +10,37 @@
 HPC 클러스터에서 응용프로그램 사용환경을 구성하고
 응용프로그램을 시험구동 하는 방법을 알아 보겠습니다.
 
+***
+## [## gpu cluster 용 tensorflow example download][4]
+
+시작하기에 앞서 시험구동에 사용할 TensorFlow Sample Code를 다운로드 합니다.
+
+```bash
+cd ~  # change directory to HOME.
+
+git clone https://github.com/dragen1860/TensorFlow-2.x-Tutorials.git
+
+```
+
 ## [## 4.1  Anaconda][4]
 
+Anaconda download 페이지에서 [Linux] -> [64-Bit (x86) Installer (529 MB)] 를   
+mount pointer 로 가르킨 후 오른쪽 클릭하여 "링크주소 복사" 를 합니다.
 
+<img src="http"
+
+### https://www.anaconda.com/products/individual
+
+TensorFlow
+Python
+tensorflow
 
 
 ## [## 4.2  Module][4]  
 
+cuda / nvcc
 
+gnu gcc
 
 
 ## [## 4.3  Docker][4]  
