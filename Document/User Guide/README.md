@@ -43,9 +43,10 @@
 
 
 [1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#readme
+[1.1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#11--%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EA%B5%AC%EC%B6%95-%EB%AA%A9%EC%A0%81
+[1.2]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/1_cluster_intro#12-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EC%9D%98-%EA%B5%AC%EC%84%B1-%EC%9A%94%EC%86%8C
 
-[1.1]: http://google.com
-[1.2]: http://naver.com
+
 
 
 [2]: https://github.com/dasandata/Open_HPC/blob/master/Operation%20Guide%20for%20OpenHPC%20Cluster/Install%20application%20on%20Cluster.md

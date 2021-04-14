@@ -58,7 +58,7 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 |구분 | 요소                         | 종류|
 |:---:|-----------------------------|-------|
 | H/W | 독립된 전용(내부) 네트워크    | Ethernet, InfiniBand|
-| H/W | 공유 저장소(스토리지)        | NFS(NetworkFileSytem), PFS(Parallel File System), DFS(DistributedFileSystem)|
+| H/W | 공유 저장소(스토리지)        | NFS(Network File Sytem), PFS(Parallel File System), DFS(Distributed File System)|
 | H/W | 자원(Resource)              | CPU, Memory(RAM), GPU(VGA Card)|
 | S/W | 응용프로그램 실행환경 관리도구 | Module, Anaconda, Docker, Singularity |
 | S/W | 응용프로그램                 | C, Python, Pytorch, Tensorflow|
