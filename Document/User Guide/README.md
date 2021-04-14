@@ -1,9 +1,9 @@
 # User Guide for OpenHPC Cluster
 Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_logo.png" width="400">  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_logo.png" width="400">  
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/openhpc-project-overview-and-updates-8-638.jpg">  
 
 ***
 ## # 목차
@@ -32,7 +32,7 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [3.3  Linux 의 Terminal][3.3]  
 
 [3]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/3_access#3---%EC%A0%91%EC%86%8D-%EB%B0%A9%EB%B2%95
-[3.1]: 
+[3.1]:
 [3.1]:
 [3.1]:
 

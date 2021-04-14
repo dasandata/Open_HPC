@@ -22,7 +22,7 @@ HPC 클러스터를 사용하는 목적과 어떤 구성요소로 되어 있는�
 
 아래 표와 같이 네 가지 상황을 살펴 보겠습니다.  
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap1.png" width="600">  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_cluster_keymap1.png" width="600">  
 
 ***
 
@@ -37,13 +37,13 @@ OS 와 프로그램 설치 작업이 반복되며,
 이러한 문제를 해결하고 자원을 효율적으로 사용하기 위해  
  **배포 및 관리도구** 와 **리소스 매니저**가 필요 합니다.  
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap2.png" width="600">  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_cluster_keymap2.png" width="600">  
 
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap3.png" width="600">  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_cluster_keymap3.png" width="600">  
 
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/dasandata_cluster_keymap4.png" width="600">  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/dasandata_cluster_keymap4.png" width="600">  
 
 ***
 
@@ -66,7 +66,7 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 | S/W | 응용프로그램                 | C, Python, Pytorch, Tensorflow|
 | S/W | 자원 관리자(Resource Manager) | SLURM(Simple Linux Utility Resource Management), <br> PBS(Portable Batch System)|
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/openhpc-project-overview-and-updates-8-638.jpg">  
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/openhpc-project-overview-and-updates-8-638.jpg">  
 
 ***
 
@@ -88,7 +88,7 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 
 ### [SLURM - Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
 
-<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/SLURM_Priority_and_Fair_Trees.png">
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/SLURM_Priority_and_Fair_Trees.png">
 
 ***
 ## [끝][userguide]
