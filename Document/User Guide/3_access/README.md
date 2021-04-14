@@ -77,6 +77,7 @@ uptime
 nvidia-smi
 
 # estimate file space usage
+echo $HOME
 du --human-readable  --max-depth=0  $HOME
 
 ```
