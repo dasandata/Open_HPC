@@ -143,13 +143,44 @@ nvidia-smi
 nvidia-smi --loop=2
 ```
 
-### ### 4.1.4 Anaconda 환경 yaml 로 내보내기, 환경 제거, yaml 으로 환경 만들기.
+### ### 4.1.4 Anaconda 환경 yaml 로 내보내기, 제거, yaml 에서 불러오기.
 
+#### Anaconda 환경 yaml 로 내보내기.
+```bash
+conda deactiavte
+conda env list
 
+conda env export -n PY3-Ten2-Cuda10.0   >  ~/conda-py3-ten2-cuda10.yaml
 
+file ~/conda-py3-ten2-cuda10.yaml
 
+cat  ~/conda-py3-ten2-cuda10.yaml
+```
+***
+#### 환경 제거.
+```bash
+conda deactiavte
+conda env list
 
+conda remoe  -n PY3-Ten2-Cuda10.0   --all
+```
+***
+#### yaml 에서 환경 불러오기.
+```bash
+conda deactiavte
+conda env list
 
+conda env create   -f  ~/conda-py3-ten2-cuda10.yaml   -n  NEW-PY3-Ten2-Cuda10.0
+
+conda env list
+conda actiavte  NEW-PY3-Ten2-Cuda10.0
+
+which python
+
+python --version
+
+python  TensorFlow-2.x-Tutorials/07-Inception/main.py
+```
 
 ## [## 4.2  Module][4]  
 
