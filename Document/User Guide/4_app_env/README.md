@@ -11,7 +11,7 @@ HPC 클러스터에서 응용프로그램 사용환경을 구성하고
 응용프로그램을 시험구동 하는 방법을 알아 보겠습니다.
 
 ***
-## [## gpu cluster 용 tensorflow example download][4]
+## [## TensorFlow Example Download][4]
 
 시작하기에 앞서 시험구동에 사용할 TensorFlow Sample Code를 다운로드 합니다.
 
@@ -56,6 +56,7 @@ bash  Anaconda3-2020.02-Linux-x86_64.sh  # 스크립트 파일을 실행.
 * running conda init 는 yes 입력.   
 
 `conda env list` 명령을 입력하면 기본 설치된 "base" 환경(environments)이 확인 됩니다.  
+<br>
 아래 명령을 입력해서 로그인시 base 환경이 자동으로 활성화 되지 않도록 합니다.   
 
 ```bash
@@ -64,9 +65,77 @@ conda config --set auto_activate_base false
 
 ### ### 4.1.2 Python + CUDA, tensorflow 환경 구성.
 
-TensorFlow
-Python
-tensorflow
+conda create 와 conda install 명령을 통해서  
+python 3.6.5 / tensorflow-gpu 2.0 / cuda 10.0 / cudnn 7.4  으로 구성된 환경을 만들어 보겠습니다.
+
+```bash
+# 환경 생성.
+conda create   -n PY3-Ten2-Cuda10.0    -c anaconda   python==3.6.5
+
+# 생성된 환경 목록 확인.
+conda env list
+
+# 환경 활성화.
+conda activate   PY3-Ten2-Cuda10.0
+
+# 활성화된 환경 안에서 python 과 pip 명령의 위치 확인.
+which   python
+which   pip
+
+# 활성화된 환경 안에서 python 과 pip 명령의 버젼 확인.
+python --version
+pip    --version
+
+# tensorflow-gpu 설치
+pip  install   tensorflow-gpu==2.0
+
+# cudatoolkit 설치 (cudnn 포함.)
+conda  install   -c anaconda   cudatoolkit=10.0
+
+# 설치된 tensorflow-gpu 버젼 확인.
+pip list | grep tensorflow-gpu
+
+# 환경 비활성화
+conda deactiavte
+
+#비활성화 된 환경에서 python 과 pip 명령 위치 확인.
+python --version
+pip    --version
+```
+
+### ### 4.1.3 Anaconda 환경에서 TensorFlow Sample Code 실행.
+
+이제 방금 생성한 환경으로 TensorFlow Sample Code 를 실행해 보겠습니다.  
+Sample Code 가 gpu 에서 잘 작동 되는지 확인하기 위해  
+터미널 창을 하나 더 열어서 클러스터에 접속 합니다.  
+
+```bash
+# 생성된 환경 목록 확인.
+conda env list
+
+# 환경 활성화.
+conda activate   PY3-Ten2-Cuda10.0
+
+# 활성화된 환경 안에서 python 과 pip 명령의 버젼 확인.
+python --version
+
+# 설치된 tensorflow-gpu 버젼 확인.
+pip list | grep tensorflow-gpu
+
+# Sample Code 실행
+python  TensorFlow-2.x-Tutorials/07-Inception/main.py
+
+# gpu 사용률 확인 1
+nvidia-smi
+
+# gpu 사용률 확인 2
+gpustat
+
+
+```
+
+
+환경 yaml 로 내보내기 / 제거하기 / 내보낸 yaml 파일에서 환경 생성하기.
 
 
 ## [## 4.2  Module][4]  
