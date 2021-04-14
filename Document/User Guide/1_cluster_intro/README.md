@@ -77,7 +77,7 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 자원이 모두 사용중일 때는 **대기열(queue)** 에 작업을 쌓아 두었다가  
 사용가능한 자원이 확보되면, 대기하고 있던 작업을 시작시켜주는 역할을 하게 됩니다.
 
-### [### Resource Manager 의 Backfill]
+### ### Resource Manager 의 Backfill
 
 <img src="http://docs.adaptivecomputing.com/torque/5-0-1/Content/Resources/Graphics/backfill.gif">  
 
