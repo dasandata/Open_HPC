@@ -203,9 +203,43 @@ du -h -d 0 ~/anaconda3/
 df -hT /home
 
 # 할당된(quota) 용량 확인
-ssh   master   '/usr/sbin/xfs_quota  -xc "quota -h $USER"'
+ssh  MASTER   '/usr/sbin/xfs_quota -xc "quota -h $USER"'
 ```
 
+### ### module 명령어
+```bash
+module
+
+#  module list  ==  ml
+#  module avail ==  ml av
+
+# 현재 load 되어 있는 module 목록  
+ml list
+
+# 사용 가능한 module 목록  
+ml av
+
+# 일부 module 내리기
+ml unload cuda  
+ml list
+
+# 모든 module 내리기(all unload)
+ml purge
+ml list
+
+# module 올리기 (load)
+ml load ohpc  # ohpc == default load module name
+ml   ##  ml == ml list or module list
+
+# 일부 moudel 바꾸기 (swap)
+ml
+
+ml av
+
+ml swap  cuda/11.2   cuda/9.0
+
+ml
+```
 
 
 cuda / nvcc
