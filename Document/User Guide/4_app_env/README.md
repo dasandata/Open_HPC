@@ -199,6 +199,10 @@ conda deactivate
 
 ```bash
 vi ~/.bashrc
+
+exit
+
+conda env list
 ```
 
 ## [## 4.2  Module][4]  
@@ -318,6 +322,10 @@ env | grep PATH
 
 ```bash
 vi ~/.bashrc
+
+exit
+
+ml list
 ```
 
 
