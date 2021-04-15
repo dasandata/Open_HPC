@@ -352,6 +352,11 @@ docker run 명령을 실행하는 경우 항상 `-u $UID:$GROUPS` 옵션이 포�
 
 ***
 
+### ### Docker hub 에서 원하는 이미지 찾기.
+
+https://hub.docker.com/
+
+
 ### ### Docker 기본 명령.
 ```bash
 # Docker 버젼 확인.
@@ -419,7 +424,7 @@ docker images
 
 ### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--runtime=nvidia 옵션)
 
-```bash
+```
 docker run -u $UID:$GROUPS --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
 
 docker run -u $UID:$GROUPS --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  \
@@ -446,12 +451,61 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 
 ### ### HPC 클러스터 환경에서 Docker의 문제점
 
-모든 작업이 root 권한으로 실행된다.  
-다른 사용자의 작업이나 컨테이너(프로세스) 를 제어할 수 있다.  
-docker image 가 /var/lib/docker 아래에 쌓입니다.  
+모든 작업이 `root` 권한으로 실행된다.   
+다른 사용자의 작업이나 컨테이너(프로세스) 를 제어하거나,
+심지어 다른 사용자의 데이터까지 접근할 수 있다.
+
+docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
+
+
 
 
 ## [## 4.4  Singularity][4]  
+
+과학 및 애플리케이션 기반 워크로드의 필요성에 의해 생성 된 컨테이너 솔루션
+Docker 저장소의 이미지를 내려받을 수 있다.
+
+### ### Singularity 사용 가능한지 확인.
+```bash
+ml | grep singularity
+
+which singularity
+
+```
+
+### ### Singularity 기본 명령.
+```
+# 버젼 확인.
+singularity  --version
+
+# 이미지 다운로드 (docker 의 pull 과 동일함.) / simg = Singularity Image
+singularity  build  ~/tf-1.11-gpu-py3.simg  docker://tensorflow/tensorflow:1.11.0-gpu-py3
+
+# 다운로드 된 이미지 파일 확인.
+ll   -trh   ~/tf-1.11-gpu-py3.simg
+file        ~/tf-1.11-gpu-py3.simg
+
+# 이미지 실행(exec)  (--nv 옵션 = GPU 사용)    
+singularity exec --nv   ~/tf-1.11-gpu-py3.simg    pip list | grep tensor
+
+# 코드 실행.  (singularity 의 경우 home 디렉토리는 기본으로 mount 됩니다.)
+singularity exec --nv ~/tf-1.11-gpu-py3.simg  \
+   python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+
+# 볼롬 마운트 (dataset)
+
+singularity exec --nv -B /dataset:/dataset   ~/tf-1.11-gpu-py3.simg   ls -l /dataset
+
+
+
+```
+
+
+
+
+
+
+
 
 
 
