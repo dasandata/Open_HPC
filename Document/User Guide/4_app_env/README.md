@@ -341,6 +341,7 @@ docker --version
 ```
 docker group 에 계정이 포함되어 있지 않다면 docker 명령을 실행할 수 없습니다.  
 docker 그룹에 포함될 수 있도록 관리자에게 요청하십시요.  
+docker run 명령을 실행하는 경우 항상 `-u $UID:$GROUPS` 옵션이 포함되어야 합니다.  
 
 ***
 
@@ -365,13 +366,13 @@ docker pull ubuntu:20.04
 docker images | grep ubuntu
 
 # ubuntu:20.04 이미지를 이용한 생성되는 프로세스(컨테이너) 안에서 "cat /etc/os-release" 명령어 실행.
-docker run  ubuntu:20.04  cat /etc/os-release
+docker run -u $UID:$GROUPS  ubuntu:20.04  cat /etc/os-release
 
 # 비교를 위해 os 에서 "cat /etc/os-release" 명령어 실행.
 cat /etc/os-release
 
 # docker 프로세스(컨테이너) 로 들어가서 직접 명령 실행. (-it 옵션)
-docker run  -it  ubuntu:20.0
+docker run -u $UID:$GROUPS  -it  ubuntu:20.0
 ```
 
 ***
@@ -388,13 +389,13 @@ docker ps -a
 
 # docker 프로세스(컨테이너) 가 작업이 끝나는데로 삭제 (--rm)
 docker ps -a
-docker run        ubuntu:20.04    cat /etc/os-release
+docker run  -u $UID:$GROUPS        ubuntu:20.04    cat /etc/os-release
 docker ps -a
 docker rm   <CONTAINER ID>
 docker ps -a
 
 docker ps -a
-docker run  --rm  ubuntu:20.04    cat /etc/os-release
+docker run  -u $UID:$GROUPS  --rm  ubuntu:20.04    cat /etc/os-release
 docker ps -a
 ```
 
@@ -412,26 +413,25 @@ docker images
 ### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--runtime=nvidia 옵션)
 
 ```bash
-docker run --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
+docker run -u $UID:$GROUPS --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
 
-docker run --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  \
+docker run -u $UID:$GROUPS --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  \
    python   ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
 ### 오류가 발생 합니다. TensorFlow-Examples 파일이 docker 이미지 내부에 없습니다.
 
-docker run --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   ls -l
-docker run --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   pwd
-docker run --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   ls -l ~
+docker run -u $UID:$GROUPS --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   ls -l
+docker run -u $UID:$GROUPS --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   pwd
+docker run -u $UID:$GROUPS --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   ls -l ~
 
 ### -V (Volume)옵션을 통해 directory 를 연결 시켜 줍니다.
 pwd
 ls -l  
 
-docker run --runtime=nvidia  --rm  -v ~:/home/$USER  tensorflow/tensorflow:1.11.0-gpu-py3    ls -l ~
+docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  tensorflow/tensorflow:1.11.0-gpu-py3    ls -l ~
 
-
-### sample file 이 download 되는 tmp 폴더도 연결 시킵니다.
-docker run --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp:/tmp  \
+### sample data file 이 download 되는 tmp 폴더도 연결 시킵니다.
+docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$USER:/tmp  \
  tensorflow/tensorflow:1.11.0-gpu-py3  python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
 ```
@@ -440,6 +440,7 @@ docker run --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp:/tmp  \
 
 모든 작업이 root 권한으로 실행된다.  
 다른 사용자의 작업이나 컨테이너(프로세스) 를 제어할 수 있다.  
+docker image 가 /var/lib/docker 아래에 쌓입니다.  
 
 
 ## [## 4.4  Singularity][4]  
