@@ -192,6 +192,15 @@ python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 conda deactivate
 ```
 
+#### #### 로그인시 anaconda 기본 환경 구성 (bashrc / rc=Run command)
+
+`~/.bashrc` 파일에 `conda  activate  py36-tf1.11-cuda9.0` 를 추가 하면
+로그인 할때마다 해당 환경이 기본으로 activate 됩니다.
+
+```bash
+vi ~/.bashrc
+```
+
 ## [## 4.2  Module][4]  
 
 ### ### Module 이란.
@@ -302,6 +311,16 @@ echo $PATH
 env | grep PATH
 ```
 
+#### #### 로그인시 module 기본 환경 구성 (bashrc / rc=Run command)
+
+`~/.bashrc` 파일에 `module swap cuda/9.0  cuda/11.2` 를 추가 하면
+로그인 할때마다 해당 환경이 기본으로 load 됩니다.
+
+```bash
+vi ~/.bashrc
+```
+
+
 ## [## 4.3  Docker][4]  
 
 운영체제 수준의 가상화로 리눅스 커널을 공유하면서 프로세스를 격리된 환경에서 실행하는 기술.  
@@ -345,7 +364,11 @@ cat /etc/os-release
 
 # docker 프로세스(컨테이너) 로 들어가서 직접 명령 실행. (-it 옵션)
 docker run  -it  ubuntu:20.0
+```
 
+***
+
+```bash
 # docker 프로세스(컨테이너) 삭제
 docker ps
 docker ps -a
@@ -365,8 +388,11 @@ docker ps -a
 docker ps -a
 docker run  --rm  ubuntu:20.04    cat /etc/os-release
 docker ps -a
+```
 
+***
 
+```bash
 # docker image 삭제  /  이미지를 이용해 구동중인 프로세스(컨테이너) 가 없는 상태여야 함.
 docker images
 
@@ -375,14 +401,14 @@ docker rmi  <IMAGE ID>
 docker images
 ```
 
-### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행.
+### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--gpus 옵션)
 
 https://www.tensorflow.org/install/docker?hl=ko
-
 
 ```bash
 docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
 
+docker
 ```
 
 
