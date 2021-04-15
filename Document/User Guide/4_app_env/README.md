@@ -24,6 +24,10 @@ git   clone   https://github.com/aymericdamien/TensorFlow-Examples
 
 ## [## 4.1  Anaconda][4]
 
+### ### Anaconda 란.
+사용자의 Home 디렉토리에 설치해서 다양한 버젼의 Python 을 설치하고   
+쉽게 전환하며 사용할 수 있게 해주는 도구.  
+
 ### ### 4.1.1 Anaconda 다운로드 및 설치.
 
 웹브라우져로 Anaconda download 페이지에서 [Linux] -> [64-Bit (x86) Installer (529 MB)] 를   
@@ -70,7 +74,7 @@ conda update -n base -c defaults conda
 
 ### ### 4.1.2 Python + CUDA, tensorflow 환경 구성.
 
-conda create 와 conda install 명령을 통해서  
+conda create 와 conda install 명령을 통해서   
 python 3.6.5 / tensorflow-gpu 2.0 / cuda 10.0 / cudnn 7.4  으로 구성된 환경을 만들어 보겠습니다.
 
 ```bash
@@ -190,9 +194,10 @@ conda deactivate
 
 ## [## 4.2  Module][4]  
 
-### ### Module 이란
+### ### Module 이란.
 클러스터에 설치된 **공유 프로그램을 사용**하기 위해서  
 사전에 정의된 환경변수(PATH)를 불러오거나(load) 전환(swap) 할 수 있는 도구 입니다.  
+
 https://modules.readthedocs.io/en/latest/   
 
 클러스터 에서 사용할 수 있는 디스크 용량이 한정적 이기 때문에  
@@ -294,11 +299,91 @@ echo $PATH
 ml load gnu/5.4.0
 echo $PATH
 
-env
+env | grep PATH
 ```
 
 ## [## 4.3  Docker][4]  
 
+운영체제 수준의 가상화로 리눅스 커널을 공유하면서 프로세스를 격리된 환경에서 실행하는 기술.  
+
+### ### Docker 를 사용할 수 있는지 확인.
+```bash
+grep docker /etc/group | grep $USER
+
+docker --version
+```
+docker group 에 계정이 포함되어 있지 않다면 docker 명령을 실행할 수 없습니다.  
+docker 그룹에 포함될 수 있도록 관리자에게 요청하십시요.  
+
+***
+
+### ### Docker 기본 명령.
+```bash
+# Docker 버젼 확인.
+docker --version
+
+# Download 되어 있는 docker image 목록 확인.
+docker images
+
+# 실행중인 Docker Process (컨테이너) 목록 확인.
+docker ps
+
+# 실행중 이지 않은 Docker Process (컨테이너) 까지 포함한 목록 확인.
+docker ps -a
+
+# ubuntu 20.4 image 내려받기.
+docker pull ubuntu:20.04
+
+# 내려받은 이미지가 목록에 추가 되었는지 확인.
+docker images | grep ubuntu
+
+# ubuntu:20.04 이미지를 이용한 생성되는 프로세스(컨테이너) 안에서 "cat /etc/os-release" 명령어 실행.
+docker run  ubuntu:20.04  cat /etc/os-release
+
+# 비교를 위해 os 에서 "cat /etc/os-release" 명령어 실행.
+cat /etc/os-release
+
+# docker 프로세스(컨테이너) 로 들어가서 직접 명령 실행. (-it 옵션)
+docker run  -it  ubuntu:20.0
+
+# docker 프로세스(컨테이너) 삭제
+docker ps
+docker ps -a
+
+docker stop   <CONTAINER ID>
+docker rm     <CONTAINER ID>
+
+docker ps -a
+
+# docker 프로세스(컨테이너) 가 작업이 끝나는데로 삭제 (--rm)
+docker ps -a
+docker run        ubuntu:20.04    cat /etc/os-release
+docker ps -a
+docker rm   <CONTAINER ID>
+docker ps -a
+
+docker ps -a
+docker run  --rm  ubuntu:20.04    cat /etc/os-release
+docker ps -a
+
+
+# docker image 삭제  /  이미지를 이용해 구동중인 프로세스(컨테이너) 가 없는 상태여야 함.
+docker images
+
+docker rmi  <IMAGE ID>
+
+docker images
+```
+
+### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행.
+
+https://www.tensorflow.org/install/docker?hl=ko
+
+
+```bash
+docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
+
+```
 
 
 
