@@ -76,7 +76,7 @@ conda create    -n py36-tf1.11-cuda9.0    -c anaconda    python=3.6  cudatoolkit
 conda env list
 
 # 환경 활성화.
-conda activate   PY3-Ten2-Cuda10.0
+conda activate   py36-tf1.11-cuda9.0  
 
 # cudatoolkit 설치 (cudnn 포함.)
 conda  install   -c anaconda   cudatoolkit=10.0
