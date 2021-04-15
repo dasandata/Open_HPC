@@ -63,6 +63,11 @@ bash  Anaconda3-2020.02-Linux-x86_64.sh  # 스크립트 파일을 실행.
 conda config --set auto_activate_base false
 ```
 
+conda를 최신 버젼으로 업데이트 합니다.
+```bash
+conda update -n base -c defaults conda
+```
+
 ### ### 4.1.2 Python + CUDA, tensorflow 환경 구성.
 
 conda create 와 conda install 명령을 통해서  
@@ -144,7 +149,7 @@ nvidia-smi --loop=2
 
 #### Anaconda 환경 yaml 로 내보내기.
 ```bash
-conda deactiavte
+conda deactivate
 conda env list
 
 conda env export  -n py36-tf1.11-cuda9.0   >   ~/conda-py3-ten1.11-cuda9.yaml
@@ -156,30 +161,52 @@ cat  ~/conda-py3-ten1.11-cuda9.yaml
 ***
 #### 환경 제거.
 ```bash
-conda deactiavte
+conda deactivate
 conda env list
 
-conda remoe  -n PY3-Ten2-Cuda10.0   --all
+conda remove  -n py36-tf1.11-cuda9.0  --all
+
+conda env list
 ```
 ***
 #### yaml 에서 환경 불러오기.
 ```bash
-conda deactiavte
+conda deactivate
 conda env list
 
 conda env create   -f ~/conda-py3-ten1.11-cuda9.yaml   -n NEW-py36-tf1.11-cuda9.0
 
 conda env list
-conda actiavte  NEW-py36-tf1.11-cuda9.0
+conda activate  NEW-py36-tf1.11-cuda9.0
 
 which python
-
 python --version
+pip list | grep tensorflow-gpu
 
 python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+
+conda deactivate
 ```
 
 ## [## 4.2  Module][4]  
+
+Module 이란 클러스터에 설치된 **공유 프로그램을 사용**하기 위해서  
+사전에 정의된 환경변수(PATH)를 불러오거나(load) 전환(swap) 할 수 있는 도구 입니다.  
+https://modules.readthedocs.io/en/latest/   
+
+### ### 현재 사용중인 용량과 가능한 용량 확인.
+```bash
+# anaconda 설치 용량 확인.
+du -h -d 0 ~/anaconda3/
+
+# home directory 전체 용량 확인.
+df -hT /home
+
+# 할당된(quota) 용량 확인
+ssh   master   '/usr/sbin/xfs_quota  -xc "quota -h $USER"'
+```
+
+
 
 cuda / nvcc
 
