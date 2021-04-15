@@ -192,7 +192,7 @@ python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 conda deactivate
 ```
 
-#### #### 로그인시 anaconda 기본 환경 구성 (bashrc / rc=Run command)
+#### #### 로그인시 anaconda 기본 환경 구성 (bashrc / rc = Run command)
 
 `~/.bashrc` 파일에 `conda  activate  py36-tf1.11-cuda9.0` 를 추가 하면
 로그인 할때마다 해당 환경이 기본으로 activate 됩니다.
@@ -315,7 +315,7 @@ echo $PATH
 env | grep PATH
 ```
 
-#### #### 로그인시 module 기본 환경 구성 (bashrc / rc=Run command)
+#### #### 로그인시 module 기본 환경 구성 (bashrc / rc = Run command)
 
 `~/.bashrc` 파일에 `module swap cuda/9.0  cuda/11.2` 를 추가 하면
 로그인 할때마다 해당 환경이 기본으로 load 됩니다.
