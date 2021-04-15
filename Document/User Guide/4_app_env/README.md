@@ -18,7 +18,7 @@ HPC 클러스터에서 응용프로그램 사용환경을 구성하고
 ```bash
 cd ~  # change directory to HOME.
 
-git clone https://github.com/dragen1860/TensorFlow-2.x-Tutorials.git
+git   clone   https://github.com/aymericdamien/TensorFlow-Examples
 
 ```
 
@@ -70,16 +70,13 @@ python 3.6.5 / tensorflow-gpu 2.0 / cuda 10.0 / cudnn 7.4  으로 구성된 환�
 
 ```bash
 # 환경 생성.
-conda create    -n py36-tf1.11-cuda9.0    -c anaconda    python=3.6  cudatoolkit=9.0
+conda create    -n py36-tf1.11-cuda9.0    -c anaconda    python=3.6  cudatoolkit=9.0  cudnn=7
 
 # 생성된 환경 목록 확인.
 conda env list
 
 # 환경 활성화.
 conda activate   py36-tf1.11-cuda9.0  
-
-# cudatoolkit 설치 (cudnn 포함.)
-conda  install   -c anaconda   cudatoolkit=10.0
 
 # 활성화된 환경 안에서 python 과 pip 명령의 위치 확인.
 which   python
@@ -90,7 +87,7 @@ python --version
 pip    --version
 
 # tensorflow-gpu 설치
-pip  install   tensorflow-gpu==2.0
+pip  install   tensorflow-gpu==1.11
 
 # 설치된 tensorflow-gpu 버젼 확인.
 pip list | grep tensorflow-gpu
@@ -112,7 +109,7 @@ pip    --version
 conda env list
 
 # 환경 활성화.
-conda activate   PY3-Ten2-Cuda10.0
+conda activate   py36-tf1.11-cuda9.0  
 
 # 활성화된 환경 안에서 python 과 pip 명령의 버젼 확인.
 python --version
@@ -120,12 +117,12 @@ python --version
 # 설치된 tensorflow-gpu 버젼 확인.
 pip list | grep tensorflow-gpu
 
-# Sample Code 실행 1
-python  TensorFlow-2.x-Tutorials/07-Inception/main.py
+# Sample Code 실행 1 (short)
+python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
-# Sample Code 실행 2
-pip install scipy
-python TensorFlow-2.x-Tutorials/13-DCGAN/main.py
+# Sample Code 실행 2 (long)
+pip install matplotlib
+python  TensorFlow-Examples/examples/3_NeuralNetworks/dcgan.py
 
 ```
 
@@ -150,11 +147,11 @@ nvidia-smi --loop=2
 conda deactiavte
 conda env list
 
-conda env export -n PY3-Ten2-Cuda10.0   >  ~/conda-py3-ten2-cuda10.yaml
+conda env export  -n py36-tf1.11-cuda9.0   >   ~/conda-py3-ten1.11-cuda9.yaml
 
-file ~/conda-py3-ten2-cuda10.yaml
+file ~/conda-py3-ten1.11-cuda9.yaml
 
-cat  ~/conda-py3-ten2-cuda10.yaml
+cat  ~/conda-py3-ten1.11-cuda9.yaml
 ```
 ***
 #### 환경 제거.
@@ -170,16 +167,16 @@ conda remoe  -n PY3-Ten2-Cuda10.0   --all
 conda deactiavte
 conda env list
 
-conda env create   -f  ~/conda-py3-ten2-cuda10.yaml   -n  NEW-PY3-Ten2-Cuda10.0
+conda env create   -f ~/conda-py3-ten1.11-cuda9.yaml   -n NEW-py36-tf1.11-cuda9.0
 
 conda env list
-conda actiavte  NEW-PY3-Ten2-Cuda10.0
+conda actiavte  NEW-py36-tf1.11-cuda9.0
 
 which python
 
 python --version
 
-python  TensorFlow-2.x-Tutorials/07-Inception/main.py
+python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 ```
 
 ## [## 4.2  Module][4]  
