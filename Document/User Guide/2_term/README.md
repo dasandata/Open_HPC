@@ -30,7 +30,7 @@
 | Torque      | Terascale Open-source Resource and QUEue Manager - Adaptive Computing Enterprises |
 | SLURM       | Simple Linux Utility Resource Management -schedmd |
 
-## [## 2.4 Linux Bash File stream][userguide]
+## [## 2.4 Linux Bash 정규 표현식(Regular Expressions) 및 File stream][userguide]
 | 용 어           |  내 용   |
 |-----------------|---------|
 | #               |  주석   |
@@ -39,6 +39,7 @@
 | >               |  표준 출력을 파일로 저장 (덮어쓰기)  |
 | >>              |  표준 출력을 파일로 저장 (끝에 추가하기)  |
 | \               |  다음줄로 넘기고 이어서 실행 (한줄로 실행)  |
+| ~               |  사용자의 HOME Directory |
 | **추가예정**     |          |
 
 ***
