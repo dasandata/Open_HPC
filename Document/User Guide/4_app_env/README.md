@@ -411,12 +411,19 @@ docker images
 
 ### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--gpus 옵션)
 
-https://www.tensorflow.org/install/docker?hl=ko
-
 ```bash
 docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
 
-docker
+docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3 \
+   python   TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+
+### 오류가 발생 합니다. cudnn 이 없습니다.
+
+# cuda 9.0 load (cudnn 이 포함되어 있습니다.)
+module load cuda/9.0
+
+docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3 \
+   python   TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 ```
 
 
