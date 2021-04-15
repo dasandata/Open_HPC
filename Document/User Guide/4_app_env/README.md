@@ -409,23 +409,37 @@ docker rmi  <IMAGE ID>
 docker images
 ```
 
-### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--gpus 옵션)
+### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--runtime=nvidia 옵션)
 
 ```bash
-docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
+docker run --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
 
-docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3 \
-   python   TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+docker run --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  \
+   python   ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
-### 오류가 발생 합니다. cudnn 이 없습니다.
+### 오류가 발생 합니다. TensorFlow-Examples 파일이 docker 이미지 내부에 없습니다.
 
-# cuda 9.0 load (cudnn 이 포함되어 있습니다.)
-module load cuda/9.0
+docker run --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   ls -l
+docker run --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   pwd
+docker run --runtime=nvidia  --rm  tensorflow/tensorflow:1.11.0-gpu-py3   ls -l ~
 
-docker run --gpus all --rm tensorflow/tensorflow:1.11.0-gpu-py3 \
-   python   TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+### -V (Volume)옵션을 통해 directory 를 연결 시켜 줍니다.
+pwd
+ls -l  
+
+docker run --runtime=nvidia  --rm  -v ~:/home/$USER  tensorflow/tensorflow:1.11.0-gpu-py3    ls -l ~
+
+
+### sample file 이 download 되는 tmp 폴더도 연결 시킵니다.
+docker run --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp:/tmp  \
+ tensorflow/tensorflow:1.11.0-gpu-py3  python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+
 ```
 
+### ### HPC 클러스터 환경에서 Docker의 문제점
+
+모든 작업이 root 권한으로 실행된다.  
+다른 사용자의 작업이나 컨테이너(프로세스) 를 제어할 수 있다.  
 
 
 ## [## 4.4  Singularity][4]  

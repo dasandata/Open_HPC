@@ -13,5 +13,15 @@ HPC 클러스터에서 자원을 요청하고 할당 받아서
 
 
 
+
+
+
+--runtime=nvidia  -e NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES
+
+
+docker run  --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES   --rm  -v ~:/home/$USER  tensorflow/tensorflow:1.11.0-gpu-py3   python   ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network.py
+
+
+
 ***
 ## [끝][userguide]
