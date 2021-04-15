@@ -21,7 +21,15 @@ HPC 클러스터에서 자원을 요청하고 할당 받아서
 
 docker run  --runtime=nvidia -e NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES   --rm  -v ~:/home/$USER  tensorflow/tensorflow:1.11.0-gpu-py3   python   ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network.py
 
+## docker sbatch
+```bash
+# UID, GID 확인.
+id  
 
+
+#
+docker run -u $UID:$GROUPS --shm-size=4g --ulimit memlock=-1 --ulimit stack=67108864  --gpus "device=$CUDA_VISIBLE_DEVICES" --rm -ti -v /home/sonic/TensorFlow-2.x-Tutorials/03-Play-with-MNIST/:/mnt  tensorflow/tensorflow:latest-gpu  python /mnt/main.py
+```
 
 ***
 ## [끝][userguide]

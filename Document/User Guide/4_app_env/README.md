@@ -50,9 +50,9 @@ wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
 ```bash
 ls -lh   # l = 목록(list) 형태로 출력  , h = human-readable (숫자를 사람이 읽기 쉬운 단위로 표시).
 
-file Anaconda3-2020.02-Linux-x86_64.sh   # 파일이 어떤 형식으로 되어있는시 확인할 수 있습니다.
+file  Anaconda3-2020.11-Linux-x86_64.sh  # 파일이 어떤 형식으로 되어있는시 확인할 수 있습니다.
 
-bash  Anaconda3-2020.02-Linux-x86_64.sh  # 스크립트 파일을 실행.
+bash  Anaconda3-2020.11-Linux-x86_64.sh  # 스크립트 파일을 실행.
 ```
 
 * license terms 는 yes 입력.   
