@@ -328,6 +328,13 @@ exit
 ml list
 ```
 
+#### #### bash script 파일로 작성
+```bash
+vi ~/module_test.sh
+
+bash ~/module_test.sh
+```
+
 
 ## [## 4.3  Docker][4]  
 
@@ -431,8 +438,9 @@ ls -l
 docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  tensorflow/tensorflow:1.11.0-gpu-py3    ls -l ~
 
 ### sample data file 이 download 되는 tmp 폴더도 연결 시킵니다.
+mkdir /tmp/$USER
 docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$USER:/tmp  \
- tensorflow/tensorflow:1.11.0-gpu-py3  python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+   tensorflow/tensorflow:1.11.0-gpu-py3  python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
 ```
 
