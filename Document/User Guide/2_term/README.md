@@ -31,9 +31,9 @@
 | SLURM       | Simple Linux Utility Resource Management -schedmd |
 
 ## [## 2.4 Linux File stream][userguide]
-| 용어         |  내용|
-|-------------|------|
-| 추가예정 |   |
+| 용 어            |  내 용   |
+|----------------|---------|
+| **추가예정**    |          |
 
 ***
 ## [## 끝][userguide]

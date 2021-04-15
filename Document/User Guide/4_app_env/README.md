@@ -286,6 +286,16 @@ ml
 which gcc  ; echo ; gcc --version
 ```
 
+#### 환경변수(PATH, env) 의 변화
+```bash
+ml purge
+echo $PATH
+
+ml load gnu/5.4.0
+echo $PATH
+
+env
+```
 
 ## [## 4.3  Docker][4]  
 
