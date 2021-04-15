@@ -190,9 +190,16 @@ conda deactivate
 
 ## [## 4.2  Module][4]  
 
-Module 이란 클러스터에 설치된 **공유 프로그램을 사용**하기 위해서  
+### ### Module 이란
+클러스터에 설치된 **공유 프로그램을 사용**하기 위해서  
 사전에 정의된 환경변수(PATH)를 불러오거나(load) 전환(swap) 할 수 있는 도구 입니다.  
 https://modules.readthedocs.io/en/latest/   
+
+클러스터 에서 사용할 수 있는 디스크 용량이 한정적 이기 때문에  
+사용 가능한 공유 프로그램이 있다면 활용하는 것이 좋습니다.
+또한 anaconda 같은 도구에서 제공되지 않는 프로그램을
+관리자에게 설치 요청하여 사용할 수 있습니다.
+
 
 ### ### 현재 사용중인 용량과 가능한 용량 확인.
 ```bash
@@ -233,18 +240,51 @@ ml   ##  ml == ml list or module list
 
 # 일부 moudel 바꾸기 (swap)
 ml
-
 ml av
 
 ml swap  cuda/11.2   cuda/9.0
-
 ml
+
+# module 의 상세 정보 출력
+ml show ohpc
+ml show cuda/9.0
 ```
 
+### ### module 사용 예
 
-cuda / nvcc
+#### cuda / nvcc
+```bash
+ml purge
+ml
 
-gnu gcc
+which nvcc ; echo ; nvcc -V
+
+ml av | grep cuda
+ml load cuda/9.0
+
+which nvcc ; echo ; nvcc -V
+
+ml swap   cuda/9.0  cuda/11.2
+which nvcc ; echo ; nvcc -V
+```
+
+#### gnu gcc
+```bash
+ml purge
+ml
+
+which gcc  ; echo ; gcc --version
+
+ml av | grep gnu
+ml load gnu/5.4.0
+
+which gcc  ; echo ; gcc --version
+
+ml swap   gnu/5.4.0  gnu7
+ml
+
+which gcc  ; echo ; gcc --version
+```
 
 
 ## [## 4.3  Docker][4]  
