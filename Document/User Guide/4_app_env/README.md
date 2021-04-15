@@ -70,7 +70,7 @@ python 3.6.5 / tensorflow-gpu 2.0 / cuda 10.0 / cudnn 7.4  으로 구성된 환�
 
 ```bash
 # 환경 생성.
-conda create   -n PY3-Ten2-Cuda10.0    -c anaconda   python==3.6.5
+conda create    -n py36-tf1.11-cuda9.0    -c anaconda    python=3.6  cudatoolkit=9.0
 
 # 생성된 환경 목록 확인.
 conda env list
