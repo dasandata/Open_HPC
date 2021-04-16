@@ -237,7 +237,15 @@ conda deactivate
 로그인 할때마다 해당 환경이 기본으로 activate 됩니다.
 
 ```bash
-vi ~/.bashrc
+## 홑화살괄호 '>>' '를 반드시 2개 넣어야 합니다. 1개만 넣으면 기존 내용이 삭제되고 덮어씌워 집니다.
+cat << EOF >>  ~/.bashrc
+
+# conda
+conda deactivate
+conda activate  NEW-py36-tf1.11-cuda9.0
+EOF
+
+cat ~/.bashrc
 
 exit
 
