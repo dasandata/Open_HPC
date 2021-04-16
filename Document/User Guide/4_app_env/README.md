@@ -547,13 +547,7 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 
 ```
 
-### ### 4.3.5 HPC 클러스터 환경에서 Docker 의 문제.
-
-1) 컨테이너를 통해 **root 권한**을 획득 할 수 있다.  
-2) 1번의 문제에 따라 **다른 사용자의 작업을 제어** 하거나(컨테이너/프로세스), 심지어 다른 사용자의 **데이터**까지 접근할 수 있다.   
-3) docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
-
-### ### 4.3.6 Docker 이미지의 생성 및 수정 그리고, 재사용.
+### ### 4.3.5 Docker 이미지의 생성 및 수정 그리고, 재사용.
 
 * docker exec
 * docker shell
@@ -564,6 +558,13 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 * docker commit
 * 개인 docker 저장소 생성 (dockerhub.com)
 * docker push & pull
+
+### ### 4.3.6 HPC 클러스터 환경에서 Docker 의 문제.
+
+1) 컨테이너를 통해 **root 권한**을 획득 할 수 있다.  
+2) 1번의 문제에 따라 **다른 사용자의 작업을 제어** 하거나(컨테이너/프로세스), 심지어 다른 사용자의 **데이터**까지 접근할 수 있다.   
+3) docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
+
 
 ## [## 4.4  Singularity][4]  
 
