@@ -55,9 +55,9 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [5.3  제출된 작업의 우선순위, 시작예상시간][5.3]  
 
 [5]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/5_use_resource
-[5.1]: http://google.com
-[5.2]: http://google.com
-[5.3]: http://google.com
+[5.1]: https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/5_use_resource/5.1_Resource_manager_Intro.md
+[5.2]: https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/5_use_resource/5.2_Allocate_Resource.md
+[5.3]: https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/5_use_resource/5.3_Priority_submitted_job_and_start_time.md
 
 ### [6.   기타][6]  
 [6.1  파일전송(scp, rsync)][6.1]  
