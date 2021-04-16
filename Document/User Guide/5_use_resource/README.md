@@ -71,11 +71,56 @@ cat /etc/slurm/gres.conf
 | scancel   | 제출된 작업을 취소 합니다. |
 | scontrol  | 작업, 작업 단계, 노드, 파티션, 예약 및 전체 시스템 구성을 포함한 Slurm 구성을 보거나 수정하는 데 사용 합니다. <br> 일반 사용자의 경우 자신의 작업만 수정할 수 있습니다. (보는 것은 가능 합니다) |
 
+### [### 5.1.5 SLURM 우선순위 정책][5.1]
+
+아래 표시된 정책은 예시 이며 클러스터의 구축목적 과 관리정책에 따라 다를 수 있습니다.
 
 
+#### #### 기본 정책
+- 클러스터의 최대 작업시간 5일 (5-00:00:00) / 사용자의 최대 작업시간은 계정(Account) 별로 상이함.								
+- 실제 사용량(RawUsage)많은 사용자의 작업 우선순위(PRIORITY)가 낮아 집니다. (FairShare)								
+- 실제 사용량(RawUsage)이 동일하다면 기준 사용량(RawShares)이 많은 계정(그룹) 의 작업 우선순위(PRIORITY)가 높게 책정 됩니다.								
+- 집계된 사용량은 1주 단위로 절반으로 감소 됩니다. (PriorityDecayHalfLife=7-0)								
+- 집계된 사용량의 초기화 주기는 설정되지 않음. (PriorityUsageResetPeriod=0)								
+- 집계된 사용량은 관리자 권한으로 초기화 가능 (sacctmgr modify account  $USERNAME  set rawusage=0)								
+- 오랫동안 대기열에 머물러 있는 job은 7일 동안 우선순위 (Priority) 가 점차 상승 합니다. (PriorityMaxAge=7) / 최대 7일								
+- 적용 우선순위 : 1.QOS / 2.Association / 3. Partition								
+
+#### #### 사용자 개별 적용 정책
+| 내용     |  명칭        |  값  |
+|----------|-------------|------|
+| 실행작업  |  MaxJobs=   |  10  |
+| 제출작업  |  MaxJobs=   |  20  |
+| 최대 GPU  |  MaxTRES=   | gres/gpu=10 |
+
+#### #### 계정(Account) 개별 적용 정책 (사용자 그룹)
+| 내용              |  명칭              |  값  |
+|-------------------|-------------------|------|
+| 계정이름           |  Account          |  default  |
+| 기준 사용량        |  fairshare= <br> (RawShares)  | 10000 |
+| 최대 실행작업      |  GrpJobs=         |  100  |
+| 최대 제출작업      |  GrpSubmit=       |  200  |
+| 최대 실행시간      |  MaxWall= <br> (일-시간:분:초) | 3-00:00:00 |
+| 최대 GPU 수       |  GrpTRESS=      |  gres/gpu=50 |
+
+#### #### 사용자 개별 적용 정책
+| 내용     |  명칭        |  값  |
+|----------|-------------|------|
+| 실행작업  |  MaxJobs=   |  10  |
+| 제출작업  |  MaxJobs=   |  20  |
+| 최대 GPU  |  MaxTRES=   | gres/gpu=10 |
+
+#### #### 클러스터에 적용 되어 있는 설정 값 확인.
+```bash
+ssh MASTER  sacctmgr list   Cluster
+ssh MASTER  sacctmgr list   Account
+ssh MASTER  sacctmgr list   User
+ssh MASTER  sacctmgr list   Association
+ssh MASTER  sacctmgr list   QOS
+```
 
 
-
+***
 
 
 
