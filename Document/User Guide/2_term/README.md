@@ -19,27 +19,32 @@
 | Module      | 관리자에 의해 사전에 설치된 프로그램을 사용하기 위해서 <br> 사전에 정의된 환경변수(PATH)를 불러오거나(load) 전환(swap) 할 수 있는 도구 |
 | Anaconda    | 사용자의 Home 디렉토리에 설치해서 다양한 버젼의 Python 을 설치하고 전환하며 사용할 수 있게 해주는 도구 |
 | Container   | 운영체제 수준의 가상화 기술로 리눅스 커널을 공유하면서 프로세스를 격리된 환경에서 실행하는 기술입니다. <br> 하드웨어를 가상화 하는 가상 머신과 달리 커널을 공유하는 방식이기 때문에 <br> 실행 속도가 빠르고, 성능 상의 손실이 거의 없습니다. <br> <br> 컨테이너로 실행된 프로세스는 커널을 공유하지만, <br> 리눅스 네임스페이스 (Linux namespaces), 컨트롤 그룹 (cgroup), 루트 디렉터리 격리 (chroot) 등의  <br> 커널 기능을 활용해 격리되어 실행됩니다. <br> 이러한 격리 기술 덕분에 호스트 머신에게는 프로세스로 인식되지만, <br> 컨테이너 관점에서는 마치 독립적인 환경을 가진 가상 머신처럼 보입니다. |
-| Docker      | 닷클라우드 dotCloud 의 솔로몬 하이크가 파이콘 2013 USPyCon 2013 US에서 처음 발표한 컨테이너 런타임 <br> Docker 공개 저장소 (http://dockerhub.com)  을 통해서 다양한 컨테이너 이미지를 내려받아 사용할 수 있다. |
+| Docker      | 닷클라우드 dotCloud 의 솔로몬 하이크가 파이콘 2013 USPyCon 2013 US에서 처음 발표한 컨테이너 런타임 <br> Docker 공개 저장소 (http://dockerhub.com) 을 통해서 다양한 컨테이너 이미지를 내려받아 사용할 수 있습니다. |
 | Singularity | 과학 및 애플리케이션 기반 워크로드 와 HPC 클러스터 환경에 최적화 된 컨테이너 솔루션 입니다. <br> Docker 저장소의 컨테이너 이미지를 내려받아 사용할 수 있습니다. |
 
 ## [## 2.3  Resource Manager][userguide]
-| 용어         |  내용|
-|-------------|------|
+| 용어         |  내용    |
+|-------------|----------|
 | OpenPBS     | Portable Batch System - OpenSource |
 | PBSPro      | Portable Batch System - Altair Engineering |
 | Torque      | Terascale Open-source Resource and QUEue Manager - Adaptive Computing Enterprises |
 | SLURM       | Simple Linux Utility Resource Management -schedmd |
+| node        | 작업이 수행되는 컴퓨터 또는 서버 |
+| Resource    | CPU, Memory, GPU 등 애플리케이션의 작업에 활용되는 하드웨어 구성요소, node 의 집합체 |
+| interactive job | 명령 한줄씩 입력하고 결과를 확인하는 **대화형** 작업 |
+| batch job       | 명령어 모음을 스크립트 파일로 작성되어 제출되고 결과가 파일로 저장되는 **일괄형** 작업 |
+| queue       | 클러스터 내의 모든 Resource 가 사용중인 경우 제출된 작업이 대기하는 줄  |
 
 ## [## 2.4 Linux Bash 정규 표현식(Regular Expressions) 및 File stream][userguide]
 | 용 어           |  내 용   |
 |-----------------|---------|
+| ~               |  사용자의 HOME Directory |
 | #               |  주석   |
 | \|              |  표준 출력을 표준 입력으로 보냄  |
 | ;               |  줄넘김 (enter 와 같은기능)  |
 | >               |  표준 출력을 파일로 저장 (덮어쓰기)  |
 | >>              |  표준 출력을 파일로 저장 (끝에 추가하기)  |
 | \               |  다음줄로 넘기고 이어서 실행 (한줄로 실행)  |
-| ~               |  사용자의 HOME Directory |
 | $VAR_NAME       |  변수(variable)  |
 | **추가예정**     |          |
 
