@@ -544,9 +544,7 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 ### ### 4.3.5 HPC 클러스터 환경에서 Docker의 문제.
 
 1) 컨테이너를 통해 `root` 권한을 획득 할 수 있다.  
-<br>
 2) 다른 사용자의 작업 (컨테이너/프로세스) 를 제어 하거나, 심지어 다른 사용자의 데이터까지 접근할 수 있다.   
-<br>
 3) docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
 
 ## [## 4.4  Singularity][4]  
