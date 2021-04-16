@@ -10,6 +10,7 @@
 | ssh           | Secure Shell Protocol |
 | scp           | Secure Copy Protocol |
 | X11 Forwading | ssh로 접속한 서버의 GUI 어플리케이션을 내 컴퓨터의 화면으로 전송하는 기술 |
+| alias         | 별칭, 자주 사용하는 명령어를 특정 문자로 입력해두고 간편하게 사용하기 위한 것으로 command alias 라고도 합니다. <br> .bashrc에 리눅스 설치시 몇개의 alias 가 자동 설정되어 있습니다. |
 
 ## [## 2.2  PATH, ENV(Environment)][userguide]
 | 용어         |  내용|
@@ -41,12 +42,11 @@
 | ~               |  사용자의 HOME Directory |
 | #               |  주석   |
 | \|              |  표준 출력을 표준 입력으로 보냄  |
-| ;               |  줄넘김 (enter 와 같은기능)  |
 | >               |  표준 출력을 파일로 저장 (덮어쓰기)  |
 | >>              |  표준 출력을 파일로 저장 (끝에 추가하기)  |
+| ;               |  줄넘김 (enter 와 같은기능)  |
 | \               |  다음줄로 넘기고 이어서 실행 (한줄로 실행)  |
 | $VAR_NAME       |  변수(variable)  |
-| **추가예정**     |          |
 
 ***
 ## [## 끝][userguide]
