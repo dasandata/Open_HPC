@@ -514,9 +514,9 @@ docker rmi  <IMAGE ID>
 docker images
 ```
 
-### ### TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--runtime=nvidia 옵션)
+### ### 4.3.4 TensorFlow Docker 컨테이너로 파이썬 코드 실행. (--runtime=nvidia 옵션)
 
-```
+```bash
 docker run -u $UID:$GROUPS --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  pip list | grep tensor
 
 docker run -u $UID:$GROUPS --runtime=nvidia --rm tensorflow/tensorflow:1.11.0-gpu-py3  \
@@ -541,16 +541,13 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 
 ```
 
-### ### HPC 클러스터 환경에서 Docker의 문제점
+### ### 4.3.5 HPC 클러스터 환경에서 Docker의 문제.
 
-모든 작업이 `root` 권한으로 실행된다.   
-다른 사용자의 작업이나 컨테이너(프로세스) 를 제어하거나,
-심지어 다른 사용자의 데이터까지 접근할 수 있다.
-
-docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
-
-
-
+1) 컨테이너를 통해 `root` 권한을 획득 할 수 있다.  
+<br>
+2) 다른 사용자의 작업 (컨테이너/프로세스) 를 제어 하거나, 심지어 다른 사용자의 데이터까지 접근할 수 있다.   
+<br>
+3) docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
 
 ## [## 4.4  Singularity][4]  
 
