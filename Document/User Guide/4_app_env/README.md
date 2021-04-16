@@ -555,12 +555,15 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 
 ### ### 4.3.6 Docker 이미지의 생성 및 수정 그리고, 재사용.
 
+* docker exec
+* docker shell
+
 * dockerfile
 * docker-compose
+
 * docker commit
 * 개인 docker 저장소 생성 (dockerhub.com)
 * docker push & pull
-
 
 ## [## 4.4  Singularity][4]  
 
