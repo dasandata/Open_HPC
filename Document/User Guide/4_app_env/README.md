@@ -266,10 +266,10 @@ which python
 https://modules.readthedocs.io/en/latest/   
 
 클러스터 에서 사용할 수 있는 디스크 용량이 한정적 이기 때문에  
-사용 가능한 공유 프로그램이 있다면 활용하는 것이 좋습니다.
-또한 anaconda 같은 도구에서 제공되지 않는 프로그램을
-관리자에게 설치 요청하여 사용할 수 있습니다.
-
+사용 가능한 공유 프로그램이 있다면 활용하는 것이 좋습니다.  
+<br>
+또한 anaconda 같은 도구에서 제공되지 않는 프로그램을  
+관리자에게 설치 요청하여 사용할 수 있습니다.  
 
 ### ### 4.2.2 현재 사용중인 용량과 가능한 용량 확인.
 ```bash
@@ -434,7 +434,7 @@ docker run 명령을 실행하는 경우 항상 `-u $UID:$GROUPS` 옵션이 포�
 https://hub.docker.com/  
 
 https://hub.docker.com/_/ubuntu?tab=tags&page=1&ordering=last_updated&name=20.04  
-  
+
 ### ### 4.3.3 Docker 기본 명령.
 ```bash
 # Docker 버젼 확인.
