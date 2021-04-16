@@ -92,8 +92,8 @@ conda update -n base -c defaults conda
 
 ### ### 4.1.2 Python + CUDA, tensorflow 환경 구성.
 
-conda create 와 conda install 명령을 통해서   
-[ python 3.6.5 | tensorflow-gpu 1.11 | cuda 9.0 | cudnn 7 ] 로 구성된 환경을 만들어 보겠습니다.
+`conda create` 명령을 통해서 ``[python 3.6.5 | cuda 9.0 | cudnn 7]`` 로 구성된 환경을 만들고,  
+만들어진 환경을 활성화 시킨 후 `pip install` 명령을 통해 `tensorflow-gpu 1.11` 을 설치 하겠습니다.
 
 ```bash
 # 환경 생성.   (-n == name 생성하는 환경 이름  -c == channel 필요한 환경요소를 다운로드 받는 저장소 이름.)
@@ -171,7 +171,10 @@ nvidia-smi --loop=2  # loop
 watch   'nvidia-smi ; echo ; gpustat'
 ```
 
-### ### 4.1.4 스크립트(Script) 파일로 작성하여 실행해 보기.
+### ### 4.1.4 스크립트(Script) 파일로 작성하여 실행.
+
+`cat` 명령을 이용해서 스크립트 파일을 생성 합니다.
+
 ```bash
 cat << EOF >  ~/anaconda-py36-tf1.11-Example.sh
 # HOME 디렉토리로 이동.  
@@ -193,7 +196,8 @@ python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 EOF
 ```
 
-```bashrc
+파일이 잘 생성되었는지 확인 후 `bash` 명령으로 파일을 실행 합니다.
+```bash
 cat ~/anaconda-py36-tf1.11-Example.sh
 
 bash ~/anaconda-py36-tf1.11-Example.sh
@@ -543,29 +547,36 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 
 ### ### 4.3.5 HPC 클러스터 환경에서 Docker 의 문제.
 
-1) 컨테이너를 통해 **root** 권한을 획득 할 수 있다.  
+1) 컨테이너를 통해 **root 권한**을 획득 할 수 있다.  
 2) 1번의 문제에 따라 **다른 사용자의 작업을 제어** 하거나(컨테이너/프로세스), 심지어 다른 사용자의 **데이터**까지 접근할 수 있다.   
 3) docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
 
+
 ## [## 4.4  Singularity][4]  
 
-과학 및 애플리케이션 기반 워크로드의 필요성에 의해 생성 된 컨테이너 솔루션
-Docker 저장소의 이미지를 내려받을 수 있다.
+* 과학 및 애플리케이션 기반 워크로드 와 HPC 클러스터 환경에 최적화 된 컨테이너 솔루션 입니다.
+* Docker 저장소의 이미지를 사용할 수 있습니다..  
+* 내려 받은 이미지는 사용자의 HOME 디렉토리에 저장 됩니다.
+* 앞서 제기된 Docker 에 의한 권한문제가 발생하지 않습니다.
 
-### ### Singularity 사용 가능한지 확인.
+### ### 4.4.1 Singularity 사용 가능한지 확인.
 ```bash
-ml | grep singularity
+# Module 을 통해 제공 됩니다.
+module list  |  grep singularity
+
+# load 되어 있지 않다면 load 해 줍니다.
+module load singularity
+
 
 which singularity
 
+singularity --version
 ```
 
-### ### Singularity 기본 명령.
-```
-# 버젼 확인.
-singularity  --version
+### ### 4.4.2 Singularity 기본 명령.
 
-# 이미지 다운로드 (docker 의 pull 과 동일함.) / simg = Singularity Image
+```bash
+# 이미지 생성(build) - (docker 의 pull 과 동일함.) / .simg = Singularity Image
 singularity  build  ~/tf-1.11-gpu-py3.simg  docker://tensorflow/tensorflow:1.11.0-gpu-py3
 
 # 다운로드 된 이미지 파일 확인.
@@ -573,18 +584,18 @@ ll   -trh   ~/tf-1.11-gpu-py3.simg
 file        ~/tf-1.11-gpu-py3.simg
 
 # 이미지 실행(exec)  (--nv 옵션 = GPU 사용)    
+singularity exec --nv   ~/tf-1.11-gpu-py3.simg    pwd
+singularity exec --nv   ~/tf-1.11-gpu-py3.simg    ls -l
+
 singularity exec --nv   ~/tf-1.11-gpu-py3.simg    pip list | grep tensor
+
 
 # 코드 실행.  (singularity 의 경우 home 디렉토리는 기본으로 mount 됩니다.)
 singularity exec --nv ~/tf-1.11-gpu-py3.simg  \
    python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
-# 볼롬 마운트 (dataset)
-
+# 볼롬 마운트 (예를 들어. /dataset)
 singularity exec --nv -B /dataset:/dataset   ~/tf-1.11-gpu-py3.simg   ls -l /dataset
-
-
-
 ```
 
 
