@@ -104,10 +104,9 @@ cat /etc/slurm/gres.conf
 | 최대 GPU 수        |  GrpTRESS=      |  gres/gpu=50 |
 
 #### #### QOS 정책
-| 내용                |  명칭              |  값  |
-|                     |  name              |  value  |
-|--------------------|--------------------|------|
-| QOS 이름           |  Name              |  small-fast  |
+| 내용               |  명칭              |  값  |
+|-------------------|--------------------|------|
+| QOS 이름           |  Name             |  small-fast  |
 | 우선 순위          |  Priority= <br>  (high->fast)  |  150  |
 | 최대 실행 작업     |  MaxJobsPU=        |  10  |
 | 최대 제출 작업     |  MaxSubmit=        |  20  |
@@ -124,7 +123,26 @@ ssh MASTER  sacctmgr list   User
 ssh MASTER  sacctmgr list   Association
 ssh MASTER  sacctmgr list   QOS
 ```
+#### #### 일반적인 작업 우선 순위 요소
 
+slrum Multifactor Priority https://slurm.schedmd.com/priority_multifactor.html  
+
+작업 우선 순위는 다음과 같이 표현할 수 있습니다.
+
+```
+Job_priority =
+	site_factor +
+	(PriorityWeightAge)       * (age_factor)        +
+	(PriorityWeightAssoc)     * (assoc_factor)      +
+	(PriorityWeightFairshare) * (fair-share_factor) +
+	(PriorityWeightJobSize)   * (job_size_factor)   +
+	(PriorityWeightPartition) * (partition_factor)  +
+	(PriorityWeightQOS)       * (QOS_factor         +
+	SUM (TRES_weight_cpu * TRES_factor_cpu,
+	    TRES_weight_<type> * TRES_factor_<type>,
+	    ...)
+	- nice_factor
+```
 
 ***
 
