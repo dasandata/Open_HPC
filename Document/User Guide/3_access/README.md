@@ -71,7 +71,7 @@ ssh -XCY  honggildong@192.168.0.55
 # Show who is logged on and what they are doing.
 w
 
-# Tell how long the system has been running.
+# Tell how long the system has been running & CPU load average
 uptime
 
 # provides monitoring and management capabilities for each of NVIDIA's devices
@@ -81,8 +81,8 @@ nvidia-smi
 pwd
 
 # estimate file space usage
-echo $HOME
-du --human-readable  --max-depth=0  $HOME
+echo ~  # ~ == home 디렉토리
+du --human-readable  --max-depth=0  ~
 
 ```
 
