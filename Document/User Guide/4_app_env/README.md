@@ -5,10 +5,12 @@
 
 # [# 4.   응용프로그램 사용환경 구성 및 시험][userguide]
 
-안녕하세요 다산데이타 입니다.
+안녕하세요 다산데이타 입니다.  
 
-HPC 클러스터에서 응용프로그램 사용환경을 구성하고
-응용프로그램을 시험구동 하는 방법을 알아 보겠습니다.
+HPC 클러스터에서 응용프로그램 사용환경을 구성하고  
+응용프로그램을 시험구동 하는 방법을 알아 보겠습니다.  
+
+환경구성 -> 샘플코드 시험구동 -> 스크립트파일로 작성하여 실행 하는 순서로 진행 됩니다.  
 
 ***
 ## [## TensorFlow Example Download][4]
@@ -148,6 +150,23 @@ gpustat
 nvidia-smi
 nvidia-smi --loop=2
 ```
+
+### ### 4.1.4 스크립트(Script) 파일로 작성하여 실행해 보기.
+```bash
+cat << EOF >  ~/anaconda-py36-tf1.11-Example.sh
+cd ~
+conda deactivate
+conda activate   py36-tf1.11-cuda9.0  
+python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+EOF
+```
+
+```bashrc
+cat ~/anaconda-py36-tf1.11-Example.sh
+
+bash /anaconda-py36-tf1.11-Example.sh
+```
+
 
 ### ### 4.1.4 Anaconda 환경 yaml 로 내보내기, 제거, yaml 에서 불러오기.
 
