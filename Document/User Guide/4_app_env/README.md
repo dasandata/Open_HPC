@@ -84,7 +84,7 @@ conda create 와 conda install 명령을 통해서
 [ python 3.6.5 | tensorflow-gpu 1.11 | cuda 9.0 | cudnn 7 ] 로 구성된 환경을 만들어 보겠습니다.
 
 ```bash
-# 환경 생성.     (-n == name ,            -c == channel)
+# 환경 생성.   (-n == name 생성하는 환경 이름  -c == channel 필요한 환경요소를 다운로드 받는 저장소 이름.)
 conda create    -n py36-tf1.11-cuda9.0    -c anaconda    python=3.6  cudatoolkit=9.0  cudnn=7
 
 # 생성된 환경 목록 확인.
