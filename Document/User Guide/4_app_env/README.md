@@ -228,14 +228,16 @@ conda remove  -n py36-tf1.11-cuda9.0  --all
 conda env list
 ```
 ***
-#### #### yaml 에서 환경 불러오기.
+#### #### yaml 파일을 사용해서 환경 만들기.
 ```bash
 conda deactivate
 conda env list
 
+# -f == 사용할 file    /  -n ==name 만들어질 환경의 이름.
 conda env create   -f ~/conda-py3-ten1.11-cuda9.yaml   -n NEW-py36-tf1.11-cuda9.0
 
 conda env list
+
 conda activate  NEW-py36-tf1.11-cuda9.0
 
 which python
@@ -253,7 +255,7 @@ conda deactivate
 로그인 할때마다 해당 환경이 기본으로 activate 됩니다.
 
 ```bash
-## 홑화살괄호 를 반드시 2개 '>>' 넣어야 합니다. 1개만 넣으면 기존 내용이 삭제되고 덮어씌워 집니다.
+## 홑화살괄호 를 반드시 2개 '>>' 넣어야 합니다. 1개만 넣으면 파일에 있던 기존 내용이 삭제되고 덮어씌워 집니다.
 cat << EOF >>  ~/.bashrc
 
 # conda ENV activate
@@ -324,7 +326,7 @@ ml list
 
 # module 올리기 (load)
 ml load ohpc  # ohpc == default load module name
-ml   ##  ml == ml list or module list
+ml            #   ml == ml list or module list
 
 # 일부 moudel 바꾸기 (swap)
 ml
@@ -411,7 +413,7 @@ nvcc --version
 로그인 할때마다 해당 환경이 기본으로 load 됩니다.
 
 ```bash
-## 홑화살괄호 를 반드시 2개 '>>' 넣어야 합니다. 1개만 넣으면 기존 내용이 삭제되고 덮어씌워 집니다.
+## 홑화살괄호 를 반드시 2개 '>>' 넣어야 합니다. 1개만 넣으면 파일에 있던 기존 내용이 삭제되고 덮어씌워 집니다.
 cat << EOF >>  ~/.bashrc
 
 # User Custom Module
@@ -551,11 +553,19 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 2) 1번의 문제에 따라 **다른 사용자의 작업을 제어** 하거나(컨테이너/프로세스), 심지어 다른 사용자의 **데이터**까지 접근할 수 있다.   
 3) docker image 가 /var/lib/docker 아래에 저장되어 local disk 가 필요하게 된다.
 
+### ### 4.3.6 Docker 이미지의 생성 및 수정 그리고, 재사용.
+
+* dockerfile
+* docker-compose
+* docker commit
+* 개인 docker 저장소 생성 (dockerhub.com)
+* docker push & pull
+
 
 ## [## 4.4  Singularity][4]  
 
 * 과학 및 애플리케이션 기반 워크로드 와 HPC 클러스터 환경에 최적화 된 컨테이너 솔루션 입니다.
-* Docker 저장소의 이미지를 사용할 수 있습니다..  
+* Docker 저장소의 이미지를 사용할 수 있습니다.
 * 내려 받은 이미지는 사용자의 HOME 디렉토리에 저장 됩니다.
 * 앞서 제기된 Docker 에 의한 권한문제가 발생하지 않습니다.
 
