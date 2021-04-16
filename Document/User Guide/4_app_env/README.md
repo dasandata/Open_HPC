@@ -18,13 +18,6 @@ HPC 클러스터에서 응용프로그램 사용환경을 구성하고
 아래와 같은 순서로 진행 됩니다.  
 환경구성 -> 샘플코드 시험구동 -> 스크립트 파일로 작성하여 실행.
 
-## ## 목차
-[4.1  Anaconda][4.1]  
-[4.2  Module][4.2]  
-[4.3  Docker][4.3]  
-[4.4  Singularity][4.4]  
-
-***
 ## [## TensorFlow Example Download][4]
 
 시작하기에 앞서 시험구동에 사용할 TensorFlow Sample Code를 다운로드 합니다.  
@@ -35,6 +28,18 @@ cd ~  # change directory to HOME.
 git   clone   https://github.com/aymericdamien/TensorFlow-Examples
 
 ```
+## ## 목차
+[4.1  Anaconda][4.1]  
+[4.2  Module][4.2]  
+[4.3  Docker][4.3]  
+[4.4  Singularity][4.4]  
+
+***
+## [끝][userguide]
+
+
+
+
 
 ## [## 4.1  Anaconda][4]
 
@@ -571,7 +576,8 @@ docker run -u $UID:$GROUPS --runtime=nvidia  --rm  -v ~:/home/$USER  -v /tmp/$US
 * 과학 및 애플리케이션 기반 워크로드 와 HPC 클러스터 환경에 최적화 된 컨테이너 솔루션 입니다.
 * Docker 저장소의 이미지를 사용할 수 있습니다.
 * 내려 받은 이미지는 사용자의 HOME 디렉토리에 저장 됩니다.
-* 앞서 제기된 Docker 에 의한 권한문제가 발생하지 않습니다.
+* 앞서 제기된 Docker 에 의한 권한상승 문제가 발생하지 않습니다.
+* 권한상승 문제가 없는 대신 Singularity 이미지를 직접 수정할 수 없습니다. (docker 를 통해서 수정후 다시 build 해야 함)
 
 ### ### 4.4.1 Singularity 사용 가능한지 확인.
 ```bash
@@ -597,30 +603,17 @@ singularity  build  ~/tf-1.11-gpu-py3.simg  docker://tensorflow/tensorflow:1.11.
 ll   -trh   ~/tf-1.11-gpu-py3.simg
 file        ~/tf-1.11-gpu-py3.simg
 
-# 이미지 실행(exec)  (--nv 옵션 = GPU 사용)    
-singularity exec --nv   ~/tf-1.11-gpu-py3.simg    pwd
-singularity exec --nv   ~/tf-1.11-gpu-py3.simg    ls -l
+# 이미지 실행(exec)  (singularity 의 경우 home 디렉토리는 기본으로 mount 됩니다.)
+singularity exec   ~/tf-1.11-gpu-py3.simg    pwd
+singularity exec   ~/tf-1.11-gpu-py3.simg    ls -l
 
-singularity exec --nv   ~/tf-1.11-gpu-py3.simg    pip list | grep tensor
+singularity exec   ~/tf-1.11-gpu-py3.simg    pip list | grep tensor
 
 
-# 코드 실행.  (singularity 의 경우 home 디렉토리는 기본으로 mount 됩니다.)
+# 코드 실행.       (--nv 옵션 = GPU 사용)    
 singularity exec --nv ~/tf-1.11-gpu-py3.simg  \
-   python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+   python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
 # 볼롬 마운트 (예를 들어. /dataset)
 singularity exec --nv -B /dataset:/dataset   ~/tf-1.11-gpu-py3.simg   ls -l /dataset
 ```
-
-
-
-
-
-
-
-
-
-
-
-***
-## [끝][userguide]
