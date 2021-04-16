@@ -13,11 +13,54 @@
 HPC 클러스터에서 자원을 요청하고 할당 받아서
 사용하는 방법에 대해 알아 보겠습니다.
 
-## 목차
+## ## 목차
 
-## [5.1  자원관리자(Resource Manager) 개요][5.1]  
-## [5.2  클러스터 자원배정(요청)][5.2]  
-## [5.3  제출된 작업의 우선순위, 시작예상시간][5.3]  
+## [## 5.1  자원관리자(Resource Manager) 개요][5]  
+## [## 5.2  클러스터 자원배정(요청)][5]  
+## [## 5.3  제출된 작업의 우선순위, 시작예상시간][5]  
+
+
+==========================
+
+## [## 5.1  자원관리자(Resource Manager) 개요][5]  
+
+**자원관리자(Resource Manager)** 는  
+보통 HPC 클러스터 환경에서만 접할 수 있는 도구로,
+
+기본적으로 아래 그림과 같이(Backfil) 작업의 크기에 따라 가용한 자원에 작업을 분배하고  
+자원이 모두 사용중일 때는 **대기열(queue)** 에 작업을 쌓아 두었다가  
+사용가능한 자원이 확보되면, 대기하고 있던 작업을 시작시켜주는 역할을 하게 됩니다.
+
+### [### 5.1.2 Resource Manager 의 Backfill][5.1]
+
+<img src="http://docs.adaptivecomputing.com/torque/5-0-1/Content/Resources/Graphics/backfill.gif">  
+
+***
+
+기본적으로 FIFO (First In, First Out) 방식 이지만,  
+무분별한 자원 점유를 방지하고 자원을 공정하게 분배 하거나   
+특정 사용자 와 그룹의 작업을 우선 배정하는 **우선순위(Priority)** 조정 기능도 지원 됩니다.
+
+### [### 5.1.3 SLURM - Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
+
+<img src="https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/images/SLURM_Priority_and_Fair_Trees.png">
+
+### [### 5.1.4 SLURM 구성파일][5.1]
+
+SLURM 은 다음과 같은 파일에 의해 구성 됩니다.  
+
+| 위치              |  용도    |
+|------------------|----------|
+| /etc/slurm.conf  | 일반 Slurm 구성 정보, 관리 할 노드, 해당 노드가 파티션으로 그룹화되는 방법에 대한 정보 및 <br> 해당 파티션과 관련된 다양한 스케줄링 매개 변수를 지정. |
+| /etc/gres.conf   | 각 계산 노드의 GRES (Generic RESource)의 구성 정보를 지정. <br> GRES는 그래픽 처리 장치 (GPU), CUDA MPS (다중 프로세스 서비스) 및 인텔 MIC (다중 통합 코어) 를 지원 합니다. <br> 일반적으로 GPU 구성에 대한 내용으로 작성 됩니다.  |
+
+위 두 설정파일의 NodeName 항목을 통해 클러스터에서 사용되는 노드들의 세부 구성정보를 살펴볼 수 있습니다.
+
+```bash
+cat /etc/slurm/slurm.conf | grep ^NodeName
+
+cat /etc/slurm/gres.conf
+```
 
 
 

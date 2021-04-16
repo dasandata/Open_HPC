@@ -83,8 +83,9 @@ HPC 클러스터는 다음과 같은 요소들로 구성되어 있습니다.
 
 ***
 
-또한, 무분별한 자원 점유를 방지하고 자원을 공정하게 분배 하거나   
-특정 사용자 와 그룹의 작업을 우선 배정하는 **우선순위(Priority)** 조정 기능도 제공 합니다.  
+기본적으로 FIFO (First In, First Out) 방식 이지만,  
+무분별한 자원 점유를 방지하고 자원을 공정하게 분배 하거나   
+특정 사용자 와 그룹의 작업을 우선 배정하는 **우선순위(Priority)** 조정 기능도 지원 됩니다.
 
 ### [### SLURM - Priority_and_Fair_Trees](https://slurm.schedmd.com/SLUG19/Priority_and_Fair_Trees.pdf)
 
