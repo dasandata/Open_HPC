@@ -233,28 +233,33 @@ conda deactivate
 
 ### ### 4.1.6 로그인시 anaconda 기본 환경 구성 (bashrc / rc = Run command)
 
-`~/.bashrc` 파일에 `conda  activate  py36-tf1.11-cuda9.0` 를 추가 하면
+`~/.bashrc` 파일에 `conda  activate  <환경 이름>` 를 추가 하면  
 로그인 할때마다 해당 환경이 기본으로 activate 됩니다.
 
 ```bash
-## 홑화살괄호 '>>' '를 반드시 2개 넣어야 합니다. 1개만 넣으면 기존 내용이 삭제되고 덮어씌워 집니다.
+## 홑화살괄호 를 반드시 2개 '>>' 넣어야 합니다. 1개만 넣으면 기존 내용이 삭제되고 덮어씌워 집니다.
 cat << EOF >>  ~/.bashrc
 
-# conda
+# conda ENV activate
 conda deactivate
 conda activate  NEW-py36-tf1.11-cuda9.0
+
 EOF
 
 cat ~/.bashrc
 
 exit
 
+# Re-login
+
 conda env list
+
+which python
 ```
 
 ## [## 4.2  Module][4]  
 
-### ### Module 이란.
+### ### 4.2.1 Module 이란.
 클러스터에 설치된 **공유 프로그램을 사용**하기 위해서  
 사전에 정의된 환경변수(PATH)를 불러오거나(load) 전환(swap) 할 수 있는 도구 입니다.  
 
@@ -266,7 +271,7 @@ https://modules.readthedocs.io/en/latest/
 관리자에게 설치 요청하여 사용할 수 있습니다.
 
 
-### ### 현재 사용중인 용량과 가능한 용량 확인.
+### ### 4.2.2 현재 사용중인 용량과 가능한 용량 확인.
 ```bash
 # anaconda 설치 용량 확인.
 du -h -d 0 ~/anaconda3/
@@ -278,7 +283,7 @@ df -hT /home
 ssh  MASTER   '/usr/sbin/xfs_quota -xc "quota -h $USER"'
 ```
 
-### ### module 명령어
+### ### 4.2.3 module 명령어
 ```bash
 module
 
@@ -315,7 +320,7 @@ ml show ohpc
 ml show cuda/9.0
 ```
 
-### ### module 사용 예
+### ### 4.2.4 module 사용 예 (컴파일러 버젼 변경)
 
 #### cuda / nvcc
 ```bash
@@ -333,7 +338,7 @@ ml swap   cuda/9.0  cuda/11.2
 which nvcc ; echo ; nvcc -V
 ```
 
-#### gnu gcc
+#### gnu / gcc
 ```bash
 ml purge
 ml
@@ -351,7 +356,7 @@ ml
 which gcc  ; echo ; gcc --version
 ```
 
-#### 환경변수(PATH, env) 의 변화
+#### 환경변수(PATH, env) 의 변화 확인.
 ```bash
 ml purge
 echo $PATH
@@ -362,35 +367,57 @@ echo $PATH
 env | grep PATH
 ```
 
-
-### ### bash script 파일로 작성
+### ### 4.2.5 bash script 파일로 작성
 ```bash
+cat << EOF > ~/module_test.sh
+module  purge
+module  load  cuda/9.0
 
-vi ~/module_test.sh
+which nvcc
+nvcc --version
 
-bash ~/module_test.sh
+EOF
+
+cat  ~/module_test.sh
+
+bash  ~/module_test.sh
+
+## 스크립트에서 실행된 결과와 비교.
+which nvcc
+nvcc --version
 ```
 
-### ### 로그인시 module 기본 환경 구성 (bashrc / rc = Run command)
+### ### 4.2.6 로그인시 module 기본 환경 구성 (bashrc / rc = Run command)
 
 `~/.bashrc` 파일에 `module swap cuda/9.0  cuda/11.2` 를 추가 하면
 로그인 할때마다 해당 환경이 기본으로 load 됩니다.
 
 ```bash
-vi ~/.bashrc
+## 홑화살괄호 를 반드시 2개 '>>' 넣어야 합니다. 1개만 넣으면 기존 내용이 삭제되고 덮어씌워 집니다.
+cat << EOF >>  ~/.bashrc
+
+# User Custom Module
+module swap    cuda/11.2  cuda/9.0
+module unload  gnu/5.4.0
+
+EOF
+
+cat ~/.bashrc
 
 exit
 
-ml list
+# Re-login
+
+module list
+
+which nvcc
 ```
-
-
 
 ## [## 4.3  Docker][4]  
 
 운영체제 수준의 가상화로 리눅스 커널을 공유하면서 프로세스를 격리된 환경에서 실행하는 기술.  
 
-### ### Docker 를 사용할 수 있는지 확인.
+### ### 4.3.1 Docker 를 사용할 수 있는지 확인.
 ```bash
 grep docker /etc/group | grep $USER
 
@@ -402,12 +429,13 @@ docker run 명령을 실행하는 경우 항상 `-u $UID:$GROUPS` 옵션이 포�
 
 ***
 
-### ### Docker hub 에서 원하는 이미지 찾기.
+### ### 4.3.2 Docker hub 에서 원하는 이미지 찾기.
 
-https://hub.docker.com/
+https://hub.docker.com/  
 
-
-### ### Docker 기본 명령.
+https://hub.docker.com/_/ubuntu?tab=tags&page=1&ordering=last_updated&name=20.04  
+  
+### ### 4.3.3 Docker 기본 명령.
 ```bash
 # Docker 버젼 확인.
 docker --version
