@@ -87,28 +87,35 @@ cat /etc/slurm/gres.conf
 - 적용 우선순위 : 1.QOS / 2.Association / 3. Partition								
 
 #### #### 사용자 개별 적용 정책
-| 내용     |  명칭        |  값  |
-|----------|-------------|------|
-| 실행작업  |  MaxJobs=   |  10  |
-| 제출작업  |  MaxJobs=   |  20  |
+| 내용      |  명칭        |  값  |
+|-----------|-------------|------|
+| 실행 작업  |  MaxJobs=   |  10  |
+| 제출 작업  |  MaxJobs=   |  20  |
 | 최대 GPU  |  MaxTRES=   | gres/gpu=10 |
 
 #### #### 계정(Account) 개별 적용 정책 (사용자 그룹)
-| 내용              |  명칭              |  값  |
-|-------------------|-------------------|------|
-| 계정이름           |  Account          |  default  |
-| 기준 사용량        |  fairshare= <br> (RawShares)  | 10000 |
-| 최대 실행작업      |  GrpJobs=         |  100  |
-| 최대 제출작업      |  GrpSubmit=       |  200  |
-| 최대 실행시간      |  MaxWall= <br> (일-시간:분:초) | 3-00:00:00 |
-| 최대 GPU 수       |  GrpTRESS=      |  gres/gpu=50 |
+| 내용                |  명칭              |  값  |
+|--------------------|-------------------|------|
+| 계정 이름           |  Account          |  default  |
+| 기준 사용량         |  fairshare= <br> (RawShares)  | 10000 |
+| 최대 실행 작업      |  GrpJobs=         |  100  |
+| 최대 제출 작업      |  GrpSubmit=       |  200  |
+| 최대 실행 시간      |  MaxWall= <br> (일-시간:분:초) | 3-00:00:00 |
+| 최대 GPU 수        |  GrpTRESS=      |  gres/gpu=50 |
 
-#### #### 사용자 개별 적용 정책
-| 내용     |  명칭        |  값  |
-|----------|-------------|------|
-| 실행작업  |  MaxJobs=   |  10  |
-| 제출작업  |  MaxJobs=   |  20  |
-| 최대 GPU  |  MaxTRES=   | gres/gpu=10 |
+#### #### QOS 정책
+| 내용                |  명칭              |  값  |
+|--------------------|--------------------|------|
+| 내용                |  name              |  value  |
+|--------------------|--------------------|------|
+| QOS 이름           |  Name              |  small-fast  |
+| 우선 순위          |  Priority= <br>  (high->fast)  |  150  |
+| 최대 실행 작업     |  MaxJobsPU=        |  default  |
+| 최대 제출 작업     |  Account           |  default  |
+| 최대 실행 기간     |  Account           |  default  |
+| 최대 GPU 수        |  Account           |  default  |
+| node당 최대 GPU    |  Account           |  default  |
+| node당 최소 GPU    |  Account           |  default  |
 
 #### #### 클러스터에 적용 되어 있는 설정 값 확인.
 ```bash
