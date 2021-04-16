@@ -109,12 +109,12 @@ cat /etc/slurm/gres.conf
 |--------------------|--------------------|------|
 | QOS 이름           |  Name              |  small-fast  |
 | 우선 순위          |  Priority= <br>  (high->fast)  |  150  |
-| 최대 실행 작업     |  MaxJobsPU=        |  default  |
-| 최대 제출 작업     |  Account           |  default  |
-| 최대 실행 기간     |  Account           |  default  |
-| 최대 GPU 수        |  Account           |  default  |
-| node당 최대 GPU    |  Account           |  default  |
-| node당 최소 GPU    |  Account           |  default  |
+| 최대 실행 작업     |  MaxJobsPU=        |  10  |
+| 최대 제출 작업     |  MaxSubmit=        |  20  |
+| 최대 실행 기간     |  MaxWall= <br> (일-시간:분:초) |  3:00:00  |
+| 최대 GPU 수        |  MaxTRES=          |  gres/gpu=30  |
+| node당 최대 GPU    |  MaxTRESPerNode=   |  gres/gpu=1  |
+| node당 최소 GPU    |  MinTRES=          |  gres/gpu=4  |
 
 #### #### 클러스터에 적용 되어 있는 설정 값 확인.
 ```bash
