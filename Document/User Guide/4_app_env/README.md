@@ -15,7 +15,7 @@ HPC 클러스터에서 응용프로그램 사용환경을 구성하고
 ***
 ## [## TensorFlow Example Download][4]
 
-시작하기에 앞서 시험구동에 사용할 TensorFlow Sample Code를 다운로드 합니다.
+시작하기에 앞서 시험구동에 사용할 TensorFlow Sample Code를 다운로드 합니다.  
 
 ```bash
 cd ~  # change directory to HOME.
@@ -32,8 +32,9 @@ git   clone   https://github.com/aymericdamien/TensorFlow-Examples
 
 ### ### 4.1.1 Anaconda 다운로드 및 설치.
 
-웹브라우져로 Anaconda download 페이지에서 [Linux] -> [64-Bit (x86) Installer (529 MB)] 를   
-마우스 포인터로 가르킨 후 오른쪽 클릭하여 "링크주소 복사" 를 합니다.  
+웹 브라우져로 Anaconda download 페이지에 접속 한 후   
+[Download] -> [Linux] -> [64-Bit (x86) Installer (529 MB)] 를   
+마우스 포인터로 가르킨 후 **오른쪽** 클릭하여 "링크주소 복사" 를 합니다.  
 
 ### https://www.anaconda.com/products/individual
 
@@ -41,9 +42,12 @@ git   clone   https://github.com/aymericdamien/TensorFlow-Examples
 
 ***
 
-터미널 창에 wget 명령을 입력한 후, 복사된 링크를 붙여넣고 실행하면 다운로드가 시작 됩니다.
+터미털 창에서 HOME 디렉토리로 이동한 다음  
+wget 명령과 함께 복사된 링크를 붙여넣고 실행하면 다운로드가 시작 됩니다.  
 
 ```bash
+cd ~   # ~   =>>  사용자의 home 디렉토리 경로
+
 wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
 ```
 
@@ -52,9 +56,9 @@ wget https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
 ```bash
 ls -lh   # l = 목록(list) 형태로 출력  , h = human-readable (숫자를 사람이 읽기 쉬운 단위로 표시).
 
-file  Anaconda3-2020.11-Linux-x86_64.sh  # 파일이 어떤 형식으로 되어있는시 확인할 수 있습니다.
+file  ~/Anaconda3-2020.11-Linux-x86_64.sh  # 파일이 어떤 형식으로 되어있는시 확인.
 
-bash  Anaconda3-2020.11-Linux-x86_64.sh  # 스크립트 파일을 실행.
+bash  ~/Anaconda3-2020.11-Linux-x86_64.sh  # 스크립트 파일을 실행.
 ```
 
 * license terms 는 yes 입력.   
@@ -77,10 +81,10 @@ conda update -n base -c defaults conda
 ### ### 4.1.2 Python + CUDA, tensorflow 환경 구성.
 
 conda create 와 conda install 명령을 통해서   
-python 3.6.5 / tensorflow-gpu 2.0 / cuda 10.0 / cudnn 7.4  으로 구성된 환경을 만들어 보겠습니다.
+[ python 3.6.5 | tensorflow-gpu 1.11 | cuda 9.0 | cudnn 7 ] 로 구성된 환경을 만들어 보겠습니다.
 
 ```bash
-# 환경 생성.
+# 환경 생성.     (-n == name ,            -c == channel)
 conda create    -n py36-tf1.11-cuda9.0    -c anaconda    python=3.6  cudatoolkit=9.0  cudnn=7
 
 # 생성된 환경 목록 확인.
@@ -97,7 +101,7 @@ which   pip
 python --version
 pip    --version
 
-# tensorflow-gpu 설치
+# tensorflow-gpu 1.11 설치
 pip  install   tensorflow-gpu==1.11
 
 # 설치된 tensorflow-gpu 버젼 확인.
@@ -113,7 +117,7 @@ pip    --version
 
 ### ### 4.1.3 Anaconda 환경에서 TensorFlow Sample Code 실행.
 
-이제 방금 생성한 환경으로 TensorFlow Sample Code 를 실행해 보겠습니다.  
+만들어진 환경을 활성화 해서 TensorFlow Sample Code 를 실행해 보겠습니다.  
 
 ```bash
 # 생성된 환경 목록 확인.
@@ -128,12 +132,17 @@ python --version
 # 설치된 tensorflow-gpu 버젼 확인.
 pip list | grep tensorflow-gpu
 
+# Sample Code 를 실행해 보기 전에 gpu 상태 확인
+gpustat
+
+nvidia-smi
+
 # Sample Code 실행 1 (short)
-python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
 # Sample Code 실행 2 (long)
 pip install matplotlib
-python  TensorFlow-Examples/examples/3_NeuralNetworks/dcgan.py
+python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/dcgan.py
 
 ```
 
@@ -143,32 +152,43 @@ Sample Code 가 gpu 에서 잘 작동 되는지 확인하기 위해
 터미널 창을 하나 더 열어서 클러스터에 접속 합니다.  
 
 ```bash
-# gpu 사용률 확인 1
-gpustat
+watch   gpustat
 
-# gpu 사용률 확인 2
-nvidia-smi
-nvidia-smi --loop=2
+nvidia-smi --loop=2  # loop
+
+watch   'nvidia-smi ; echo ; gpustat'
 ```
 
 ### ### 4.1.4 스크립트(Script) 파일로 작성하여 실행해 보기.
 ```bash
 cat << EOF >  ~/anaconda-py36-tf1.11-Example.sh
+# HOME 디렉토리로 이동.  
 cd ~
+
+# bashrc 불러오기.  
+source  .bashrc
+
+# conda 환경 비활성화.  
 conda deactivate
+
+# 원하는 conda 환경 활성화.  
 conda activate   py36-tf1.11-cuda9.0  
-python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+
+# 샘플코드 실행.
+python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+
+# End.
 EOF
 ```
 
 ```bashrc
 cat ~/anaconda-py36-tf1.11-Example.sh
 
-bash /anaconda-py36-tf1.11-Example.sh
+bash ~/anaconda-py36-tf1.11-Example.sh
 ```
 
 
-### ### 4.1.4 Anaconda 환경 yaml 로 내보내기, 제거, yaml 에서 불러오기.
+### ### 4.1.5 Anaconda 환경 yaml 로 내보내기, 제거, yaml 에서 불러오기.
 
 #### Anaconda 환경 yaml 로 내보내기.
 ```bash
@@ -206,12 +226,12 @@ which python
 python --version
 pip list | grep tensorflow-gpu
 
-python  TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
+python  ~/TensorFlow-Examples/examples/3_NeuralNetworks/neural_network_raw.py
 
 conda deactivate
 ```
 
-#### #### 로그인시 anaconda 기본 환경 구성 (bashrc / rc = Run command)
+### ### 4.1.6 로그인시 anaconda 기본 환경 구성 (bashrc / rc = Run command)
 
 `~/.bashrc` 파일에 `conda  activate  py36-tf1.11-cuda9.0` 를 추가 하면
 로그인 할때마다 해당 환경이 기본으로 activate 됩니다.
@@ -334,7 +354,16 @@ echo $PATH
 env | grep PATH
 ```
 
-#### #### 로그인시 module 기본 환경 구성 (bashrc / rc = Run command)
+
+### ### bash script 파일로 작성
+```bash
+
+vi ~/module_test.sh
+
+bash ~/module_test.sh
+```
+
+### ### 로그인시 module 기본 환경 구성 (bashrc / rc = Run command)
 
 `~/.bashrc` 파일에 `module swap cuda/9.0  cuda/11.2` 를 추가 하면
 로그인 할때마다 해당 환경이 기본으로 load 됩니다.
@@ -347,12 +376,6 @@ exit
 ml list
 ```
 
-#### #### bash script 파일로 작성
-```bash
-vi ~/module_test.sh
-
-bash ~/module_test.sh
-```
 
 
 ## [## 4.3  Docker][4]  
