@@ -289,7 +289,9 @@ module
 
 #  module list  ==  ml
 #  module avail ==  ml av
-
+```
+***
+```bash
 # 현재 load 되어 있는 module 목록  
 ml list
 
