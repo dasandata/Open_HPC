@@ -11,10 +11,42 @@
 
 앞에서 다루지 못했던 내용들을 추가 했습니다.
 
-[6.1  파일전송(scp, rsync)][6]  
+## [## 6.1  파일전송(scp, rsync)][6]  
 
 
+### ### Windows Mobaxterm
+mobaxterm 에 자체 내장된 scp 기능을 이용 할 수 있습니다.
 
+### ### Windows용 winscp, 또는 FileZilla (FileZilla는 mac os용도 있습니다.)
+
+#### https://winscp.net/
+
+#### https://filezilla-project.org/
+
+### ### Linux 와 Mac OS scp
+작은 크기의 간단한 파일 및 폴더를 전송하는데 사용 합니다.  
+중간에 연결이 끊어지면, 처음부터 다시 전송 됩니다.  
+```bash
+# File Copy    local source to Remote target
+scp    ~/aaa.txt    user@192.168.0.89:~/  
+
+# File Copy   Remote source to Local Target
+scp      user@192.168.0.89:~/aaa.txt      ~/
+
+# Forder Copy (-r 옵션)  Remote source to Remote target
+scp  -r  user@192.168.0.89:~/forderA   korea@192.168.0.90:~/
+```
+
+### ### Linux - rsync
+파일과 폴더가 크거나 여러개 인 경우 사용 합니다.  
+중간에 연결이 끊어져도 이어서 전송 됩니다.  
+```bash
+# File and Forder Copy    local source to Remote target
+rsync  -avzh  ~/aaa.txt    user@192.168.0.89:~/  
+
+# File Copy   Remote source to Local Target
+rsync  -avzh  user@192.168.0.89:~/aaa.txt      ~/
+```
 
 
 ***
