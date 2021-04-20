@@ -15,6 +15,7 @@
 
 
 ### ### Windows Mobaxterm
+
 mobaxterm 에 자체 내장된 scp 기능을 이용 할 수 있습니다.
 
 ### ### Windows용 winscp, 또는 FileZilla (FileZilla는 mac os용도 있습니다.)
@@ -23,9 +24,10 @@ mobaxterm 에 자체 내장된 scp 기능을 이용 할 수 있습니다.
 
 #### https://filezilla-project.org/
 
-### ### Linux 와 Mac OS scp
+### ### scp - Linux 와 Mac OS Terminal
 작은 크기의 간단한 파일 및 폴더를 전송하는데 사용 합니다.  
-중간에 연결이 끊어지면, 처음부터 다시 전송 됩니다.  
+중간에 연결이 끊어지면, 처음부터 다시 전송 됩니다. (FileZilla 같은 프로그램을 사용하면 이어서 전송 됩니다.)
+
 ```bash
 # File Copy    local source to Remote target
 scp    ~/aaa.txt    user@192.168.0.89:~/  
@@ -37,7 +39,7 @@ scp      user@192.168.0.89:~/aaa.txt      ~/
 scp  -r  user@192.168.0.89:~/forderA   korea@192.168.0.90:~/
 ```
 
-### ### Linux - rsync
+### ### rsync - Linux Terminal
 파일과 폴더가 크거나 여러개 인 경우 사용 합니다.  
 중간에 연결이 끊어져도 이어서 전송 됩니다.  
 ```bash
@@ -48,6 +50,7 @@ rsync  -avzh  ~/aaa.txt    user@192.168.0.89:~/
 rsync  -avzh  user@192.168.0.89:~/aaa.txt      ~/
 ```
 
+## [## 6.3 추가 예정.)][6]  
 
 ***
 ## [끝][6]
