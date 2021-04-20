@@ -16,7 +16,9 @@
 
 ### ### Windows Mobaxterm
 
-mobaxterm 에 자체 내장된 scp 기능을 이용 할 수 있습니다.
+mobaxterm 에 자체 내장된 scp 기능을 이용 할 수 있습니다.  
+
+<img src="https://mobaxterm.mobatek.net/img/moba/features/feature-sftp-browser.png">
 
 ### ### Windows용 winscp, 또는 FileZilla (FileZilla는 mac os용도 있습니다.)
 
