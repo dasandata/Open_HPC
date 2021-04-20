@@ -63,6 +63,8 @@ Dasandata OpenHPC Cluster 사용자를 위한 안내서 입니다.
 [6.1  파일전송(scp, rsync)][6.1]  
 
 [6]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/6_etc
-[6.1]: http://google.com
+[6.1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/6_etc#-61--%ED%8C%8C%EC%9D%BC%EC%A0%84%EC%86%A1scp-rsync
+
+
 
 ***

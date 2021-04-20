@@ -3,7 +3,7 @@
 [slurm]: https://slurm.schedmd.com/
 
 [6]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/6_etc
-[6.1]: http://google.com
+[6.1]: https://github.com/dasandata/Open_HPC/tree/master/Document/User%20Guide/6_etc#-61--%ED%8C%8C%EC%9D%BC%EC%A0%84%EC%86%A1scp-rsync
 
 # [6.   기타][userguide]
 
