@@ -14,5 +14,8 @@
 ## [2. GPU Node Provisioning of OpenHPC Cluster][2]
 [2]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/GPU%20Node%20Provisioning%20of%20OpenHPC%20Cluster.md
 
-## [3. Opertation Guide for OpenHPC Cluster][3]
-[3]:https://github.com/dasandata/Open_HPC/tree/master/Operation%20Guide%20for%20OpenHPC%20Cluster
+## [3. Admin Guide for OpenHPC Cluster][3]
+[3]:https://github.com/dasandata/Open_HPC/blob/master/Document/Admin%20Guide/README.md
+
+## [4. User Guide for OpenHPC Cluster][4]
+[4]:https://github.com/dasandata/Open_HPC/blob/master/Document/User%20Guide/README.md
