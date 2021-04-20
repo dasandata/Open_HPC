@@ -29,6 +29,21 @@ ssh  -XCY  <USER ID>@<IP ADDRESS>
 ssh -XCY  honggildong@192.168.0.55
 ```
 
+#### #### Windows의 사용자 계정이름이 한글일 경우 ssh 접속 에러
+윈도우의 사용자 계정이 한글로 되어 있을 경우  
+ssh 명령 후 아래와 같은 오류가 발생 합니다.  
+<br>
+이 경우 터미널 창에서 다음 명령을 실행하고 mobaxterm 을 재시작 하면 해결 됩니다.
+
+```bash
+cat << EOF > ~/.bashrc
+
+sed -i   's/User ""/User "user"/g'    /etc/ssh_config
+
+EOF
+```
+
+
 ## [## 3.2  Mac OS Terminal][3]
 
 Mac OS 는 terminal 프로그램이 기본적으로 제공되지만  
