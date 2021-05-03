@@ -243,7 +243,7 @@ pwd
 export GOPATH=$PWD/go/modules
 
 go mod download
-go build -o bin/prometheus-slurm-exporter {main,accounts,cpus,gpus,nodes,partitions,queue,scheduler,sshare,users}.go
+go build -o bin/prometheus-slurm-exporter {main,accounts,cpus,gpus,partitions,node,nodes,queue,scheduler,sshare,users}.go
 go test -v *.go
 
 # copy make file
