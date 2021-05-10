@@ -2270,33 +2270,33 @@ ll /usr/local/bin/docker-compose
 
 ll /etc/yum.repos.d/docker-ce.repo
 
-cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/
+cp /etc/yum.repos.d/docker-ce.repo /opt/ohpc/admin/images/centos7/etc/yum.repos.d/
 
-ll /opt/ohpc/admin/images/centos7.9/etc/yum.repos.d/docker-ce.repo
+ll /opt/ohpc/admin/images/centos7/etc/yum.repos.d/docker-ce.repo
 
-yum -y --installroot=/opt/ohpc/admin/images/centos7.9 install docker-ce docker-ce-cli containerd.io
+yum -y --installroot=/opt/ohpc/admin/images/centos7 install docker-ce docker-ce-cli containerd.io
 
 # vnfs image login
 
-chroot /opt/ohpc/admin/images/centos7.9
+chroot /opt/ohpc/admin/images/centos7
 
-sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /opt/ohpc/admin/images/centos7.9/etc/selinux/config
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
-grep 'SELINUX=' /opt/ohpc/admin/images/centos7.9/etc/selinux/config  
+grep 'SELINUX=' /etc/selinux/config  
 
 systemctl enable docker.service
 
 exit
 
-cp /usr/local/bin/docker-compose /opt/ohpc/admin/images/centos7.9/usr/local/bin/
+cp /usr/local/bin/docker-compose /opt/ohpc/admin/images/centos7/usr/local/bin/
 
-ll /opt/ohpc/admin/images/centos7.9/usr/local/bin/
+ll /opt/ohpc/admin/images/centos7/usr/local/bin/
 
 # vnfs image login
 
-chroot /opt/ohpc/admin/images/centos7.9
+chroot /opt/ohpc/admin/images/centos7
 
-ln -s usr/local/bin/docker-compose usr/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 docker-compose --version
 
@@ -2304,7 +2304,7 @@ exit
 
 wwsh file resync
 
-wwvnfs --chroot /opt/ohpc/admin/images/centos7.9
+wwvnfs --chroot /opt/ohpc/admin/images/centos7
 
 ```
 
