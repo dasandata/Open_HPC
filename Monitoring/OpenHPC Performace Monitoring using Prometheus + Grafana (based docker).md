@@ -1,16 +1,41 @@
 
 # # OpenHPC Performace Monitoring using Prometheus + Grafana (based docker)
 
-
+[contents]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md
+[1]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[2]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[3]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[4]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[5]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[6]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[7]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[8]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[9]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[10]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
+[grafanadashboards]: https://github.com/dasandata/Open_HPC/tree/master/Monitoring
 
 ## ## Requirements  
  - openhpc node staeful setup  # docker image in physical disk and save docker config on nodes.
 
-
 ## 목차  
 
+### [1. Insatll Docker to Master & VNFS of openhpc nodes.][1]
+### [2. Install Nvidia Docker to Master & VNFS of openhpc nodes.][2]
+### [3. Prometheus docker run on master.][3]
+### [4. Run on node prometheus-node-expoter][4]
+### [5. add scrape node info to master][5]
+### [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][6]
+### [7. Add script & Crontab, for Start docker process after node reboot][7]  
+### [8. Prometheus-slurm exporter ( For Centos7, Only Master )][8]
+### [9. Prometheus-ipmi exporter ( For Centos7, Only Master )][9]
+### [10. Grafana Docker (on Master)][10]
+### [Grafana dashboards][grafanadashboards]
 
-## ## Insatll Docker to Master & VNFS of openhpc nodes.
+### [END.][contents]
+
+***
+
+## ## [1. Insatll Docker to Master & VNFS of openhpc nodes.][contents]
 ```bash
 # Docker Install on master server.
 yum-config-manager --add-repo \
@@ -47,9 +72,7 @@ wwsh file resync  # docker /etc/group sync.
 ```
 
 
-
-
-## ## Install Nvidia Docker to Master & VNFS of openhpc nodes.
+## ## [2. Install Nvidia Docker to Master & VNFS of openhpc nodes.][contents]
 ```bash
 # Nvidia-Docker Install on master server.
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -74,7 +97,7 @@ wwvnfs --chroot  ${CHROOT}
 
 
 
-## ## Prometheus docker run on master.
+## ## [3. Prometheus docker run on master.][contents]
 ```bash
 # Make Prometheus Config file (yaml).
 
@@ -122,7 +145,7 @@ docker update --restart=always prometheus
 
 
 
-## ## Run on node prometheus-node-expoter
+## ## [4. Run on node prometheus-node-expoter][contents]
 ```bash
 # on node. run expoter
 docker run -d --restart=always --name prometheus-node-exporter \
@@ -136,7 +159,7 @@ netstat  -tnlp  | grep node_exporter
 
 ```
 
-## ## add scrape node info to master
+## ## [5. add scrape node info to master][contents]
 
 ```bash
 # on master, add scrape node info. * targets is node ip address.
@@ -156,7 +179,7 @@ docker restart prometheus
 
 
 
-## ## Run prometheus nvidia dcgm expoter (prometheus-dcgm)
+## ## [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][contents]
 ```bash
 # on node.
 docker run -d --restart=always --name prometheus-dcgm-exporter \
@@ -176,7 +199,7 @@ docker restart prometheus
 
 ```
 
-## ## Add script & Crontab, for Start docker process after node reboot   
+## ## [7. Add script & Crontab, for Start docker process after node reboot][contents]  
 ```bash
 # make script folder
 mkdir /opt/ohpc/pub/script
@@ -219,7 +242,7 @@ wwvnfs --chroot  ${CHROOT}
 
 
 
-## ## Prometheus-slurm exporter ( For Centos7, Only Master )
+## ## [8. Prometheus-slurm exporter ( For Centos7, Only Master )][contents]
 ```bash
 # only master.
 
@@ -303,7 +326,7 @@ docker restart prometheus
 
 
 
-## ## Grafana Docker (on Master)
+## ## [10. Grafana Docker (on Master)][contents]
 ```bash
 # on master.
 docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
@@ -326,7 +349,7 @@ docker restart grafana
 
 ```
 
-### [Grafana dashboard][https://grafana.com/grafana/dashboards]
+### [Grafana dashboards][https://grafana.com/grafana/dashboards]
 
 #### 1 Node Exporter for Prometheus Dashboard EN v20201010
 https://grafana.com/grafana/dashboards/11074
@@ -350,4 +373,4 @@ https://grafana.com/grafana/dashboards/12239
 https://grafana.com/grafana/dashboards/4323
 
 
-## END.
+## ## [END.][contents]
