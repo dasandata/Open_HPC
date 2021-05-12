@@ -1,4 +1,4 @@
-# Prometheus-slurm export ( Centos7 )
+# Prometheus-slurm-exporter ( Centos7 )
 
 ```bash
 export VERSION=1.15 OS=linux ARCH=amd64
