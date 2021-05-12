@@ -1,14 +1,16 @@
 
-# OpenHPC Performace Monitoring using Prometheus + Grafana (based docker)
+# # OpenHPC Performace Monitoring using Prometheus + Grafana (based docker)
 
 
 
-## Requirements  
+## ## Requirements  
  - openhpc node staeful setup  # docker image in physical disk and save docker config on nodes.
 
 
+## 목차  
 
-## Insatll Docker to Master & VNFS of openhpc nodes.
+
+## ## Insatll Docker to Master & VNFS of openhpc nodes.
 ```bash
 # Docker Install on master server.
 yum-config-manager --add-repo \
@@ -47,7 +49,7 @@ wwsh file resync  # docker /etc/group sync.
 
 
 
-## Install Nvidia Docker to Master & VNFS of openhpc nodes.
+## ## Install Nvidia Docker to Master & VNFS of openhpc nodes.
 ```bash
 # Nvidia-Docker Install on master server.
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -72,7 +74,7 @@ wwvnfs --chroot  ${CHROOT}
 
 
 
-## Prometheus docker run on master.
+## ## Prometheus docker run on master.
 ```bash
 # Make Prometheus Config file (yaml).
 
@@ -120,7 +122,7 @@ docker update --restart=always prometheus
 
 
 
-## Run on node prometheus-node-expoter
+## ## Run on node prometheus-node-expoter
 ```bash
 # on node. run expoter
 docker run -d --restart=always --name prometheus-node-exporter \
@@ -134,7 +136,7 @@ netstat  -tnlp  | grep node_exporter
 
 ```
 
-## add scrape node info to master
+## ## add scrape node info to master
 
 ```bash
 # on master, add scrape node info. * targets is node ip address.
@@ -154,7 +156,7 @@ docker restart prometheus
 
 
 
-## Run prometheus nvidia dcgm expoter (prometheus-dcgm)
+## ## Run prometheus nvidia dcgm expoter (prometheus-dcgm)
 ```bash
 # on node.
 docker run -d --restart=always --name prometheus-dcgm-exporter \
@@ -174,7 +176,7 @@ docker restart prometheus
 
 ```
 
-## Add script & Crontab, for Start docker process after node reboot   
+## ## Add script & Crontab, for Start docker process after node reboot   
 ```bash
 # make script folder
 mkdir /opt/ohpc/pub/script
@@ -217,7 +219,7 @@ wwvnfs --chroot  ${CHROOT}
 
 
 
-## Prometheus-slurm exporter ( For Centos7, Only Master )
+## ## Prometheus-slurm exporter ( For Centos7, Only Master )
 ```bash
 # only master.
 
@@ -301,7 +303,7 @@ docker restart prometheus
 
 
 
-## Grafana Docker (on Master)
+## ## Grafana Docker (on Master)
 ```bash
 # on master.
 docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
@@ -324,8 +326,10 @@ docker restart grafana
 
 ```
 
-### Grafana dashboard
-https://grafana.com/grafana/dashboards
+### [Grafana dashboard][https://grafana.com/grafana/dashboards]
+
+#### 1 Node Exporter for Prometheus Dashboard EN v20201010
+https://grafana.com/grafana/dashboards/11074
 
 #### Prometheus Node Exporter Full
 https://grafana.com/grafana/dashboards/1860
