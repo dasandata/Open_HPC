@@ -326,6 +326,81 @@ docker restart prometheus
 
 
 
+## ## [9. Prometheus-ipmi exporter ( For Centos7, Only Master )][contents]
+```bash
+# only master.
+
+cd /tmp/
+
+# Donwload go 1.15
+export VERSION=1.15 OS=linux ARCH=amd64
+wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
+
+tar -xzf go$VERSION.$OS-$ARCH.tar.gz
+export PATH=$PWD/go/bin:$PATH
+
+git clone https://github.com/soundcloud/ipmi_exporter
+
+# make slurm expoter
+cd ipmi_exporter/
+pwd
+make
+
+# copy make file
+cp ./ipmi_exporter   /usr/bin/ipmi_exporter
+/usr/bin/ipmi_exporter  --version
+
+# for test.
+/usr/bin/ipmi_exporter
+
+# Firewall port add
+firewall-cmd --add-port=9290/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-all
+
+# Prometheus-slurm service add
+cat << EOF > /lib/systemd/system/prometheus-ipmi-exporter.service
+[Unit]
+Description=Prometheus IPMI Exporter
+
+[Service]
+ExecStart=/usr/bin/ipmi_exporter
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+ll /lib/systemd/system/prometheus-ipmi-exporter.service
+chmod +x /lib/systemd/system/prometheus-ipmi-exporter.service
+
+systemctl daemon-reload
+systemctl enable prometheus-ipmi-exporter.service
+systemctl start  prometheus-ipmi-exporter.service
+systemctl status prometheus-ipmi-exporter.service
+netstat -tnlp | grep 9290
+
+# Prometheus-config file Modified
+ll -ld /etc/prometheus/prometheus.yml
+cp /etc/prometheus/prometheus.yml{,.bak}
+
+
+cat << EOF >> /etc/prometheus/prometheus.yml
+
+  - job_name: 'ipmi-exporter'
+    scrape_interval:  5s
+    scrape_timeout:   5s
+
+    static_configs:
+      - targets: ['10.x.x.x:9290']
+EOF
+
+# restart prometheus
+docker restart prometheus
+```
+
+
 ## ## [10. Grafana Docker (on Master)][contents]
 ```bash
 # on master.
