@@ -130,7 +130,7 @@ docker run -d --restart=always --name prometheus-node-exporter \
   --path.rootfs=/host
 
 # check exporter port.
-netstat  -tnlp  | grep node_exporter
+netstat  -tnlp  | grep node_exporte
 
 ```
 
