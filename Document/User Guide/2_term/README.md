@@ -30,11 +30,17 @@
 | PBSPro      | Portable Batch System - Altair Engineering |
 | Torque      | Terascale Open-source Resource and QUEue Manager - Adaptive Computing Enterprises |
 | SLURM       | Simple Linux Utility Resource Management -schedmd |
+| Resource    | CPU, Memory, GRES(GPU)등 애플리케이션의 작업에 활용되는 하드웨어 구성요소, node 의 집합체 |
 | node        | 작업이 수행되는 컴퓨터 또는 서버 |
-| Resource    | CPU, Memory, GPU 등 애플리케이션의 작업에 활용되는 하드웨어 구성요소, node 의 집합체 |
+| submit      | 작업 제출 (Resource 요청) |
+| job         | node 에서 수행되는 작업 |
 | interactive job | 명령 한줄씩 입력하고 결과를 확인하는 **대화형** 작업 |
 | batch job       | 명령어 모음을 스크립트 파일로 작성되어 제출되고 결과가 파일로 저장되는 **일괄형** 작업 |
 | queue       | 클러스터 내의 모든 Resource 가 사용중인 경우 제출된 작업이 대기하는 줄  |
+| Partition   | node 들을 종류별, 용도별로 구분하여 나누어 둔 논리 그룹  |
+| QoS         | Quality of Service / 특정한 작업(Job)에 대해 우선순위/제한 을 적용하기 위한 지정 값  |
+| GRES         | Generic Resource / 보통, node 에 장착된 GPU 를 뜻 합니다. |
+| TRES         | Trackable RESources / node 에서 사용중인 Resource 사용현황 추적 및 사용률 계산  |
 
 ## [## 2.4 Linux Bash 정규 표현식(Regular Expressions) 및 File stream][userguide]
 | 용 어           |  내 용   |
