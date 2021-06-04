@@ -125,9 +125,16 @@ scrape_configs:
       - targets: ['localhost:9090']
 EOF
 
+
+# Make Prometheus Data folder.
+
+mkdir   /var/lib/prometheus/
+chown   nfsnobody:nfsnobody    /var/lib/prometheus/
+
 # run prometheus docker.
 docker run --name prometheus -d -p 9090:9090 \
    -v /etc/prometheus/:/etc/prometheus/  \
+   -v /var/lib/prometheus/:/prometheus/  \
    prom/prometheus
 
 # Firewall Port Open 9090
