@@ -128,11 +128,15 @@ EOF
 
 # Make Prometheus Data folder.
 
+adduser --uid 9090 --no-create-home  --shell /sbin/nologin   prometheus
+
 mkdir   /var/lib/prometheus/
-chown   nfsnobody:nfsnobody    /var/lib/prometheus/
+chown   prometheus:prometheus    /var/lib/prometheus/
 
 # run prometheus docker.
-docker run --name prometheus -d -p 9090:9090 \
+docker run \
+   --name prometheus -d -p 9090:9090 \
+   --user 9090:9090   \
    -v /etc/prometheus/:/etc/prometheus/  \
    -v /var/lib/prometheus/:/prometheus/  \
    prom/prometheus
