@@ -421,13 +421,22 @@ docker restart prometheus
 ```
 
 
-## ## [10. Grafana Docker (on Master)][contents]
-```bash
-# on master.
-docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
+## ## [10. Grafana Install (on Master)][contents]
 
-docker ps | grep grafana
-netstat  -tnlp | grep 3000
+https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1  
+
+```bash
+
+yum -y install  https://dl.grafana.com/oss/release/grafana-7.5.7-1.x86_64.rpm
+
+which grafana-server
+which grafana-cli
+
+systemctl daemon-reload
+systemctl enable grafana-server.service
+
+grafana-cli plugins install grafana-clock-panel
+systemctl   restart   grafana-server.service
 
 # Firewall Port Open 9090
 firewall-cmd --list-all | grep 3000
@@ -438,9 +447,30 @@ firewall-cmd --list-all | grep 3000
 # Open Broser to http://localhost:3000
 # id : admin / pass : admin
 
+```
+
+
+### ### Grafana Docker.
+
+```bash
+# on master.
+docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
+
+docker ps | grep grafana
+netstat  -tnlp | grep 3000
+
 # Plugin Install to clock-panel
 docker exec grafana grafana-cli plugins install grafana-clock-panel
 docker restart grafana
+
+# Firewall Port Open 9090
+firewall-cmd --list-all | grep 3000
+firewall-cmd --add-port=3000/tcp
+firewall-cmd --add-port=3000/tcp --permanent
+firewall-cmd --list-all | grep 3000
+
+# Open Broser to http://localhost:3000
+# id : admin / pass : admin
 
 ```
 
