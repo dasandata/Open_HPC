@@ -178,7 +178,12 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 
   - job_name: 'node-exporter'
     static_configs:
-    - targets: ['10.1.1.x:9100']
+    - targets: ['10.1.1.254:9100']
+    labels:
+      note: 'master-node'
+  - targets: ['10.1.1.1:9100','10.1.1.2:9100','10.1.1.3:9100','10.1.1.4:9100']
+    labels:
+      note: 'compute-node'
 
 EOF
 
@@ -202,7 +207,9 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 
   - job_name: 'dcgm-exporter'
     static_configs:
-    - targets: ['10.1.1.x:9400']
+    - targets: ['10.1.1.254:9400']
+    labels:
+      note: 'master-node'
 
 EOF
 
@@ -328,7 +335,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
     scrape_timeout:   5s
 
     static_configs:
-      - targets: ['10.x.x.x:9800']
+      - targets: ['10.1.1.254:9800']
 EOF
 
 # restart prometheus
@@ -404,7 +411,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
     scrape_timeout:   5s
 
     static_configs:
-      - targets: ['10.x.x.x:9290']
+      - targets: ['10.1.1.254:9290']
 EOF
 
 # restart prometheus
