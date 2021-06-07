@@ -159,7 +159,7 @@ docker update --restart=always prometheus
 ## ## [4. Run on node prometheus-node-expoter][contents]
 ```bash
 # on node. run expoter
-docker run -d --restart=always --name prometheus-node-exporter \
+docker run -d --restart=always --name node-exporter \
   --net="host" --pid="host" \
   -v "/:/host:ro,rslave" \
   quay.io/prometheus/node-exporter:latest \
@@ -210,7 +210,9 @@ cat << EOF >> /etc/prometheus/prometheus.yml
     - targets: ['10.1.1.254:9400']
     labels:
       note: 'master-node'
-
+  - targets: ['10.1.1.1:9400','10.1.1.2:9400','10.1.1.3:9400','10.1.1.4:9400']
+    labels:
+      note: 'compute-node'
 EOF
 
 docker restart prometheus
@@ -225,7 +227,7 @@ mkdir /opt/ohpc/pub/script
 cat << EOF > /opt/ohpc/pub/script/docker-run-prometheus-exporter.sh
 
 # node-exporter
-docker run -d --restart=always --name prometheus-node-exporter \\
+docker run -d --restart=always --name node-exporter \\
   --net="host" --pid="host" \\
   -v "/:/host:ro,rslave" \\
   quay.io/prometheus/node-exporter:latest \\
