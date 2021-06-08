@@ -85,26 +85,29 @@ export NODE_INT_NIC=eth0  # node 들의 내부망 인터페이스 명.
 echo "source  /root/dasan_ohpc_variable.sh" >> /root/.bashrc
 
 source  /root/.bashrc
+
+echo $CHROOT
+
 ```
 
 ***
 
 # # 2. [Network and Firewall Setup to Base Operating System (BOS)](#목차)
 
-## # 2.1 외부망 및 내부망 인터페이스 설정.
+## ## 2.1 외부망 및 내부망 인터페이스 설정.
 
 ```bash
 ip a    # 인터페이스 목록 확인  
 ```
 
-## # 2.2 Master 의 외부/내부 인터페이스 설정내용 확인, 필요한 경우 설정.
+## ## 2.2 Master 의 외부/내부 인터페이스 설정내용 확인, 필요한 경우 설정.
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
 
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 
-## # 2.3 방화벽 zone 설정 변경
+## ## 2.3 방화벽 zone 설정 변경
 ```bash
 firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
@@ -116,7 +119,7 @@ firewall-cmd --list-all --zone=external
 firewall-cmd --list-all --zone=trusted
 ```
 
-## # 2.4 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록.
+## ## 2.4 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록.
 ```bash
 echo "${MASTER_IP}      ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
@@ -125,117 +128,34 @@ cat /etc/hosts
 ***
 
 # # 3. [Install OpenHPC Components](#목차)
-
-## # 3.1 Enable OpenHPC repository for local use
-### # Check current repolist
+## ## 3.1 Enable OpenHPC repository for local use
 ```bash
+# Check current repolist
 yum repolist
-```
 
-*output example>*  
->Loaded plugins: fastestmirror, langpacks, priorities  
-Loading mirror speeds from cached hostfile  
- \* base: data.nicehosting.co.kr  
- \* epel: mirror01.idc.hinet.net  
- \* extras: data.nicehosting.co.kr  
- \* updates: data.nicehosting.co.kr  
-116 packages excluded due to repository priority protections  
-repo id             repo name                                         status  
-base/7/x86_64       CentOS-7 - Base                                       10,097
-\*epel/x86_64        Extra Packages for Enterprise Linux 7 - x86_64    13,045+165
-extras/7/x86_64     CentOS-7 - Extras                                        335
-updates/7/x86_64    CentOS-7 - Updates                                     1,487
-repolist: 26,102
-
-
-### # Install to OpenHPC repository.
-```bash
+# Install to OpenHPC repository.
 yum -y install \
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.el7.x86_64.rpm \
 >> ~/dasan_log_ohpc_openhpc_repository.txt 2>&1  
 
 tail ~/dasan_log_ohpc_openhpc_repository.txt
-```
 
-*output example>*  
-> Running transaction test  
-Transaction test succeeded  
-Running transaction  
-  Installing : ohpc-release-1.3-1.el7.x86_64                                1/1   
-  Verifying  : ohpc-release-1.3-1.el7.x86_64                                1/1   
-Installed:  
-  ohpc-release.x86_64 0:1.3-1.el7                                               
-Complete!  
-
-### # Check added repolist
-
-```bash
+# Check added repolist
 yum repolist
 ```
-*output example>*
->Loaded plugins: fastestmirror, langpacks, priorities  
-OpenHPC                                                  | 1.6 kB     00:00     
-OpenHPC-updates                                          | 1.2 kB     00:00     
-(1/3): OpenHPC/group_gz                                    | 1.7 kB   00:00     
-(2/3): OpenHPC/primary                                     | 155 kB   00:01     
-(3/3): OpenHPC-updates/primary                             | 192 kB   00:01     
-Loading mirror speeds from cached hostfile  
- \* base: data.nicehosting.co.kr  
- \* epel: mirror.rise.ph  
- \* extras: data.nicehosting.co.kr  
- \* updates: data.nicehosting.co.kr  
-OpenHPC                                                                 821/821  
-OpenHPC-updates                                                       1010/1010  
-139 packages excluded due to repository priority protections  
-repo id             repo name                                         status  
-OpenHPC             OpenHPC-1.3 - Base                                   321+500
-OpenHPC-updates     OpenHPC-1.3 - Updates                              817+1,113
-base/7/x86_64       CentOS-7 - Base                                       10,097
-\*epel/x86_64        Extra Packages for Enterprise Linux 7 - x86_64    13,045+165
-extras/7/x86_64     CentOS-7 - Extras                                        335
-updates/7/x86_64    CentOS-7 - Updates                                     1,487
-repolist: 26,102
 
+## ## 3.3 Add provisioning services on master node
 
-## # 3.3 Add provisioning services on master node
-
-### # Install base meta-packages
-
+### ### Install base meta-packages
 ```bash
 yum -y install ohpc-base ohpc-warewulf squashfs-tools >>  ~/dasan_log_ohpc_base,warewulf.txt 2>&1
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
-*output example>*  
->  warewulf-common-ohpc.x86_64 0:3.8.1-14.2.ohpc.1.3.6                           
-  warewulf-ipmi-ohpc.x86_64 0:3.8.1-12.3.ohpc.1.3.6                             
-  warewulf-provision-initramfs-x86_64-ohpc.noarch 0:3.8.1-56.1.ohpc.1.3.9       
-  warewulf-provision-ohpc.x86_64 0:3.8.1-56.1.ohpc.1.3.9                        
-  warewulf-provision-server-ipxe-x86_64-ohpc.noarch 0:3.8.1-56.1.ohpc.1.3.9     
-  warewulf-provision-server-ohpc.x86_64 0:3.8.1-56.1.ohpc.1.3.9                 
-  warewulf-vnfs-ohpc.x86_64 0:3.8.1-33.1.ohpc.1.3.7                             
-  xinetd.x86_64 2:2.3.15-13.el7                                               
-Complete!  
-
 
 ### # NTP Server 설정
-
 ```bash
 cat /etc/ntp.conf | grep -v "#\|^$"
-```
-*output example>*
->driftfile /var/lib/ntp/drift  
-restrict default nomodify notrap nopeer noquery  
-restrict 127.0.0.1   
-restrict ::1  
-server 0.centos.pool.ntp.org iburst  
-server 1.centos.pool.ntp.org iburst  
-server 2.centos.pool.ntp.org iburst  
-server 3.centos.pool.ntp.org iburst  
-includefile /etc/ntp/crypto/pw  
-keys /etc/ntp/keys  
-disable monitor  
 
-```bash
 echo "server time.bora.net" >> /etc/ntp.conf
 
 cat /etc/ntp.conf | grep -v "#\|^$"
@@ -243,15 +163,14 @@ cat /etc/ntp.conf | grep -v "#\|^$"
 systemctl enable ntpd.service && systemctl restart ntpd
 ```
 
-
-## # 3.4 Add resource management services on master node
+## ## 3.4 Add resource management services on master node
 \# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
 \# GPU Cluster 의 경우 3.4-A. Slurm 을 설치해야 합니다.  
 
-## # [3.4-A (Slurm) Resource Management Services Install.](#목차)
+## ## [3.4-A (Slurm) Resource Management Services Install.](#목차)
 \# 참조 링크: https://slurm.schedmd.com/
 
-### # Install slurm server meta-package
+### ### Install slurm server meta-package
 ```bash
 yum -y install ohpc-slurm-server slurm-sview-ohpc slurm-torque-ohpc  \
   >> ~/dasan_log_ohpc_resourcemanager_slurm.txt 2>&1
