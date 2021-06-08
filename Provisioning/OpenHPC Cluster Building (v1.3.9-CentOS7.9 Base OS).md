@@ -3,8 +3,15 @@
 [2]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos
 [3]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-3-install-openhpc-components
 [3-4-A]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-34-a-slurm-resource-management-services-install
-
-
+[3-4-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-34-b-pbs-pro-resource-management-services-install
+[3-5]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node
+[4]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-4-install-openhpc-development-components
+[5]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-resource-manager-startup
+[5-A]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-a-start-slurm-controller-and-munge-on-master-host
+[5-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-b-start-pbspro-daemons-on-master-host
+[6]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-run-a-test-job
+[6-A]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable
+[6-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executable
 
 # Dasandata Standard Recipes of OpenHPC Cluster Building (v1.3.9-centos7.9 Base OS)[2021.06]
 
@@ -22,21 +29,16 @@
 [3-4. B (PBS Pro) Resource Management Services Install][3-4-B]  
 [3-5 Optionally add InfiniBand support services on master node][3-5]  
 [4. Install OpenHPC Development Components][4]  
-[5. Resource Manager Startup ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-resource-manager-startup)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-A. Start slurm controller and munge on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-a-start-munge-and-slurm-controller-on-master-host)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-B. Start pbspro daemons on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-b-start-pbspro-daemons-on-master-host)
-<br>[6. Run a Test Job ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-run-a-test-job)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-A. Slurm Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-B. PBS Pro Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executable)
-<br>[7. Docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-7-docker-install)   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-1. Master install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-7-1-master-install)   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-2. vnfs docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-7-2-vnfs-docker-install)   
-[8. gpustat install vnfs](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#8-gpustat-install-vnfs)
-
+[5. Resource Manager Startup ][5]
+[5-A. Start slurm controller and munge on master host][5-A]
+[5-B. Start pbspro daemons on master host][5-B]
+[6. Run a Test Job ][6]
+[6-A. Slurm Submit interactive job request and use prun to launch executable][6-A]
+[6-B. PBS Pro Submit interactive job request and use prun to launch executable][6-B]
 
 ***
 
-# # [1. Introduction](#목차)
+# # [1. Introduction][contents]
 안녕하세요?  
 다산데이타 입니다.  
 
@@ -100,7 +102,7 @@ echo $CHROOT
 
 ***
 
-# # 2. [Network and Firewall Setup to Base Operating System (BOS)](#목차)
+# # 2. [Network and Firewall Setup to Base Operating System (BOS)][contents]
 
 ## ## 2.1 외부망 및 내부망 인터페이스 설정.
 
@@ -135,7 +137,7 @@ cat /etc/hosts
 
 ***
 
-# # 3. [Install OpenHPC Components](#목차)
+# # 3. [Install OpenHPC Components][contents]
 ## ## 3.1 Enable OpenHPC repository for local use
 ```bash
 # Check current repolist
@@ -177,7 +179,7 @@ systemctl enable ntpd.service && systemctl restart ntpd
 \# GPU Cluster 의 경우 3.4-A. Slurm 을 설치해야 합니다.  
 \# OpenHPC 에서 제공되는 Slurm 의 버젼이 18.08 으로 낮아서 EPEL 을 통해서 20.11 버젼을 설치 합니다.
 
-## ## [3.4-A (Slurm) Resource Management Services Install.](#목차)
+## ## [3.4-A (Slurm) Resource Management Services Install.][contents]
 \# 참조 링크: https://slurm.schedmd.com/
 
 ### ### Install slurm server meta-package
@@ -581,7 +583,7 @@ mkdir /lustre
 mount -t lustre -o localflock 10.xx.xx.x:/lustre /lustre
 ```
 
-### #### 3.8.5 Import files
+### ### 3.8.5 Import files
 The Warewulf system includes functionality to import arbitrary files from the provisioning server for distribution to managed hosts. This is one way to distribute user credentials to compute nodes.  
 To import local file-based credentials, issue the following:  
 
@@ -678,11 +680,11 @@ wwsh -y node set node01 --netdev ${NODE_INT_NIC} --netmask=255.255.255.0 --gatew
 wwsh node list
 ```
 
-#### #### (Optional)
-#### #### Additional step required if desiring to use predictable network interface
+#### #### (Optional) Additional step required if desiring to use predictable network interface
 #### #### naming schemes (e.g. en4s0f0). Skip if using eth# style names.
-#### #### "이것을 적용하면 네트워크 인터페이스 명이 ens4s0f0 과 같은 형태로 표시됩니다."
-#### #### "eth0 과 같은 형식의 인터페이스명을 사용하려면 적용하지 않습니다."
+\# "이것을 적용하면 네트워크 인터페이스 명이 ens4s0f0 과 같은 형태로 표시됩니다."  
+\# "eth0 과 같은 형식의 인터페이스명을 사용하려면 적용하지 않습니다."  
+
 ```bash
 export kargs="${kargs} net.ifnames=1,biosdevname=1"
 
@@ -698,7 +700,7 @@ wwsh -y provision set node01 --vnfs=centos7  --bootstrap=`uname -r ` \
 wwsh provision list
 ```
 
-\# Slurm 을 사용할 경우 - files= 에 slurm.conf,munge.key 도 추가.
+##### ##### Slurm 을 사용할 경우 - files= 에 slurm.conf,munge.key 도 추가.
 ```bash
 wwsh -y provision set node01 --vnfs=centos7  --bootstrap=`uname -r ` \
 --files=dynamic_hosts,passwd,group,shadow,network,slurm.conf,munge.key
@@ -712,53 +714,7 @@ wwsh provision list
 systemctl restart dhcpd && wwsh pxe update
 ```
 
-
-#### #### 노드를 더 추가할 경우 'Set New node Number 부터 반복 합니다.'
 ***
-#### #### 노드 여러대를 한꺼번에 추가할 경우 의 예제 입니다.
-#### #### 배열 변수에 mac address 와 ip 할당.
-```bash
-node_mac[1]=aa:aa:aa:aa:aa:aa
-node_mac[2]=bb:bb:bb:bb:bb:bb
-node_mac[3]=cc:cc:cc:cc:cc:cc
-node_mac[4]=dd:dd:dd:dd:dd:dd
-
-node_ip[1]=10.1.1.10
-node_ip[2]=10.1.1.20
-node_ip[3]=10.1.1.30
-node_ip[4]=10.1.1.40
-```
-#### #### for 문을 이용해서 반복 수행
-```bash
-# for문 출력 예제.
-for NEW_NODE_NUM in $(seq 1 4) ;  # 1~4 까지 순차적으로 수행.
-do echo "";
-echo node${NEW_NODE_NUM} mac = ${node_mac[NEW_NODE_NUM]} ;  # 배열 변수 사용시 중괄호{} 가 필요함.
-echo node${NEW_NODE_NUM} ip = ${node_ip[NEW_NODE_NUM]} ;
-echo "" ;
-done
-```
-
-#### #### 4x Add new nodes to Warewulf data store
-```bash
-for NEW_NODE_NUM in $(seq 1 4) ;
-do echo "" ;
-wwsh -y node new node${NEW_NODE_NUM} --netdev ${NODE_INT_NIC} \
---ipaddr=${node_ip[NEW_NODE_NUM]} --hwaddr=${node_mac[NEW_NODE_NUM]} \
---gateway ${MASTER_IP} --netmask=255.255.255.0 ;
-done
-```
-
-#### #### 4x Define provisioning image for hosts
-```bash
-for NEW_NODE_NUM in $(seq 1 4) ;
-do echo "" ;
-wwsh -y provision set node${NEW_NODE_NUM} --vnfs=centos7.7 \
---bootstrap=`uname -r `  --kargs="${kargs}" \
---files=dynamic_hosts,passwd,group,shadow,network ;
-done
-```
-
 
 #### #### define IPoIB network settings (if planning to mount NFS by IPoIB)
 ```bash
@@ -784,25 +740,25 @@ cp   /root/Open_HPC/Provisioning/*.cmds   /etc/warewulf/filesystem/
 
 #### #### In GPT, Add GRUB2 bootloader for sda
 ```bash
-wwsh -y provision set --filesystem=gpt_sda  node1
-wwsh -y provision set --bootloader=sda      node1
+wwsh -y provision set --filesystem=gpt_sda  node01
+wwsh -y provision set --bootloader=sda      node01
 ```
 
 #### #### In UEFI, Add GRUB2 bootloader for sda
 ```bash
-wwsh -y provision set --filesystem=efi_sda  node1
-wwsh -y provision set --bootloader=sda      node1
+wwsh -y provision set --filesystem=efi_sda  node01
+wwsh -y provision set --bootloader=sda      node01
 ```
 
 #### #### In UEFI, Add GRUB2 bootloader for NVME
 ```bash
-wwsh -y provision set --filesystem=efi_nvme  node1
-wwsh -y provision set --bootloader=nvme0n1   node1
+wwsh -y provision set --filesystem=efi_nvme  node01
+wwsh -y provision set --bootloader=nvme0n1   node01
 ```
 
 #### #### Configure local boot (after successful provisioning)
 ```bash
-wwsh provision set --bootlocal=normal  node1
+wwsh provision set --bootlocal=normal  node01
 ```
 
 #### #### Configure PXE boot (Disk ReFormat)
@@ -813,14 +769,14 @@ wwsh provision print  | grep "BOOTLOCAL"
 
 #### #### Remove Stateful config.
 ```bash
-wwsh object modify -s FS=           -t node   node1
-wwsh object modify -s BOOTLOADER=   -t node   node1
-wwsh object modify -s BOOTLOCAL=    -t node   node1
+wwsh object modify -s FS=           -t node   node01
+wwsh object modify -s BOOTLOADER=   -t node   node01
+wwsh object modify -s BOOTLOCAL=    -t node   node01
 ```
 
 #### #### stateful 로 전환할 경우, 원래의 네트워크 디바이스 이름으로 ifcfg 가 생성되도록 devname 을 변경.
 ```bash
-wwsh node set  node1   --netdev eth0  --netrename  enp175s0f0
+wwsh node set  node01   --netdev eth0  --netrename  enp175s0f0
 ```
 
 #### #### stateful 로 전환 후 외부 네트워크 접근을 허용시 필요한 ifcfg file 생성 및 import.
@@ -897,11 +853,9 @@ sshd: xxx.xxx.xx.x
 ### ### 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
 ```bash
-ping -c 4 ${NODE_NAME}${NEW_NODE_NUM}
-ping -c 4 node1
+ping -c 4 node01
 
-ssh ${NODE_NAME}${NEW_NODE_NUM}
-ssh node1
+ssh node01
 
 df -hT | grep -v tmpfs
 ```
@@ -925,7 +879,7 @@ wwsh  object  print  -p :all
 
 ***
 
-# # 4. [Install OpenHPC Development Components](#목차)
+# # 4. [Install OpenHPC Development Components][contents]
 
 ## ## 4.1 Development Tools
 
@@ -1015,12 +969,10 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_1.3.9.sh
 ```
 ***
 
-
-
-# # 5. [Resource Manager Startup](#목차)
+# # 5. [Resource Manager Startup][contents]
 \# **주의!** Resource Manager는 Slurm 과 PBSPro 중 선택하여 진행 합니다.  
 
-## ## [5-A. Start slurm controller and munge on master host](#목차)
+## ## [5-A. Start slurm controller and munge on master host][contents]
 \# 참조 링크: https://slurm.schedmd.com/
 ```bash
 
@@ -1052,7 +1004,7 @@ scontrol  update  nodename=node01  state=resume
 sinfo --long
 ```
 
-## ## [5-B. Start pbspro daemons on master host](#목차)
+## ## [5-B. Start pbspro daemons on master host][contents]
 ```bash
 systemctl enable pbs
 systemctl start pbs
@@ -1081,13 +1033,6 @@ qmgr -c "create queue $QUEUENAME"
 qmgr -c "set node  $NODENAME  queue=$QUEUENAME"
 ```
 
-### ### x4 register compute hosts with pbspro
-```bash
-for NEW_NODE_NUM in "$(seq 1 4)"; do
-qmgr -c "create node ${NODE_NAME}${NEW_NODE_NUM}"
-done
-```
-
 ### ### check pbspro status
 
 ```bash
@@ -1098,7 +1043,7 @@ qstat -q
 qstat -ans
 ```
 
-## ## 6. [Run a Test Job](#목차)
+## ## 6. [Run a Test Job][contents]
 ```bash
 wwsh file list
 wwsh file resync
@@ -1135,7 +1080,7 @@ mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c
 ls
 ```
 
-#### #### [(6-A. Slurm) Submit interactive job request and use prun to launch executable](#목차)
+#### #### [(6-A. Slurm) Submit interactive job request and use prun to launch executable][contents]
 ```bash
 srun --help | grep 'ntasks\|nodes=N'
 
@@ -1162,7 +1107,7 @@ exit
 squeue
 ```
 
-#### #### [(6-B. PBS Pro) Submit interactive job request and use prun to launch executable](#목차)
+#### #### [(6-B. PBS Pro) Submit interactive job request and use prun to launch executable][contents]
 
 ```bash
 qsub -I -l select=1:mpiprocs=4  # select = node 갯수 / mpiprocs = cpu 갯수
@@ -1534,9 +1479,9 @@ Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
 
 
 
-## # #7. [Docker install](#목차)
+## # #7. [Docker install][contents]
 
-### ### 7-1. [Master install](#목차)
+### ### 7-1. [Master install][contents]
 
 ```bash
 
@@ -1584,7 +1529,7 @@ ll /usr/local/bin/docker-compose
 
 ```
 
-### # 7-2. [vnfs docker install](#목차)
+### # 7-2. [vnfs docker install][contents]
 
 ```bash
 
@@ -1630,7 +1575,7 @@ wwvnfs --chroot /opt/ohpc/admin/images/centos7
 
 ```
 
-# 8. [gpustat install vnfs](#목차)
+# 8. [gpustat install vnfs][contents]
 
 ```bash
 
