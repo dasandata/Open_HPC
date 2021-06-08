@@ -1,18 +1,19 @@
 
 # # OpenHPC Performace Monitoring using Prometheus + Grafana (based docker)
 
-[contents]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md
-[1]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-1-insatll-docker-to-master--vnfs-of-openhpc-nodes
-[2]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-2-install-nvidia-docker-to-master--vnfs-of-openhpc-nodes
-[3]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-3-prometheus-docker-run-on-master
-[4]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-4-run-on-node-prometheus-node-expoter
-[5]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-5-add-scrape-node-info-to-master
-[6]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-6-run-prometheus-nvidia-dcgm-expoter-prometheus-dcgm
-[7]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-7-add-script--crontab-for-start-docker-process-after-node-reboot
-[8]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-8-prometheus-slurm-exporter--for-centos7-only-master-
-[9]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-9-prometheus-ipmi-exporter--for-centos7-only-master-
-[10]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#-10-grafana-docker-on-master
-[grafanadashboards]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana%20(based%20docker).md#grafana-dashboardshttpsgrafanacomgrafanadashboards
+[contents]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#%EB%AA%A9%EC%B0%A8
+[1]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-1-insatll-docker-to-master--vnfs-of-openhpc-nodes
+[2]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-2-install-nvidia-docker-to-master--vnfs-of-openhpc-nodes
+[3]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-3-prometheus-docker-run-on-master
+[4]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-4-run-on-node-prometheus-node-expoter
+[5]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-add-scrape-node-info-to-master
+[6]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-run-prometheus-nvidia-dcgm-expoter-prometheus-dcgm
+[7]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-7-add-script--crontab-for-start-docker-process-after-node-reboot
+[8]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-8-prometheus-slurm-exporter--for-centos7-only-master-
+[9]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-prometheus-ipmi-exporter--for-centos7-only-master-
+[10]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-10-grafana-install-on-master
+[11]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-11-grafana-report-to-pdf
+[grafanadashboards]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#grafana-dashboardshttpsgrafanacomgrafanadashboards
 
 ## ## Requirements  
  - openhpc node staeful setup  # docker image in physical disk and save docker config on nodes.
@@ -29,6 +30,7 @@
 ### [8. Prometheus-slurm exporter ( For Centos7, Only Master )][8]
 ### [9. Prometheus-ipmi exporter ( For Centos7, Only Master )][9]
 ### [10. Grafana Docker (on Master)][10]
+### [11. Grafana Report to PDF][11]
 ### [Grafana dashboards][grafanadashboards]
 
 ### [END.][contents]
