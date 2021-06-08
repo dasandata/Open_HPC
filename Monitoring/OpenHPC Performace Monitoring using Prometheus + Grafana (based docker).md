@@ -438,7 +438,7 @@ systemctl enable grafana-server.service
 grafana-cli plugins install grafana-clock-panel
 systemctl   restart   grafana-server.service
 
-# Firewall Port Open 9090
+# Firewall Port Open 3000
 firewall-cmd --list-all | grep 3000
 firewall-cmd --add-port=3000/tcp
 firewall-cmd --add-port=3000/tcp --permanent
@@ -448,6 +448,90 @@ firewall-cmd --list-all | grep 3000
 # id : admin / pass : admin
 
 ```
+
+## ## [11. Grafana Report to PDF][contents]
+
+```bash
+# pdf 를 생성시키는데 필요한 패키지 설치.
+yum -y  install  texmaker texlive texlive-*.noarch
+
+which pdflatex
+
+### 그라파나가 패널을 이미지로 렌더링 하기위해 필요한 패키지 설치.
+# https://grafana.com/docs/grafana/latest/administration/image_rendering/  
+
+grafana-cli plugins install grafana-image-renderer
+
+systemctl   restart   grafana-server
+
+yum -y  install libXcomposite libXdamage libXtst cups libXScrnSaver pango atk \
+adwaita-cursor-theme adwaita-icon-theme at at-spi2-atk at-spi2-core cairo-gobject \
+colord-libs dconf desktop-file-utils ed emacs-filesystem gdk-pixbuf2 glib-networking \
+gnutls gsettings-desktop-schemas gtk-update-icon-cache gtk3 hicolor-icon-theme \
+jasper-libs json-glib libappindicator-gtk3 libdbusmenu libdbusmenu-gtk3 libepoxy \
+liberation-fonts liberation-narrow-fonts liberation-sans-fonts liberation-serif-fonts \
+libgusb libindicator-gtk3 libmodman libproxy libsoup libwayland-cursor libwayland-egl \
+libxkbcommon m4 mailx nettle patch psmisc redhat-lsb-core redhat-lsb-submod-security \
+rest spax time trousers xdg-utils xkeyboard-config
+
+
+### grafana-reporter 설치.
+
+cd /tmp/
+
+# Donwload go 1.15
+export VERSION=1.15 OS=linux ARCH=amd64
+wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
+
+tar -xzf go$VERSION.$OS-$ARCH.tar.gz
+export PATH=$PWD/go/bin:$PATH
+
+go get github.com/IzakMarais/reporter/...
+go install -v github.com/IzakMarais/reporter/cmd/grafana-reporter
+
+ll /root/go/bin/grafana-reporter
+
+# Firewall Port Open 8686
+firewall-cmd --list-all | grep 8686
+firewall-cmd --add-port=8686/tcp
+firewall-cmd --add-port=8686/tcp --permanent
+firewall-cmd --list-all | grep 8686
+
+# test.
+/root/go/bin/grafana-reporter
+
+# grafana-reporter service add
+
+cp /root/go/bin/grafana-reporter  /usr/local/sbin/
+cat << EOF > /lib/systemd/system/grafana-reporter.service
+[Unit]
+Description=Grafana-Reporter
+
+[Service]
+ExecStart=/usr/local/sbin/grafana-reporter
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+ll /lib/systemd/system/grafana-reporter.service
+chmod +x /lib/systemd/system/grafana-reporter.service
+
+systemctl daemon-reload
+systemctl enable grafana-reporter.service
+systemctl start  grafana-reporter.service
+systemctl status grafana-reporter.service
+
+netstat -tnlp | grep   grafana-reporter
+
+```
+
+- http://localhost:8686/api/v5/report/{dashboardUID}?apitoken=12345&var-host=devbox  
+- apitoken = Configuration => API Keys => Add API Key  
+- dashboard settings => Links => Add Dashboard Link => Type Link...   
+
 
 
 ### ### Grafana Docker.
