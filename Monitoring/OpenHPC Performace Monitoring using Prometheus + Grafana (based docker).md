@@ -178,7 +178,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 
   - job_name: 'node-exporter'
     static_configs:
-    - targets: ['10.1.1.254:9100']
+  - targets: ['10.1.1.254:9100']
       labels:
         note: 'master-node'
   - targets: ['10.1.1.1:9100','10.1.1.2:9100','10.1.1.3:9100','10.1.1.4:9100']
@@ -192,13 +192,10 @@ docker restart prometheus
 ```
 
 
-
-
-
 ## ## [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][contents]
 ```bash
 # on node.
-docker run -d --restart=always --name prometheus-dcgm-exporter \
+docker run -d --restart=always --name dcgm-exporter \
   --gpus all -p 9400:9400 nvidia/dcgm-exporter:2.0.13-2.1.1-ubuntu18.04
 
 
@@ -278,9 +275,9 @@ export PATH=$PWD/go/bin:$PATH
 git clone https://github.com/vpenso/prometheus-slurm-exporter.git
 
 # Change listen on for HTTP requests.
-grep -n -r 8080 prometheus-slurm-exporter/main.go
+grep -n -r 8080          prometheus-slurm-exporter/main.go
 sed -i 's/:8080/:9800/'  prometheus-slurm-exporter/main.go
-grep -n -r 9800  prometheus-slurm-exporter/main.go
+grep -n -r 9800          prometheus-slurm-exporter/main.go
 
 # make slurm expoter
 cd prometheus-slurm-exporter
@@ -288,15 +285,14 @@ pwd
 export GOPATH=$PWD/go/modules
 
 go mod download
-go build -o bin/prometheus-slurm-exporter {main,accounts,cpus,gpus,partitions,node,nodes,queue,scheduler,sshare,users}.go
 go test -v *.go
+go build -o bin/slurm-exporter {main,accounts,cpus,gpus,partitions,node,nodes,queue,scheduler,sshare,users}.go
 
 # copy make file
-cp bin/prometheus-slurm-exporter /usr/bin/
+cp bin/slurm-exporter  /usr/local/sbin/slurm-exporter
 
 # for test.
-/usr/bin/prometheus-slurm-exporter
-
+/usr/local/sbin/slurm-exporter
 
 # Firewall port add
 firewall-cmd --add-port=9800/tcp --permanent
@@ -304,12 +300,12 @@ firewall-cmd --reload
 firewall-cmd --list-all
 
 # Prometheus-slurm service add
-cat << EOF > /lib/systemd/system/prometheus-slurm-exporter.service
+cat << EOF > /lib/systemd/system/slurm-exporter.service
 [Unit]
 Description=Prometheus SLURM Exporter
 
 [Service]
-ExecStart=/usr/bin/prometheus-slurm-exporter
+ExecStart=/usr/local/sbin/slurm-exporter
 Restart=always
 RestartSec=15
 
@@ -317,18 +313,18 @@ RestartSec=15
 WantedBy=multi-user.target
 EOF
 
-ll /lib/systemd/system/prometheus-slurm-exporter.service
-chmod +x /lib/systemd/system/prometheus-slurm-exporter.service
+ll        /lib/systemd/system/slurm-exporter.service
+chmod +x  /lib/systemd/system/slurm-exporter.service
 
-systemctl daemon-reload
-systemctl enable prometheus-slurm-exporter.service
-systemctl start  prometheus-slurm-exporter.service
-systemctl status prometheus-slurm-exporter.service
+systemctl  daemon-reload
+systemctl  enable   slurm-exporter.service
+systemctl  start    slurm-exporter.service
+systemctl  status   slurm-exporter.service
 netstat -tnlp | grep 9800
 
 # Prometheus-config file Modified
 ll -ld /etc/prometheus/prometheus.yml
-cp /etc/prometheus/prometheus.yml{,.bak}
+cp    /etc/prometheus/prometheus.yml{,.bak}
 
 cat << EOF >> /etc/prometheus/prometheus.yml
 
@@ -343,7 +339,6 @@ EOF
 # restart prometheus
 docker restart prometheus
 ```
-
 
 
 ## ## [9. Prometheus-ipmi exporter ( For Centos7, Only Master )][contents]
@@ -367,11 +362,11 @@ pwd
 make
 
 # copy make file
-cp ./ipmi_exporter   /usr/bin/ipmi_exporter
-/usr/bin/ipmi_exporter  --version
+cp ./ipmi_exporter   /usr/local/sbin/ipmi_exporter
+/usr/local/sbin/ipmi_exporter  --version
 
 # for test.
-/usr/bin/ipmi_exporter
+/usr/local/sbin/ipmi_exporter
 
 # Firewall port add
 firewall-cmd --add-port=9290/tcp --permanent
@@ -379,12 +374,12 @@ firewall-cmd --reload
 firewall-cmd --list-all
 
 # Prometheus-slurm service add
-cat << EOF > /lib/systemd/system/prometheus-ipmi-exporter.service
+cat << EOF > /lib/systemd/system/ipmi-exporter.service
 [Unit]
 Description=Prometheus IPMI Exporter
 
 [Service]
-ExecStart=/usr/bin/ipmi_exporter
+ExecStart=/usr/local/sbin/ipmi_exporter
 Restart=always
 RestartSec=15
 
@@ -392,18 +387,14 @@ RestartSec=15
 WantedBy=multi-user.target
 EOF
 
-ll /lib/systemd/system/prometheus-ipmi-exporter.service
-chmod +x /lib/systemd/system/prometheus-ipmi-exporter.service
+ll /lib/systemd/system/ipmi-exporter.service
+chmod +x /lib/systemd/system/ipmi-exporter.service
 
 systemctl daemon-reload
-systemctl enable prometheus-ipmi-exporter.service
-systemctl start  prometheus-ipmi-exporter.service
-systemctl status prometheus-ipmi-exporter.service
+systemctl enable ipmi-exporter.service
+systemctl start  ipmi-exporter.service
+systemctl status ipmi-exporter.service
 netstat -tnlp | grep 9290
-
-# Prometheus-config file Modified
-ll -ld /etc/prometheus/prometheus.yml
-cp /etc/prometheus/prometheus.yml{,.bak}
 
 
 cat << EOF >> /etc/prometheus/prometheus.yml
@@ -423,9 +414,8 @@ docker restart prometheus
 
 ## ## [10. Grafana Install (on Master)][contents]
 
-https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1  
-
 ```bash
+# https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1  
 
 yum -y install  https://dl.grafana.com/oss/release/grafana-7.5.7-1.x86_64.rpm
 
@@ -446,7 +436,6 @@ firewall-cmd --list-all | grep 3000
 
 # Open Broser to http://localhost:3000
 # id : admin / pass : admin
-
 ```
 
 ## ## [11. Grafana Report to PDF][contents]
@@ -502,7 +491,7 @@ firewall-cmd --list-all | grep 8686
 
 # grafana-reporter service add
 
-cp /root/go/bin/grafana-reporter  /usr/local/sbin/
+cp /root/go/bin/grafana-reporter  /usr/local/sbin/grafana-reporter
 cat << EOF > /lib/systemd/system/grafana-reporter.service
 [Unit]
 Description=Grafana-Reporter
@@ -516,7 +505,7 @@ RestartSec=15
 WantedBy=multi-user.target
 EOF
 
-ll /lib/systemd/system/grafana-reporter.service
+ll       /lib/systemd/system/grafana-reporter.service
 chmod +x /lib/systemd/system/grafana-reporter.service
 
 systemctl daemon-reload
@@ -529,38 +518,14 @@ netstat -tnlp | grep   grafana-reporter
 ```
 
 - http://localhost:8686/api/v5/report/{dashboardUID}?apitoken=12345&var-host=devbox  
-- apitoken = Configuration => API Keys => Add API Key  
+- apitoken : Configuration => API Keys => Add API Key  
 - dashboard settings => Links => Add Dashboard Link => Type Link...   
 
-
-
-### ### Grafana Docker.
-
-```bash
-# on master.
-docker run -d --restart=always --name grafana -p 3000:3000 grafana/grafana
-
-docker ps | grep grafana
-netstat  -tnlp | grep 3000
-
-# Plugin Install to clock-panel
-docker exec grafana grafana-cli plugins install grafana-clock-panel
-docker restart grafana
-
-# Firewall Port Open 9090
-firewall-cmd --list-all | grep 3000
-firewall-cmd --add-port=3000/tcp
-firewall-cmd --add-port=3000/tcp --permanent
-firewall-cmd --list-all | grep 3000
-
-# Open Broser to http://localhost:3000
-# id : admin / pass : admin
-
-```
+***
 
 ### [Grafana dashboards][https://grafana.com/grafana/dashboards]
 
-#### 1 Node Exporter for Prometheus Dashboard EN v20201010
+#### Node Exporter for Prometheus Dashboard EN v20201010
 https://grafana.com/grafana/dashboards/11074
 
 #### Prometheus Node Exporter Full
@@ -580,6 +545,5 @@ https://grafana.com/grafana/dashboards/12239
 
 #### slurm
 https://grafana.com/grafana/dashboards/4323
-
 
 ## ## [END.][contents]
