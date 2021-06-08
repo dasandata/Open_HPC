@@ -59,9 +59,9 @@ mail@dasandata.co.kr
 
 감사합니다.  
 
-### # Root 로 로그인하여 진행.
+### ### Root 로 로그인하여 진행.
 
-## # 1.3 Inputs - 변수 정의 및 적용 (파일로 작성)
+## ## 1.3 Inputs - 변수 정의 및 적용 (파일로 작성)
 
 ```bash
 cd
@@ -93,7 +93,7 @@ export NODE_INT_NIC=eth0  # node 들의 내부망 인터페이스 명.
 # end of file.
 ```
 
-### # root 계정에서 항상 사용할 수 있도록 적용.
+### ### root 계정에서 항상 사용할 수 있도록 적용.
 ```bash
 echo "source  /root/dasan_ohpc_variable.sh" >> /root/.bashrc
 
