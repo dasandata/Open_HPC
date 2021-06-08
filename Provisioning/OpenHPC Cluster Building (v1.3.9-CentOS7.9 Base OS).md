@@ -28,13 +28,13 @@
 [3-4. A (Slurm) Resource Management Services Install.][3-4-A]  
 [3-4. B (PBS Pro) Resource Management Services Install][3-4-B]  
 [3-5 Optionally add InfiniBand support services on master node][3-5]  
-[4. Install OpenHPC Development Components][4]  
-[5. Resource Manager Startup ][5]
-[5-A. Start slurm controller and munge on master host][5-A]
-[5-B. Start pbspro daemons on master host][5-B]
-[6. Run a Test Job ][6]
-[6-A. Slurm Submit interactive job request and use prun to launch executable][6-A]
-[6-B. PBS Pro Submit interactive job request and use prun to launch executable][6-B]
+[4. Install OpenHPC Development Components][4]   
+[5. Resource Manager Startup ][5]  
+[5-A. Start slurm controller and munge on master host][5-A]  
+[5-B. Start pbspro daemons on master host][5-B]  
+[6. Run a Test Job ][6]  
+[6-A. Slurm Submit interactive job request and use prun to launch executable][6-A]  
+[6-B. PBS Pro Submit interactive job request and use prun to launch executable][6-B]  
 
 ***
 
