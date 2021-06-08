@@ -1,4 +1,4 @@
-# Dasandata Standard Recipes of OpenHPC Cluster Building (v1.3.9-centos7.7 Base OS)[2020.03]
+# Dasandata Standard Recipes of OpenHPC Cluster Building (v1.3.9-centos7.9 Base OS)[2021.06]
 
 \# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인 하여 설치를 시작 합니다.  
@@ -7,23 +7,23 @@
 ![Dasandata Logo](http://dasandata.co.kr/wp-content/uploads/2019/05/%EB%8B%A4%EC%82%B0%EB%A1%9C%EA%B3%A0_%EC%88%98%EC%A0%951-300x109.jpg)
 
 ## #목차
-[1. Introduction ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-1-introduction)
-<br>[2. Network and Firewall Setup to Base Operating System (BOS) ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos)
-<br>[3. Install OpenHPC Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-3-install-openhpc-components)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3-4. A (Slurm) Resource Management Services Install.](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-34-a-slurm-resource-management-services-install)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3-4. B (PBS Pro) Resource Management Services Install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-34-b-pbs-pro-resource-management-services-install)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;[3-5 Optionally add InfiniBand support services on master node](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node)
-<br>[4. Install OpenHPC Development Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-4-install-openhpc-development-components)
-<br>[5. Resource Manager Startup ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-resource-manager-startup)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-A. Start slurm controller and munge on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-a-start-munge-and-slurm-controller-on-master-host)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-B. Start pbspro daemons on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-5-b-start-pbspro-daemons-on-master-host)
-<br>[6. Run a Test Job ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-run-a-test-job)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-A. Slurm Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-B. PBS Pro Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executable)
-<br>[7. Docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-docker-install)   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-1. Master install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-1-master-install)   
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-2. vnfs docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#-7-2-vnfs-docker-install)   
-[8. gpustat install vnfs](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#8-gpustat-install-vnfs)
+[1. Introduction ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-1-introduction)
+<br>[2. Network and Firewall Setup to Base Operating System (BOS) ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos)
+<br>[3. Install OpenHPC Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-3-install-openhpc-components)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3-4. A (Slurm) Resource Management Services Install.](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-34-a-slurm-resource-management-services-install)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[3-4. B (PBS Pro) Resource Management Services Install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-34-b-pbs-pro-resource-management-services-install)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;[3-5 Optionally add InfiniBand support services on master node](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node)
+<br>[4. Install OpenHPC Development Components ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-4-install-openhpc-development-components)
+<br>[5. Resource Manager Startup ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-resource-manager-startup)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-A. Start slurm controller and munge on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-a-start-munge-and-slurm-controller-on-master-host)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[5-B. Start pbspro daemons on master host](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-b-start-pbspro-daemons-on-master-host)
+<br>[6. Run a Test Job ](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-run-a-test-job)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-A. Slurm Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[6-B. PBS Pro Submit interactive job request and use prun to launch executable](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executable)
+<br>[7. Docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-7-docker-install)   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-1. Master install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-7-1-master-install)   
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[7-2. vnfs docker install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-7-2-vnfs-docker-install)   
+[8. gpustat install vnfs](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#8-gpustat-install-vnfs)
 
 
 ***
@@ -455,7 +455,7 @@ grep NodeName= /etc/slurm/slurm.conf
 >NodeName=node[1-3] Sockets=*2* CoresPerSocket=*10* ThreadsPerCore=*2* State=UNKNOWN  
 
 
-## # [3.4-B (PBS Pro) Resource Management Services Install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#%EB%AA%A9%EC%B0%A8)
+## # [3.4-B (PBS Pro) Resource Management Services Install](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#%EB%AA%A9%EC%B0%A8)
 
 ### # Install to pbspro-server-ohpc
 ```bash
@@ -464,7 +464,7 @@ tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 ```
 ***
 
-## # [3.5 Optionally add InfiniBand support services on master node](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md#%EB%AA%A9%EC%B0%A8)
+## # [3.5 Optionally add InfiniBand support services on master node](https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#%EB%AA%A9%EC%B0%A8)
 
 ### # 3.5.1 Install InfiniBand support on master node
 
