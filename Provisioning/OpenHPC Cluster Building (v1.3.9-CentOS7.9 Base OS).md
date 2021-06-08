@@ -80,9 +80,11 @@ export NODE_INT_NIC=eth0  # node 들의 내부망 인터페이스 명.
 # end of file.
 ```
 
-### # 변수 적용.
+### # root 계정에서 항상 사용할 수 있도록 적용.
 ```bash
-source  ~/dasan_ohpc_variable.sh
+echo "source  /root/dasan_ohpc_variable.sh" >> /root/.bashrc
+
+source  /root/.bashrc
 ```
 
 ***
