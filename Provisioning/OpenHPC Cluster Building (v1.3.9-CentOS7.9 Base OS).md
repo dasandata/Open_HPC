@@ -141,7 +141,8 @@ http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/ohpc-release-1.3-1.e
 tail ~/dasan_log_ohpc_openhpc_repository.txt
 
 # Check added repolist
-yum repolist
+yum repolist | grep OpenHPC
+
 ```
 
 ## ## 3.3 Add provisioning services on master node
@@ -166,26 +167,17 @@ systemctl enable ntpd.service && systemctl restart ntpd
 ## ## 3.4 Add resource management services on master node
 \# **주의!** Resource Manager는 Slurm 과 PBS Pro 중 선택하여 진행 합니다.  
 \# GPU Cluster 의 경우 3.4-A. Slurm 을 설치해야 합니다.  
+\# OpenHPC 에서 제공되는 Slurm 의 버젼이 18.08 으로 낮아서 EPEL 을 통해서 20.11 버젼을 설치 합니다.
 
 ## ## [3.4-A (Slurm) Resource Management Services Install.](#목차)
 \# 참조 링크: https://slurm.schedmd.com/
 
 ### ### Install slurm server meta-package
 ```bash
-yum -y install ohpc-slurm-server slurm-sview-ohpc slurm-torque-ohpc  \
+yum -y  --disablerepo=OpenHPC,OpenHPC-updates   install  slurm*  \
   >> ~/dasan_log_ohpc_resourcemanager_slurm.txt 2>&1
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
-*output example>*
->  pdsh-mod-slurm-ohpc.x86_64 0:2.33-97.1.ohpc.1.3.7                             
-  pmix-ohpc.x86_64 0:2.2.2-9.1.ohpc.1.3.7                                       
-  slurm-devel-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                            
-  slurm-example-configs-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                  
-  slurm-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                                  
-  slurm-perlapi-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                          
-  slurm-slurmctld-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                        
-  slurm-slurmdbd-ohpc.x86_64 0:18.08.8-4.1.ohpc.1.3.8.1                                          
-Complete!  
 
 ### # Identify resource manager hostname on master host
 
