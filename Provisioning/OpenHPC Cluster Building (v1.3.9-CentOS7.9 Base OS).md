@@ -77,20 +77,6 @@ export EXT_NIC=em2 # 외부망.
 export INT_NIC=em1 # 내부망.
 export NODE_INT_NIC=eth0  # node 들의 내부망 인터페이스 명.
 
-# NODE 의 이름, 수량, 사양.
-export NODE_NAME=node
-export NODE_NUM=<전체 노드 수>
-export NODE_RANGE="[1-3]"  # 전체 노드가 3개일 경우 1-3 / 5대 일 경우 [1-5]
-
-export sms_ipoib="10.1.1.201"
-export ipoib_netmask="255.255.255.0"
-
-# NODE 의 CPU 사양에 맞게 조정. - Slurm.conf 용
-# 물리 CPU가 2개 이고, CPU 당 코어가 10개, 하이퍼스레딩은 켜진(Enable) 상태 인 경우.  
-export SOCKETS=2          ## 물리 CPU 2개
-export CORESPERSOCKET=10  ## CPU 당 코어 10개
-export THREAD=2           ## 하이퍼스레딩 Enable
-
 # end of file.
 ```
 
@@ -108,134 +94,31 @@ source  ~/dasan_ohpc_variable.sh
 ```bash
 ip a    # 인터페이스 목록 확인  
 ```
-*output example>*
-> 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
-    inet 127.0.0.1/8 scope host lo  
-       valid_lft forever preferred_lft forever  
-2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether ================ brd ff:ff:ff:ff:ff:ff  
-3: *em2*: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
-    link/ether ================ brd ff:ff:ff:ff:ff:ff  
-    inet *192.168.0.116/24* brd 192.168.0.255 scope global em2  
-       valid_lft forever preferred_lft forever  
-4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether ================ brd ff:ff:ff:ff:ff:ff  
-5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether ================ brd ff:ff:ff:ff:ff:ff  
-6: *p1p1*: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
-    link/ether ================ brd ff:ff:ff:ff:ff:ff  
-7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
-    link/ether ================ brd ff:ff:ff:ff:ff:ff  
 
-## # 2.2 Master 의 외부/내부 인터페이스 설정내용 확인
+## # 2.2 Master 의 외부/내부 인터페이스 설정내용 확인, 필요한 경우 설정.
 ```bash
 cat /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
-```
-*output example>*
->NAME=*em2*  
-ONBOOT=yes  
-BOOTPROTO=none  
-IPADDR=192.168.0.116  
-PREFIX=24  
-GATEWAY=192.168.0.1  
-DNS1=168.126.63.1  
-DNS2=8.8.8.8  
-DEFROUTE=yes  
-<일부 값 생략>  
-
-```bash
-cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-```
-*output example>*
->NAME=*p1p1*  
-ONBOOT=no  
-BOOTPROTO=dhcp  
-<일부 값 생략>  
-
-## # 2.3 가독성 향상을 위해, 불 필요한 IPV6 항목 삭제.
-```bash
-sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${EXT_NIC}
-sed -i '/IPV6/d' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-```
-
-## # 2.4 Master 의 내부망 인터페이스의 설정 변경.
-```bash
-sed -i 's/BOOTPROTO=dhcp/BOOTPROTO=none/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-sed -i 's/ONBOOT=no/ONBOOT=yes/' /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-```
-
-## # 2.5 Master 의 내부망 ip 설정
-```bash
-echo "IPADDR=${MASTER_IP}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
-echo "PREFIX=${MASTER_PREFIX}"  >>  /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 ```
 
-## # 2.6 ip 변경 설정 적용
-```bash
-ifdown ${INT_NIC} && ifup ${INT_NIC}
-ip a
-```
-*output example>*
->1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1  
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00  
-    inet 127.0.0.1/8 scope host lo  
-       valid_lft forever preferred_lft forever  
-2: em1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether ================= brd ff:ff:ff:ff:ff:ff  
-3: em2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen 1000  
-    link/ether ================= brd ff:ff:ff:ff:ff:ff  
-    inet 192.168.0.116/24 brd 192.168.0.255 scope global em2  
-       valid_lft forever preferred_lft forever  
-4: em3: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether ================= brd ff:ff:ff:ff:ff:ff  
-5: em4: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN qlen 1000  
-    link/ether ================= brd ff:ff:ff:ff:ff:ff  
-6: *p1p1*: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state *UP* qlen 1000  
-    link/ether ================= brd ff:ff:ff:ff:ff:ff  
-    *inet 10.1.1.1/24* brd 10.1.1.255 scope global p1p1  
-       valid_lft forever preferred_lft forever  
-7: p1p2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000  
-    link/ether ================= brd ff:ff:ff:ff:ff:ff  
-
-## # 2.7 방화벽 zone 설정 변경
+## # 2.3 방화벽 zone 설정 변경
 ```bash
 firewall-cmd --change-interface=${EXT_NIC}  --zone=external  --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 
 firewall-cmd --reload
 systemctl restart firewalld
-```
 
-### # 방화벽 설정 변경 확인.
-
-```bash
 firewall-cmd --list-all --zone=external
 firewall-cmd --list-all --zone=trusted
 ```
-*output example>*
->*external* (active)  
-target: *default*  
-icmp-block-inversion: no  
-interfaces: *em2*  
 
-*output example>*
->*trusted* (active)  
-  target: ACCEPT  
-  icmp-block-inversion: no  
-  interfaces: em1 *p1p1*  
-
-## # 2.8 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록.
+## # 2.4 클러스터 마스터 IP 와 HOSTNAME 을 hosts 에 등록.
 ```bash
 echo "${MASTER_IP}      ${MASTER_HOSTNAME}"  >>  /etc/hosts
 cat /etc/hosts
 ```
-*output example>*
->127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4  
-::1          localhost localhost.localdomain localhost6 localhost6.localdomain6  
-*10.1.1.1    master*  
 
 ***
 
