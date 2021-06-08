@@ -168,7 +168,7 @@ docker run -d --restart=always --name node-exporter \
   --path.rootfs=/host
 
 # check exporter port.
-netstat  -tnlp  | grep node_exporte
+netstat  -tnlp  | grep node_expo
 
 ```
 
@@ -515,7 +515,7 @@ systemctl enable grafana-reporter.service
 systemctl start  grafana-reporter.service
 systemctl status grafana-reporter.service
 
-netstat -tnlp | grep   grafana-reporter
+netstat -tnlp | grep   grafana-repo
 
 ```
 
