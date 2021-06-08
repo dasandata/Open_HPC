@@ -11,7 +11,9 @@
 [5-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-b-start-pbspro-daemons-on-master-host
 [6]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-run-a-test-job
 [6-A]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable
-[6-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executable
+[6-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executabl
+[END]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#end
+
 
 # Dasandata Standard Recipes of OpenHPC Cluster Building (v1.3.9-centos7.9 Base OS)[2021.06]
 
@@ -35,6 +37,7 @@
 [6. Run a Test Job ][6]  
 [6-A. Slurm Submit interactive job request and use prun to launch executable][6-A]  
 [6-B. PBS Pro Submit interactive job request and use prun to launch executable][6-B]  
+[END][END]
 
 ***
 
@@ -995,12 +998,14 @@ bash /tmp/slurm_service.sh
 ### ### sinfo
 ```bash
 sinfo --long
+
 sinfo -R
 ```
 
-\# 위와같이 PARTITION 의 STATE 가 drain 상태 일 경우 scontrol 명령을 사용해 node 의 상태를 resume 로 변경합니다.
+\# node 의 STATE 가 drain 상태 일 경우 scontrol 명령을 사용해 node 의 상태를 resume 로 변경 합니다.
 ```bash
 scontrol  update  nodename=node01  state=resume
+
 sinfo --long
 ```
 
@@ -1028,9 +1033,10 @@ qmgr -c "create node node01"
 
 ### ### add queue name for compute hosts (if you have))
 ```bash
-qmgr -c "create queue $QUEUENAME"
+qmgr -c "create queue  newqueue"
 
-qmgr -c "set node  $NODENAME  queue=$QUEUENAME"
+qmgr -c "set node  node01  queue=newqueue"
+
 ```
 
 ### ### check pbspro status
@@ -1054,15 +1060,15 @@ pdsh -w node01 uptime
 pdsh -w node01 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 
 # pbspro 인 경우
-pdsh -w node1 systemctl status pbs | grep active
+pdsh -w node01 systemctl status pbs | grep active
 
 # slurm 인 경우
-pdsh -w node1 systemctl status slurmd | grep active
+pdsh -w node01 systemctl status slurmd | grep active
 
 # node가 여러대 인 경우
-pdsh -w node[1-4] uptime
-pdsh -w node[1-4] 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
-pdsh -w node[1-4] systemctl status pbs | grep active
+pdsh -w node[01-04] uptime
+pdsh -w node[01-04] 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+pdsh -w node[01-04] systemctl status pbs | grep active
 ```
 
 ### ### 6.1 Interactive execution
@@ -1077,29 +1083,18 @@ cd
 pwd
 
 mpicc -O3 /opt/ohpc/pub/examples/mpi/hello.c
+
 ls
 ```
 
 #### #### [(6-A. Slurm) Submit interactive job request and use prun to launch executable][contents]
 ```bash
-srun --help | grep 'ntasks\|nodes=N'
-
-srun -n 8 -N 1 --pty /bin/bash
+srun -N 1 -c 4 --pty /bin/bash  # -N = node 갯수 / -c = cpu 갯수
 
 squeue
 
 prun ./a.out
-```
 
-```bash
-exit
-
-srun -n 32 -N 1 --pty /bin/bash
-
-prun ./a.out
-```
-
-```bash
 squeue
 
 exit
@@ -1108,93 +1103,19 @@ squeue
 ```
 
 #### #### [(6-B. PBS Pro) Submit interactive job request and use prun to launch executable][contents]
-
 ```bash
 qsub -I -l select=1:mpiprocs=4  # select = node 갯수 / mpiprocs = cpu 갯수
 
 qstat
 
 prun ./a.out
-```
 
-***
-```bash
 qstat
 
 exit
 
 qstat
 ```
-
 ***
-
-### ### 6.2-A (Slurm) Batch execution
-#### #### Copy example job script
-```bash
-[sonic@master:~]$ cd ~
-[sonic@master:~]$ pwd
-/home/user
-[sonic@master:~]$ cp /opt/ohpc/pub/examples/slurm/job.mpi .
-[sonic@master:~]$ cat job.mpi
-#!/bin/bash
-
-#SBATCH -J test               # Job name
-#SBATCH -o job.%j.out         # Name of stdout output file (%j expands to jobId)
-#SBATCH -N 2                  # Total number of nodes requested
-#SBATCH -n 16                 # Total number of mpi tasks requested
-#SBATCH -t 01:30:00           # Run time (hh:mm:ss) - 1.5 hours
-
-# Launch MPI-based executable
-
-prun ./a.out
-[sonic@master:~]$
-[sonic@master:~]$
-```
-
-#### #### Examine contents (and edit to set desired job sizing characteristics)
-```bash
-[sonic@master:~]$
-[sonic@master:~]$ sed -i 's/#SBATCH -N 2/#SBATCH -N 1/'   job.mpi
-[sonic@master:~]$
-[sonic@master:~]$ grep '#SBATCH -N'  job.mpi
-#SBATCH -N 1                  # Total number of nodes requested
-[sonic@master:~]$
-```
-
-#### #### Submit job for batch execution Example
-```bash
-[sonic@master:~]$ sbatch job.mpi
-Submitted batch job 6
-[sonic@master:~]$
-[sonic@master:~]$ squeue
-             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-[sonic@master:~]$
-[sonic@master:~]$ ls
-a.out  Desktop  Documents  Downloads  job.6.out  job.mpi  Music  Pictures  Public  Templates  Videos
-[sonic@master:~]$
-[sonic@master:~]$ cat job.6.out
-[prun] Master compute host = node1
-[prun] Resource manager = slurm
-[prun] Launch cmd = mpirun ./a.out (family=openmpi)
-
- Hello, world (16 procs total)
-    --> Process #   0 of  16 is alive. -> node1
-    --> Process #   1 of  16 is alive. -> node1
-    --> Process #   2 of  16 is alive. -> node1
-    --> Process #   3 of  16 is alive. -> node1
-    --> Process #   4 of  16 is alive. -> node1
-    --> Process #   5 of  16 is alive. -> node1
-    --> Process #   6 of  16 is alive. -> node1
-    --> Process #   7 of  16 is alive. -> node1
-    --> Process #   8 of  16 is alive. -> node1
-    --> Process #   9 of  16 is alive. -> node1
-    --> Process #  10 of  16 is alive. -> node1
-    --> Process #  11 of  16 is alive. -> node1
-    --> Process #  12 of  16 is alive. -> node1
-    --> Process #  13 of  16 is alive. -> node1
-    --> Process #  14 of  16 is alive. -> node1
-    --> Process #  15 of  16 is alive. -> node1
-[sonic@master:~]$
-```
 
 # END.
