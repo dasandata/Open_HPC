@@ -9,7 +9,7 @@
 ***
 
 ## [1. Standard Recipes of OpenHPC Cluster Building 1.3.9][1]
-[1]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.7%20Base%20OS).md
+[1]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md
 
 ## [2. GPU Node Provisioning of OpenHPC Cluster][2]
 [2]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/GPU%20Node%20Provisioning%20of%20OpenHPC%20Cluster.md
