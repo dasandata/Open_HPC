@@ -518,10 +518,18 @@ systemctl status grafana-reporter.service
 netstat -tnlp | grep   grafana-repo
 
 ```
-
+### ### apitoken, PDF Gen Link
 - http://localhost:8686/api/v5/report/{dashboardUID}?apitoken=12345&var-host=devbox  
 - apitoken : Configuration => API Keys => Add API Key  
 - dashboard settings => Links => Add Dashboard Link => Type Link...   
+
+### ### PDF Gen cli
+
+```bash
+
+
+
+```
 
 ***
 
