@@ -530,6 +530,7 @@ netstat -tnlp | grep   grafana-repo
 #### #### Report 범위 지정 시 사용되는 시간은 Unix Time을 사용하기 때문에 변환 해야 합니다.    
 
 ```bash
+# 기본API KEY 값, 대시보드 UUID 변수 선언
 GRAFANA_API_KEY="여기에 키값을 입력"
 DAILY_BOARD_UUID="대시보드 UUID 입력"
 WEEKL_BOARD_UUID="대시보드 UUID 입력"
