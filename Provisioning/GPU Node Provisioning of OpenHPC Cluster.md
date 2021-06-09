@@ -196,6 +196,8 @@ wwvnfs --chroot  ${CHROOT}
 
 
 ## ## [6. Insatll Docker to Master & VNFS of openhpc nodes.][contents]
+
+### ### Install Docker
 ```bash
 # Docker Install on master server.
 yum-config-manager --add-repo \
@@ -229,7 +231,7 @@ wwsh file resync  # docker /etc/group sync.
 ```
 
 
-### ### Install Nvidia Docker to Master & VNFS of openhpc nodes.
+### ### Install Nvidia Docker
 ```bash
 # Nvidia-Docker Install on master server.
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -249,7 +251,7 @@ yum -y --installroot=${CHROOT}  install   nvidia-docker2
 wwvnfs --chroot  ${CHROOT}
 ```
 
-### ### docker user
+### ### docker user add.
 ```bash
 usermod -G docker sonic
 cat /etc/group | grep -i docker
@@ -264,8 +266,9 @@ docker images
 
 ## ## [7. gres.conf For Slurm Resource Manager.][contents]
 
-### ### gres.conf 파일 생성 및 노드화 동기화  
+### ### gres.conf 파일 생성 및 노드에 동기화  
 ```bash
+# make gres.conf
 cat << EOF > /etc/slurm/gres.conf
 # This file location is /etc/slurm/gres.conf
 # for Four GPU Set
@@ -277,23 +280,29 @@ EOF
 
 cat /etc/slurm/gres.conf
 
+# slurm.conf 수정!
 vi /etc/slurm/slurm.conf  # Gres 부분 설정 변경  
 
+## file import, resync
 wwsh file import /etc/slurm/gres.conf
-
 wwsh file resync
 
+wwsh provision list
+
+wwsh provision set  -y  node01 --fileadd=gres.conf
 pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+
+wwsh file list
+wwsh provision print  node01 | grep FILES
 
 ```
 ### ### slurm 서비스 재시작.
 ```bash
-
 systemctl  restart  slurmctld
 
 pdsh -w node01  'systemctl  restart  slurmd'
 
-scontrol  update  nodename=node[1-2] state=resume
+scontrol  update  nodename=node01 state=resume
 
 scontrol  show  node
 
@@ -314,8 +323,9 @@ sinfo
 squeue
 
 echo $CUDA_VISIBLE_DEVICES
-
 ```
+
+<추가 예정>
 
 
 # END.
