@@ -526,14 +526,34 @@ netstat -tnlp | grep   grafana-repo
 - dashboard settings => Links => Add Dashboard Link => Type Link...   
 
 ### ### PDF Gen cli  
-#### #### CLI 모드에서 Report 파일 만드는 방법으로 API Key 값과  Dashboard UID가 필요합니다.  
-#### #### Report 범위 지정 시 사용되는 시간은 Unix Time을 사용하기 때문에 변환 해야 합니다.  
-#### #### https://www.epochconverter.com/ 링크 접속 후 원하는 시간 입력시 Unix 시간으로 변경합니다.  
+#### #### CLI 모드에서 Report 파일 만드는 방법으로 API Key 값과  Dashboard UUID가 필요합니다.  
+#### #### Report 범위 지정 시 사용되는 시간은 Unix Time을 사용하기 때문에 변환 해야 합니다.    
 
 ```bash
-grafana-reporter -cmd_enable=1 -cmd_apiKey APIKey -ip localhost:3000 -cmd_dashboard dashboardUID -cmd_ts "from=시작날짜&to=마지막날짜" -cmd_o 파일명.pdf
+GRAFANA_API_KEY="여기에 키값을 입력"
+DAILY_BOARD_UUID="대시보드 UUID 입력"
+WEEKL_BOARD_UUID="대시보드 UUID 입력"
+MONTH_BOARD_UUID="대시보드 UUID 입력"
 
-ls -al /home/sonic/
+# DAILY Report 생성할 경우
+STA_DAY=$(date -d "2021-05-01" +%s)
+END_DAY=$(date -d "2021-05-02" +%s)
+
+# Weekly Report 생성할 경우
+STA_DAY=$(date -d "2021-05-01" +%s)
+END_DAY=$(date -d "2021-05-08" +%s)
+
+# Monthly Report 생성할 경우
+STA_DAY=$(date -d "2021-05-01" +%s)
+END_DAY=$(date -d "2021-06-01" +%s)
+
+# 보고서 출력시 파일 이름 설정
+OUTFILE="Daily_Output"
+OUTFILE="Weekl_Output"
+OUTFILE="Month_Output"
+
+grafana-reporter -cmd_enable=1 -cmd_apiKey $GRAFANA_API_KEY -ip localhost:3000 -cmd_dashboard $DAILY_BOARD_UUID -cmd_ts "from=$STA_DAY&to=$END_DAY" -cmd_o $OUTFILE.pdf
+
 ```
 
 ***
