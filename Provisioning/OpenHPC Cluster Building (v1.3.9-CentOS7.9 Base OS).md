@@ -204,7 +204,7 @@ ll /etc/munge/munge.key
 systemctl enable munge.service && systemctl start  munge.service
 ```
 
-### ### slurm.conf 예.
+### ### slurm.conf 작성.
 
 ```bash
 # 기존 slurm.conf 백업  
@@ -1059,6 +1059,22 @@ scontrol  update  nodename=node01  state=resume
 sinfo --long
 ```
 
+### ### slurm alias 적용.
+```bash
+cat << EOF > /etc/profile.d/slurm.alias.sh
+alias sinfolong='sinfo    -o "%20P %5D  %20C %14F %6t  %8z  %10m %10d %11l %16f %N   %G"     '
+alias squeuelong='squeue  -o "%8i  %12j %4t  %10u %20q %20a %10g %20P %10Q %5D  %11l %11L %R"'
+EOF
+
+cat  /etc/profile.d/slurm.alias.sh
+wwsh file import  /etc/profile.d/slurm.alias.sh
+
+wwsh provision list
+wwsh provision set  -y  node01 --fileadd=slurm.alias.sh
+pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+```
+
+
 ## ## [5-B. Start pbspro daemons on master host][contents]
 ```bash
 systemctl enable pbs
@@ -1167,5 +1183,30 @@ exit
 qstat
 ```
 ***
+
+## ## 6. 기타
+
+### ### 설정 파일들이 주기적으로 동기화 되도록 설정.
+```bash
+# ADD wwsh file resync command in crontab
+cat /etc/crontab
+
+cat << EOF >> /etc/crontab
+
+0,4,9,14,19,24,29,34,39,44,49,54   * * * *   root   /bin/wwsh file resync
+EOF
+
+cat /etc/crontab
+
+# make warewulf log directory
+ll ${CHROOT}/var/log/ | grep warewulf
+
+mkdir  ${CHROOT}/var/log/warewulf
+
+ll ${CHROOT}/var/log/ | grep warewulf
+
+wwvnfs --chroot ${CHROOT}
+```
+
 
 # END.
