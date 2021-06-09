@@ -13,6 +13,7 @@
 [9]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-prometheus-ipmi-exporter--for-centos7-only-master-
 [10]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-10-grafana-install-on-master
 [11]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-11-grafana-report-to-pdf
+[12]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-pdf-gen-cli
 [grafanadashboards]: https://github.com/dasandata/Open_HPC/blob/master/Monitoring/OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#grafana-dashboardshttpsgrafanacomgrafanadashboards
 
 ## ## Requirements  
@@ -31,6 +32,7 @@
 ### [9. Prometheus-ipmi exporter ( For Centos7, Only Master )][9]
 ### [10. Grafana Install (on Master)][10]
 ### [11. Grafana Report to PDF][11]
+### [12. PDF Gen cli][12]
 ### [Grafana dashboards][grafanadashboards]
 
 ### [END.][contents]
@@ -523,12 +525,15 @@ netstat -tnlp | grep   grafana-repo
 - apitoken : Configuration => API Keys => Add API Key  
 - dashboard settings => Links => Add Dashboard Link => Type Link...   
 
-### ### PDF Gen cli
+### ### PDF Gen cli  
+### #### CLI 모드에서 Report 파일 만드는 방법으로 API Key 값과  Dashboard UID가 필요합니다.  
+### #### Report 범위 지정 시 사용되는 시간은 Unix Time을 사용하기 때문에 변환 해야 합니다.  
+### #### https://www.epochconverter.com/ 링크 접속 후 원하는 시간 입력시 Unix 시간으로 변경합니다.  
 
 ```bash
+grafana-reporter -cmd_enable=1 -cmd_apiKey APIKey -ip localhost:3000 -cmd_dashboard dashboardUID -cmd_ts "from=시작날짜&to=마지막날짜" -cmd_o 파일명.pdf
 
-
-
+ls -al /home/sonic/
 ```
 
 ***
