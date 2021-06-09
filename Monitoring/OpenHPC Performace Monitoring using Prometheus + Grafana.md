@@ -29,7 +29,7 @@
 ### [7. Add script & Crontab, for Start docker process after node reboot][7]  
 ### [8. Prometheus-slurm exporter ( For Centos7, Only Master )][8]
 ### [9. Prometheus-ipmi exporter ( For Centos7, Only Master )][9]
-### [10. Grafana Docker (on Master)][10]
+### [10. Grafana Install (on Master)][10]
 ### [11. Grafana Report to PDF][11]
 ### [Grafana dashboards][grafanadashboards]
 
