@@ -247,6 +247,29 @@ docker run   --rm   --gpus all    nvidia/cuda:11.0-base    nvidia-smi
 # Nvidia-Docker Install on VNFS of OpenHPC Nodes.
 cp /etc/yum.repos.d/nvidia-docker.repo  ${CHROOT}/etc/yum.repos.d/
 yum -y --installroot=${CHROOT}  install   nvidia-docker2
+```
+
+### ### Install Docker-Compose  
+
+```bash
+# Docker-Compose Install on master server
+curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose  /usr/bin/docker-compose
+
+docker-compose --version
+
+# docker-compose copy to VNFS
+cp /usr/local/bin/docker-compose ${CHROOT}/usr/local/bin/
+
+ll ${CHROOT}/usr/local/bin/
+
+# vnfs image login
+chroot ${CHROOT}
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+exit
 
 wwvnfs --chroot  ${CHROOT}
 ```
