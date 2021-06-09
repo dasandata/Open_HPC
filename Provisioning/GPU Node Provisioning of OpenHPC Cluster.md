@@ -300,64 +300,22 @@ scontrol  show  node
 sinfo
 ```
 
-
-### # 54-8. slurm interactive job test
-#### # cpu test   
+## ## [8. GPU Job Test][contents]
 
 ```bash
-# 인터렉티브 모드 진입전 queue 상태 와 환경변수 확인.
+su - sonic
+
+git clone http://
+
+srun  --gres=gpu:1 --pty /bin/bash
+
+sinfo
+
 squeue
-env  | grep  SLURM | tail
+
+echo $CUDA_VISIBLE_DEVICES
+
 ```
-
-```bash
-# 인터렉티브 모드로 진입.
-srun  -N1  -n 10 --pty bash -i
-```
-
-```bash
-# 인터렉티브 모드로 진입 후 queue 상태 와 환경변수 (env) 확인.
-squeue  
-env  | grep SLURM | tail
-```
-
-```bash
-# 병렬작업 실행 (모드 진입시 설정한 cpu 수 [-n 값] 만큼 실행 됩니다.)
-srun  hostname
-srun  hostname | wc -l
-```
-
-```bash
-# 인터렉티브 모드에서 빠져나와서  queue 상태 와 환경변수 (env) 확인.
-exit
-squeue  
-env  | grep  SLURM | tail
-```
-
-***
-
-#### # GPU Test   
-\# gpu 테스트를 하는동안 모니터링 : ` watch -n 1 'squeue ; echo ; echo ; nvidia-smi --loop=1 ; echo ; echo' `
-
-```bash
-srun  --gres=gpu:1   --pty bash -i
-squeue  
-
-~/NVIDIA_CUDA-8.0_Samples/bin/x86_64/linux/release/deviceQuery | tail
-python3  ~/TensorFlow-Examples/examples/5_DataManagement/tensorflow_dataset_api.py | tail
-
-exit
-
-srun  --gres=gpu:2   --pty bash -i
-squeue  
-
-/root/NVIDIA_CUDA-8.0_Samples/bin/x86_64/linux/release/deviceQuery | tail
-python  /root/TensorFlow-Examples/examples/5_DataManagement/tensorflow_dataset_api.py | tail
-
-exit
-```
-
-
 
 
 # END.
