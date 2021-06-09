@@ -204,7 +204,57 @@ ll /etc/munge/munge.key
 systemctl enable munge.service && systemctl start  munge.service
 ```
 
-### ### slurm.conf 는 추후 설정.
+### ### slurm.conf 예.
+
+```bash
+# 기존 slurm.conf 백업  
+cp    /etc/slurm/slurm.conf{,.bak}
+
+cat << EOF >  /etc/slurm/slurm.conf
+SlurmUser=slurm
+SlurmctldPort=6817
+SlurmdPort=6818
+AuthType=auth/munge
+StateSaveLocation=/var/spool/slurm/ctld
+SlurmdSpoolDir=/var/spool/slurm/d
+SwitchType=switch/none
+MpiDefault=none
+SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmdPidFile=/var/run/slurmd.pid
+ProctrackType=proctrack/pgid
+SlurmctldTimeout=300
+SlurmdTimeout=300
+InactiveLimit=0
+MinJobAge=300
+KillWait=30
+Waittime=0
+SchedulerType=sched/backfill
+SelectType=select/cons_res
+SelectTypeParameters=CR_Core
+DefMemPerCPU=0
+FastSchedule=1
+SlurmctldDebug=3
+SlurmctldLogFile=/var/log/slurmctld.log
+SlurmdDebug=3
+SlurmdLogFile=/var/log/slurmd.log
+JobCompType=jobcomp/none
+PropagateResourceLimitsExcept=MEMLOCK
+AccountingStorageType=accounting_storage/filetxt
+ReturnToService=1
+PrologFlags=x11        # X11 Forwarding for interactive job "srun --x11 --pty /bin/bash"
+
+ClusterName=${CLUSTER_NAME}
+ControlMachine=${MASTER_HOSTNAME}
+
+#GresTypes=gpu
+
+NodeName=node01 CPUs=4  State=UNKNOWN   # Gres=gpu:GTX1080Ti:4
+
+PartitionName=default   Default=YES   Nodes=node01  MaxTime=1-12:00:00  State=UP
+EOF
+
+cat   /etc/slurm/slurm.conf
+```
 
 ***
 
@@ -994,51 +1044,6 @@ bash /tmp/slurm_service.sh
 
 ```
 \# slurmctld 의 상태가 failed 인 경우 /etc/slurm/slurm.conf 파일 설정상태를 점검해야 합니다.
-\# /etc/slurm/slurm.conf
-
-```bash
-SlurmUser=slurm
-SlurmctldPort=6817
-SlurmdPort=6818
-AuthType=auth/munge
-StateSaveLocation=/var/spool/slurm/ctld
-SlurmdSpoolDir=/var/spool/slurm/d
-SwitchType=switch/none
-MpiDefault=none
-SlurmctldPidFile=/var/run/slurmctld.pid
-SlurmdPidFile=/var/run/slurmd.pid
-ProctrackType=proctrack/pgid
-SlurmctldTimeout=300
-SlurmdTimeout=300
-InactiveLimit=0
-MinJobAge=300
-KillWait=30
-Waittime=0
-SchedulerType=sched/backfill
-SelectType=select/cons_res
-SelectTypeParameters=CR_Core
-DefMemPerCPU=0
-FastSchedule=1
-SlurmctldDebug=3
-SlurmctldLogFile=/var/log/slurmctld.log
-SlurmdDebug=3
-SlurmdLogFile=/var/log/slurmd.log
-JobCompType=jobcomp/none
-PropagateResourceLimitsExcept=MEMLOCK
-AccountingStorageType=accounting_storage/filetxt
-ReturnToService=1
-PrologFlags=x11        # X11 Forwarding for interactive job "srun --x11 --pty /bin/bash"
-
-ClusterName=OpenHPC_dasandata
-ControlMachine=ohpc-master
-
-# GresTypes=gpu
-
-NodeName=node01 CPUs=4 RealMemory=1024 State=UNKNOWN   # Gres=gpu:GTX1080Ti:4
-# NodeName=node[01-05] CPUs=4 RealMemory=1024 State=UNKNOWN  Gres=gpu:GTX1080Ti:4
-
-PartitionName=default  Default=YES   Nodes=node[1-2]   MaxTime=1-12:00:00  State=UP
-```
 
 ### ### sinfo
 ```bash

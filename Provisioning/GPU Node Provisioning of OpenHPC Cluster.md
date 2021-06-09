@@ -264,85 +264,40 @@ docker images
 
 ## ## [7. gres.conf For Slurm Resource Manager.][contents]
 
-\# /etc/slurm/slurm.conf
-
+### ### gres.conf 파일 생성 및 노드화 동기화  
 ```bash
-SlurmUser=slurm
-SlurmctldPort=6817
-SlurmdPort=6818
-AuthType=auth/munge
-StateSaveLocation=/var/spool/slurm/ctld
-SlurmdSpoolDir=/var/spool/slurm/d
-SwitchType=switch/none
-MpiDefault=none
-SlurmctldPidFile=/var/run/slurmctld.pid
-SlurmdPidFile=/var/run/slurmd.pid
-ProctrackType=proctrack/pgid
-SlurmctldTimeout=300
-SlurmdTimeout=300
-InactiveLimit=0
-MinJobAge=300
-KillWait=30
-Waittime=0
-SchedulerType=sched/backfill
-SelectType=select/cons_res
-SelectTypeParameters=CR_Core
-DefMemPerCPU=0
-FastSchedule=1
-SlurmctldDebug=3
-SlurmctldLogFile=/var/log/slurmctld.log
-SlurmdDebug=3
-SlurmdLogFile=/var/log/slurmd.log
-JobCompType=jobcomp/none
-PropagateResourceLimitsExcept=MEMLOCK
-AccountingStorageType=accounting_storage/filetxt
-ReturnToService=1
-PrologFlags=x11        # X11 Forwarding for interactive job "srun --x11 --pty /bin/bash"
-
-ClusterName=OpenHPC_dasandata
-ControlMachine=ohpc-master
-
-GresTypes=gpu
-
-NodeName=node[1-2] Procs=40 Sockets=2 CoresPerSocket=10 ThreadsPerCore=2 RealMemory=102400 State=UNKNOWN Gres=gpu:GTX1080Ti:4
-
-PartitionName=cpu             Nodes=node[1-2] MaxTime=24:00:00 State=UP
-PartitionName=gpu Default=YES Nodes=node[1-2] MaxTime=24:00:00 State=UP
-```
-
-***
-
-\# /etc/slurm/gres.conf
-
-```bash
+cat << EOF > /etc/slurm/gres.conf
 # This file location is /etc/slurm/gres.conf
 # for Four GPU Set
 
-Nodename=node[1-2]  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
+Nodename=node01  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
 
 # End of File.
-```
+EOF
 
-***
+cat /etc/slurm/gres.conf
 
-```bash
+vi /etc/slurm/slurm.conf  # Gres 부분 설정 변경  
+
 wwsh file import /etc/slurm/gres.conf
 
 wwsh file resync
 
-wwvnfs --chroot ${CHROOT}
+pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 
-pdsh -w node01   wwgetfiles
+```
+### ### slurm 서비스 재시작.
+```bash
 
+systemctl  restart  slurmctld
 
-systemctl  restart  slurmctld  # 새로 설정된 파일에 맞추어 마스터 서비스 재시작.
+pdsh -w node01  'systemctl  restart  slurmd'
 
 scontrol  update  nodename=node[1-2] state=resume
 
 scontrol  show  node
 
 sinfo
-
 ```
 
 
