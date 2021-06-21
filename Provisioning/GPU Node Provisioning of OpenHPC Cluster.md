@@ -52,7 +52,7 @@ mount -o bind /dev  ${CHROOT}/dev
 mount | grep ${CHROOT}
 
 # Install gcc, make to VNFS
-yum -y install --installroot ${CHROOT} gcc, make \
+yum -y install --installroot ${CHROOT} gcc make \
 >> dasan_log_ohpc_nvidia-driver-latest-vnfs.txt 2>&1
 tail dasan_log_ohpc_nvidia-driver-latest-vnfs.txt
 
