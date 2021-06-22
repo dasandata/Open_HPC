@@ -192,6 +192,16 @@ yum -y  --disablerepo=OpenHPC,OpenHPC-updates   install  slurm*  \
 tail ~/dasan_log_ohpc_resourcemanager_slurm.txt  
 ```
 
+### ### add slurm user
+```bash
+cat /etc/passwd | grep slurm
+
+useradd  --system  --home-dir=/etc/slurm   --shell=/sbin/nologin slurm
+
+cat /etc/passwd | grep slurm
+chown slurm. -R /var/spool/slurm/
+```
+
 ### ### Install munge-devel
 ```bash
 yum -y --disablerepo=OpenHPC,OpenHPC-updates install munge-devel
@@ -422,6 +432,14 @@ tail -1 ~/dasan_log_ohpc_slurmclient.txt
 
 chroot ${CHROOT} systemctl enable munge
 chroot ${CHROOT} systemctl enable slurmd
+
+# munge directory Permission 설정
+
+```bash
+chown munge.    ${CHROOT}/etc/munge
+chown munge.    ${CHROOT}/var/log/munge/
+chown munge.    ${CHROOT}/var/lib/munge/
+```
 
 # vnfs 에 log 폴더가 생성되도록 합니다. (munge log 폴더가 생성 되어야 함)
 grep log /etc/warewulf/vnfs.conf
