@@ -1080,8 +1080,8 @@ sinfo --long
 ### ### slurm alias 적용.
 ```bash
 cat << EOF > /etc/profile.d/slurm.alias.sh
-alias sinfolong='sinfo    -o "%20P %5D  %20C %14F %6t  %8z  %10m %10d %11l %16f %N   %G"     '
-alias squeuelong='squeue  -o "%8i  %12j %4t  %10u %20q %20a %10g %20P %10Q %5D  %11l %11L %R"'
+alias sinfolong='sinfo    -o "%16P %14C %6t %15N %5D %15G %11l %14f "     '
+alias squeuelong='squeue  -o "%6i  %12j %9T %15u %8g %10P %8q %4D %20R %4C %13b %11l %11L %p"'
 EOF
 
 cat  /etc/profile.d/slurm.alias.sh
