@@ -21,7 +21,7 @@
 
 ## 목차  
 
-### [1. Insatll Docker to Master & VNFS of openhpc nodes.][1]
+### [1. Install Docker to Master & VNFS of openhpc nodes.][1]
 ### [2. Install Nvidia Docker to Master & VNFS of openhpc nodes.][2]
 ### [3. Prometheus docker run on master.][3]
 ### [4. Run on node prometheus-node-expoter][4]
@@ -39,7 +39,7 @@
 
 ***
 
-## ## [1. Insatll Docker to Master & VNFS of openhpc nodes.][contents]
+## ## [1. Install Docker to Master & VNFS of openhpc nodes.][contents]
 ```bash
 # Docker Install on master server.
 yum-config-manager --add-repo \
@@ -421,7 +421,7 @@ docker restart prometheus
 ```bash
 # https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1  
 
-yum -y install  https://dl.grafana.com/oss/release/grafana-7.5.7-1.x86_64.rpm
+yum -y install  https://dl.grafana.com/oss/release/grafana-8.0.3-1.x86_64.rpm
 
 which grafana-server
 which grafana-cli
