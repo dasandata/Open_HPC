@@ -478,11 +478,12 @@ wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
 export PATH=$PWD/go/bin:$PATH
+export GOPATH=/tmp/GOPATH
 
 go get github.com/IzakMarais/reporter/...
 go install -v github.com/IzakMarais/reporter/cmd/grafana-reporter
 
-ll /root/go/bin/grafana-reporter
+ll ${GOPATH}/bin/grafana-reporter
 
 # Firewall Port Open 8686
 firewall-cmd --list-all | grep 8686
@@ -491,11 +492,11 @@ firewall-cmd --add-port=8686/tcp --permanent
 firewall-cmd --list-all | grep 8686
 
 # test.
-/root/go/bin/grafana-reporter
+${GOPATH}/bin/grafana-reporter
 
 # grafana-reporter service add
 
-cp /root/go/bin/grafana-reporter  /usr/local/sbin/grafana-reporter
+cp ${GOPATH}/bin/grafana-reporter  /usr/local/sbin/grafana-reporter
 cat << EOF > /lib/systemd/system/grafana-reporter.service
 [Unit]
 Description=Grafana-Reporter
