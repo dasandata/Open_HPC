@@ -182,12 +182,12 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 
   - job_name: 'node-exporter'
     static_configs:
-  - targets: ['10.1.1.254:9100']
-      labels:
-        note: 'master-node'
-  - targets: ['10.1.1.1:9100','10.1.1.2:9100','10.1.1.3:9100','10.1.1.4:9100']
-      labels:
-        note: 'compute-node'
+      - targets: ['10.1.1.254:9100']
+        labels:
+          note: 'master-node'
+      - targets: ['10.1.1.1:9100','10.1.1.2:9100','10.1.1.3:9100','10.1.1.4:9100']
+        labels:
+          note: 'compute-node'
 
 EOF
 
@@ -208,12 +208,12 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 
   - job_name: 'dcgm-exporter'
     static_configs:
-    - targets: ['10.1.1.254:9400']
-    labels:
-      note: 'master-node'
-  - targets: ['10.1.1.1:9400','10.1.1.2:9400','10.1.1.3:9400','10.1.1.4:9400']
-    labels:
-      note: 'compute-node'
+      - targets: ['10.1.1.254:9400']
+        labels:
+          note: 'master-node'
+      - targets: ['10.1.1.1:9400','10.1.1.2:9400','10.1.1.3:9400','10.1.1.4:9400']
+        labels:
+          note: 'compute-node'
 EOF
 
 docker restart prometheus
