@@ -538,16 +538,17 @@ WEEKL_BOARD_UUID="대시보드 UUID 입력"
 MONTH_BOARD_UUID="대시보드 UUID 입력"
 
 # DAILY Report 생성할 경우
-STA_DAY=$(date -d "2021-05-01" +%s)
-END_DAY=$(date -d "2021-05-02" +%s)
+# grafana는 시간 단위가 밀리세컨드 3자리까지 표기
+STA_DAY=$(date -d "2021-05-01" +%s%3N)
+END_DAY=$(date -d "2021-05-02" +%s%3N)
 
 # Weekly Report 생성할 경우
-STA_DAY=$(date -d "2021-05-01" +%s)
-END_DAY=$(date -d "2021-05-08" +%s)
+STA_DAY=$(date -d "2021-05-01" +%s%3N)
+END_DAY=$(date -d "2021-05-08" +%s%3N)
 
 # Monthly Report 생성할 경우
-STA_DAY=$(date -d "2021-05-01" +%s)
-END_DAY=$(date -d "2021-06-01" +%s)
+STA_DAY=$(date -d "2021-05-01" +%s%3N)
+END_DAY=$(date -d "2021-06-01" +%s%3N)
 
 # 보고서 출력시 파일 이름 설정
 OUTFILE="Daily_Output"
