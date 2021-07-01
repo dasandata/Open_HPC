@@ -543,10 +543,12 @@ STA_DAY=$(date -d "2021-05-01" +%s%3N)
 END_DAY=$(date -d "2021-05-02" +%s%3N)
 
 # Weekly Report 생성할 경우
+# grafana는 시간 단위가 밀리세컨드 3자리까지 표기
 STA_DAY=$(date -d "2021-05-01" +%s%3N)
 END_DAY=$(date -d "2021-05-08" +%s%3N)
 
 # Monthly Report 생성할 경우
+# grafana는 시간 단위가 밀리세컨드 3자리까지 표기
 STA_DAY=$(date -d "2021-05-01" +%s%3N)
 END_DAY=$(date -d "2021-06-01" +%s%3N)
 
