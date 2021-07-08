@@ -285,7 +285,10 @@ su - sonic
 docker -v
 docker images
 ```
-
+### ### docker network IP 변경 방법
+```bash
+# BMM에 있는 docker network change 파일을 참조
+```
 
 ## ## [7. gres.conf For Slurm Resource Manager.][contents]
 
