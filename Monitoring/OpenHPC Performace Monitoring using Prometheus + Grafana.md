@@ -135,12 +135,15 @@ EOF
 adduser --uid 9090 --no-create-home  --shell /sbin/nologin   prometheus
 
 mkdir   /var/lib/prometheus/
+mkdir   /usr/local/bin/prometheus
 chown   prometheus:prometheus    /var/lib/prometheus/
+
 
 # prometheus download
 cd /usr/local/bin
 wget https://github.com/prometheus/prometheus/releases/download/v2.28.1/prometheus-2.28.1.linux-amd64.tar.gz
-tar xvfz prometheus-*.tar.gz
+tar xvfz prometheus-*.tar.gz -C /usr/local/bin/prometheus --strip-components 1
+chown  -R prometheus:prometheus    /usr/local/bin/prometheus
 
 # prometheus service add
 ## ExecStart, web.console은 바이너리 파일 디렉토리 위치에 맞게 변경합니다.
@@ -156,7 +159,7 @@ After=network-online.target
 User=prometheus
 Group=prometheus
 Type=simple
-ExecStart=/usr/local/bin/prometheus \
+ExecStart=/usr/local/bin/prometheus/prometheus \
     --config.file /etc/prometheus/prometheus.yml \
     --storage.tsdb.path /var/lib/prometheus/ \
     --web.console.templates=/usr/local/bin/prometheus/consoles \
@@ -187,15 +190,33 @@ firewall-cmd --list-all | grep 9090
 
 ## ## [4. Run on node prometheus-node-expoter][contents]
 ```bash
-# on node. run expoter
-docker run -d --restart=always --name node-exporter \
-  --net="host" --pid="host" \
-  -v "/:/host:ro,rslave" \
-  quay.io/prometheus/node-exporter:latest \
-  --path.rootfs=/host
 
-# check exporter port.
-netstat  -tnlp  | grep node_expo
+# node-exporter user add
+useradd node_exporter -s /sbin/nologin
+mkdir   /usr/local/bin/node_exporter
+
+# node-exporter download
+wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
+tar zxvf node_exporter-1.1.2.linux-amd64.tar.gz -C /usr/local/bin/node_exporter --strip-components 1
+chown -R node_exporter:node_exporter    /usr/local/bin/node_exporter
+
+# node-exporter service add
+cat << EOF > /lib/systemd/system/node-exporter.service
+[Unit]
+Description=Node Exporter
+[Service]
+User=node_exporter
+ExecStart=/usr/local/bin/node_exporter/node_exporter
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# node-exporter service start
+chmod +x /lib/systemd/system/node-exporter.service
+systemctl  daemon-reload
+systemctl  enable   node-exporter.service
+systemctl  start    node-exporter.service
+systemctl  status   node-exporter.service
 
 ```
 
