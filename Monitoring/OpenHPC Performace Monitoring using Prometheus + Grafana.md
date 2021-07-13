@@ -5,9 +5,9 @@
 [1]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-1-insatll-docker-to-master--vnfs-of-openhpc-nodes
 [2]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-2-install-nvidia-docker-to-master--vnfs-of-openhpc-nodes
 [3]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-3-prometheus-install-in-master
-[4]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-4-run-on-node-prometheus-node-expoter
+[4]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-4-Install-prometheus-node-expoter
 [5]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-add-scrape-node-info-to-master
-[6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-run-prometheus-nvidia-dcgm-expoter-prometheus-dcgm
+[6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-Install-prometheus-nvidia-dcgm-expoter-prometheus-dcgm
 [7]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-7-add-script--crontab-for-start-docker-process-after-node-reboot
 [8]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-8-prometheus-slurm-exporter--for-centos7-only-master-
 [9]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-prometheus-ipmi-exporter--for-centos7-only-master-
@@ -24,9 +24,9 @@
 ### [1. Install Docker to Master & VNFS of openhpc nodes.][1]
 ### [2. Install Nvidia Docker to Master & VNFS of openhpc nodes.][2]
 ### [3. Prometheus install in master.][3]
-### [4. Run on node prometheus-node-expoter][4]
+### [4. Install prometheus-node-expoter][4]
 ### [5. add scrape node info to master][5]
-### [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][6]
+### [6. Install prometheus nvidia dcgm expoter (prometheus-dcgm)][6]
 ### [7. Add script & Crontab, for Start docker process after node reboot][7]  
 ### [8. Prometheus-slurm exporter ( For Centos7, Only Master )][8]
 ### [9. Prometheus-ipmi exporter ( For Centos7, Only Master )][9]
@@ -188,7 +188,7 @@ firewall-cmd --list-all | grep 9090
 
 
 
-## ## [4. Run on node prometheus-node-expoter][contents]
+## ## [4. install prometheus-node-expoter][contents]
 ```bash
 
 # node-exporter user add
@@ -242,7 +242,7 @@ docker restart prometheus
 ```
 
 
-## ## [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][contents]
+## ## [6. Install prometheus nvidia dcgm expoter (prometheus-dcgm)][contents]
 ```bash
 
 # dcgm user add
