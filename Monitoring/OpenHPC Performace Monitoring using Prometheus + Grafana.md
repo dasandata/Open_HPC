@@ -244,6 +244,10 @@ docker restart prometheus
 
 ## ## [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][contents]
 ```bash
+
+# dcgm user add
+useradd dcgm-exporter -s /sbin/nologin
+
 # go install
 cd /tmp
 export VERSION=1.15 OS=linux ARCH=amd64
@@ -256,26 +260,30 @@ yum clean expire-cache
 yum install -y datacenter-gpu-manager
 systemctl --now enable nvidia-dcgm
 
-# prometheus.yml gpu node add
-cat << EOF >> /etc/prometheus/prometheus.yml
-
-  - job_name: 'dcgm-exporter'
-    static_configs:
-      - targets: ['10.1.1.254:9400']
-        labels:
-          note: 'master-node'
-      - targets: ['10.1.1.1:9400','10.1.1.2:9400','10.1.1.3:9400','10.1.1.4:9400']
-        labels:
-          note: 'compute-node'
-EOF
-
 # dcgm-exporter install
 git clone https://github.com/NVIDIA/gpu-monitoring-tools.git
 cd gpu-monitoring-tools
 export PATH=$PWD/go/bin:$PATH
 make binary
-sudo make install
-dcgm-exporter &
+make install
+
+cat << EOF > /lib/systemd/system/dcgm-exporter.service
+[Unit]
+Description=DCGM Exporter
+[Service]
+User=dcgm-exporter
+ExecStart=/usr/bin/dcgm-exporter
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# dcgm-exporter service start
+chown dcgm-exporter:dcgm-exporter /usr/bin/dcgm-exporter
+chmod +x /lib/systemd/system/dcgm-exporter.service
+systemctl  daemon-reload
+systemctl  enable   dcgm-exporter.service
+systemctl  start    dcgm-exporter.service
+systemctl  status   dcgm-exporter.service
 
 # gpu info check
 curl localhost:9400/metrics
@@ -290,6 +298,20 @@ DCGM_FI_DEV_SM_CLOCK{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 1
 DCGM_FI_DEV_MEM_CLOCK{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 405
 DCGM_FI_DEV_MEMORY_TEMP{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 9223372036854775794
 ...
+
+# prometheus.yml gpu node add
+cat << EOF >> /etc/prometheus/prometheus.yml
+
+  - job_name: 'dcgm-exporter'
+    static_configs:
+      - targets: ['10.1.1.254:9400']
+        labels:
+          note: 'master-node'
+      - targets: ['10.1.1.1:9400','10.1.1.2:9400','10.1.1.3:9400','10.1.1.4:9400']
+        labels:
+          note: 'compute-node'
+EOF
+
 ```
 
 ## ## [7. Add script & Crontab, for Start docker process after node reboot][contents]  
