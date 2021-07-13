@@ -4,7 +4,7 @@
 [contents]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#%EB%AA%A9%EC%B0%A8
 [1]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-1-insatll-docker-to-master--vnfs-of-openhpc-nodes
 [2]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-2-install-nvidia-docker-to-master--vnfs-of-openhpc-nodes
-[3]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-3-prometheus-docker-run-on-master
+[3]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-3-prometheus-install-in-master
 [4]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-4-run-on-node-prometheus-node-expoter
 [5]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-add-scrape-node-info-to-master
 [6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-run-prometheus-nvidia-dcgm-expoter-prometheus-dcgm
