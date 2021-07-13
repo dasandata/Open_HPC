@@ -137,13 +137,41 @@ adduser --uid 9090 --no-create-home  --shell /sbin/nologin   prometheus
 mkdir   /var/lib/prometheus/
 chown   prometheus:prometheus    /var/lib/prometheus/
 
-# run prometheus docker.
-docker run \
-   --name prometheus -d -p 9090:9090 \
-   --user 9090:9090   \
-   -v /etc/prometheus/:/etc/prometheus/  \
-   -v /var/lib/prometheus/:/prometheus/  \
-   prom/prometheus
+# prometheus download
+cd /usr/local/bin
+wget https://github.com/prometheus/prometheus/releases/download/v2.28.1/prometheus-2.28.1.linux-amd64.tar.gz
+tar xvfz prometheus-*.tar.gz
+
+# prometheus service add
+## ExecStart, web.console은 바이너리 파일 디렉토리 위치에 맞게 변경합니다.
+## config 파일 위치 및 Data 존재하는 디렉토리는 위치에 맞게 변경합니다.
+## storage.tsdb.retention.time=1y 옵션으로 데이터 저장기간을 정할 수 있습니다.
+cat << EOF > /lib/systemd/system/prometheus.service
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+    --config.file /etc/prometheus/prometheus.yml \
+    --storage.tsdb.path /var/lib/prometheus/ \
+    --web.console.templates=/usr/local/bin/prometheus/consoles \
+    --web.console.libraries=/usr/local/bin/prometheus/console_libraries \
+    --web.external-url=http://192.168.0.1:9090 \
+    --storage.tsdb.retention.time=1y
+[Install]
+WantedBy=multi-user.target
+EOF
+
+chmod +x /lib/systemd/system/prometheus.service
+systemctl  daemon-reload
+systemctl  enable   prometheus.service
+systemctl  start    prometheus.service
+systemctl  status   prometheus.service
 
 # Firewall Port Open 9090
 firewall-cmd --list-all | grep 9090
@@ -151,8 +179,9 @@ firewall-cmd --add-port=9090/tcp
 firewall-cmd --add-port=9090/tcp --permanent
 firewall-cmd --list-all | grep 9090
 
-# start prometheus docker at system restart
-docker update --restart=always prometheus
+# run prometheus
+cd /usr/local/bin/prometheus
+./prometheus --config.file=/etc/prometheus/prometheus.yml &
 
 # Open Broser to http://localhost:9090
 
@@ -198,12 +227,19 @@ docker restart prometheus
 
 ## ## [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][contents]
 ```bash
-# on node.
-docker run -d --restart=always --name dcgm-exporter \
-  --gpus all -p 9400:9400 nvidia/dcgm-exporter:2.0.13-2.1.1-ubuntu18.04
+# go install
+cd /tmp
+export VERSION=1.15 OS=linux ARCH=amd64
+wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
+tar -xzf go$VERSION.$OS-$ARCH.tar.gz
 
+# dcgm install
+yum config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
+yum clean expire-cache
+yum install -y datacenter-gpu-manager
+systemctl --now enable nvidia-dcgm
 
-# on master
+# prometheus.yml gpu node add
 cat << EOF >> /etc/prometheus/prometheus.yml
 
   - job_name: 'dcgm-exporter'
@@ -216,8 +252,27 @@ cat << EOF >> /etc/prometheus/prometheus.yml
           note: 'compute-node'
 EOF
 
-docker restart prometheus
+# dcgm-exporter install
+git clone https://github.com/NVIDIA/gpu-monitoring-tools.git
+cd gpu-monitoring-tools
+export PATH=$PWD/go/bin:$PATH
+make binary
+sudo make install
+dcgm-exporter &
 
+# gpu info check
+curl localhost:9400/metrics
+# HELP DCGM_FI_DEV_SM_CLOCK SM clock frequency (in MHz).
+# TYPE DCGM_FI_DEV_SM_CLOCK gauge
+# HELP DCGM_FI_DEV_MEM_CLOCK Memory clock frequency (in MHz).
+# TYPE DCGM_FI_DEV_MEM_CLOCK gauge
+# HELP DCGM_FI_DEV_MEMORY_TEMP Memory temperature (in C).
+# TYPE DCGM_FI_DEV_MEMORY_TEMP gauge
+...
+DCGM_FI_DEV_SM_CLOCK{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 139
+DCGM_FI_DEV_MEM_CLOCK{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 405
+DCGM_FI_DEV_MEMORY_TEMP{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 9223372036854775794
+...
 ```
 
 ## ## [7. Add script & Crontab, for Start docker process after node reboot][contents]  
