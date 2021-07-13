@@ -101,7 +101,7 @@ wwvnfs --chroot  ${CHROOT}
 
 
 
-## ## [3. Prometheus docker run on master.][contents]
+## ## [3. Prometheus install in master.][contents]
 ```bash
 # Make Prometheus Config file (yaml).
 
