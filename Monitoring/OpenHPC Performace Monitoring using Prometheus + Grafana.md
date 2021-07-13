@@ -23,7 +23,7 @@
 
 ### [1. Install Docker to Master & VNFS of openhpc nodes.][1]
 ### [2. Install Nvidia Docker to Master & VNFS of openhpc nodes.][2]
-### [3. Prometheus docker run on master.][3]
+### [3. Prometheus install in master.][3]
 ### [4. Run on node prometheus-node-expoter][4]
 ### [5. add scrape node info to master][5]
 ### [6. Run prometheus nvidia dcgm expoter (prometheus-dcgm)][6]
