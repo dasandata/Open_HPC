@@ -179,10 +179,6 @@ firewall-cmd --add-port=9090/tcp
 firewall-cmd --add-port=9090/tcp --permanent
 firewall-cmd --list-all | grep 9090
 
-# run prometheus
-cd /usr/local/bin/prometheus
-./prometheus --config.file=/etc/prometheus/prometheus.yml &
-
 # Open Broser to http://localhost:9090
 
 ```
