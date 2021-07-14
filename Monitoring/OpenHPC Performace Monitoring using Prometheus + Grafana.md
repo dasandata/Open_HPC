@@ -131,9 +131,7 @@ EOF
 
 
 # Make Prometheus Data folder.
-
 adduser --uid 9090 --no-create-home  --shell /sbin/nologin   prometheus
-
 mkdir   /var/lib/prometheus/
 mkdir   /usr/local/bin/prometheus
 chown   prometheus:prometheus    /var/lib/prometheus/
@@ -149,7 +147,7 @@ chown  -R prometheus:prometheus    /usr/local/bin/prometheus
 ## ExecStart, web.console은 바이너리 파일 디렉토리 위치에 맞게 변경합니다.
 ## config 파일 위치 및 Data 존재하는 디렉토리는 위치에 맞게 변경합니다.
 ## storage.tsdb.retention.time=1y 옵션으로 데이터 저장기간을 정할 수 있습니다.
-cat << EOF > /lib/systemd/system/prometheus.service
+cat << EOF > /usr/lib/systemd/system/prometheus.service
 [Unit]
 Description=Prometheus
 Wants=network-online.target
@@ -164,7 +162,6 @@ ExecStart=/usr/local/bin/prometheus/prometheus \
     --storage.tsdb.path /var/lib/prometheus/ \
     --web.console.templates=/usr/local/bin/prometheus/consoles \
     --web.console.libraries=/usr/local/bin/prometheus/console_libraries \
-    --web.external-url=http://192.168.0.1:9090 \
     --storage.tsdb.retention.time=1y
 [Install]
 WantedBy=multi-user.target
@@ -191,21 +188,18 @@ firewall-cmd --list-all | grep 9090
 ## ## [4. install prometheus-node-expoter][contents]
 ```bash
 
-# node-exporter user add
-useradd --uid 9100 --no-create-home --shell  /sbin/nologin  node_exporter
+# node-exporter folder add
 mkdir   /usr/local/bin/node_exporter
 
 # node-exporter download
 wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
 tar zxvf node_exporter-1.1.2.linux-amd64.tar.gz -C /usr/local/bin/node_exporter --strip-components 1
-chown -R node_exporter:node_exporter    /usr/local/bin/node_exporter
 
 # node-exporter service add
-cat << EOF > /lib/systemd/system/node-exporter.service
+cat << EOF > /usr/lib/systemd/system/node-exporter.service
 [Unit]
 Description=Node Exporter
 [Service]
-User=node_exporter
 ExecStart=/usr/local/bin/node_exporter/node_exporter
 [Install]
 WantedBy=multi-user.target
@@ -245,8 +239,6 @@ docker restart prometheus
 ## ## [6. Install prometheus nvidia dcgm expoter (prometheus-dcgm)][contents]
 ```bash
 
-# dcgm user add
-useradd --uid 9400 --no-create-home --shell  /sbin/nologin  dcgm-exporter
 # go install
 cd /tmp
 export VERSION=1.15 OS=linux ARCH=amd64
@@ -254,30 +246,29 @@ wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
 
 # dcgm install
-yum config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
+yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
 yum clean expire-cache
 yum install -y datacenter-gpu-manager
 systemctl --now enable nvidia-dcgm
 
 # dcgm-exporter install
+cd /usr/local
 git clone https://github.com/NVIDIA/gpu-monitoring-tools.git
 cd gpu-monitoring-tools
 export PATH=$PWD/go/bin:$PATH
 make binary
 make install
 
-cat << EOF > /lib/systemd/system/dcgm-exporter.service
+cat << EOF > /usr/lib/systemd/system/dcgm-exporter.service
 [Unit]
 Description=DCGM Exporter
 [Service]
-User=dcgm-exporter
 ExecStart=/usr/bin/dcgm-exporter
 [Install]
 WantedBy=multi-user.target
 EOF
 
 # dcgm-exporter service start
-chown dcgm-exporter:dcgm-exporter /usr/bin/dcgm-exporter
 chmod +x /lib/systemd/system/dcgm-exporter.service
 systemctl  daemon-reload
 systemctl  enable   dcgm-exporter.service
