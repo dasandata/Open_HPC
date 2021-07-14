@@ -192,7 +192,7 @@ firewall-cmd --list-all | grep 9090
 ```bash
 
 # node-exporter user add
-useradd node_exporter -s /sbin/nologin
+useradd --uid 9100 --no-create-home --shell  /sbin/nologin  node_exporter
 mkdir   /usr/local/bin/node_exporter
 
 # node-exporter download
@@ -246,8 +246,7 @@ docker restart prometheus
 ```bash
 
 # dcgm user add
-useradd dcgm-exporter -s /sbin/nologin
-
+useradd --uid 9400 --no-create-home --shell  /sbin/nologin  dcgm-exporter
 # go install
 cd /tmp
 export VERSION=1.15 OS=linux ARCH=amd64
