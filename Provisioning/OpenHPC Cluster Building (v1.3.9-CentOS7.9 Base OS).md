@@ -442,6 +442,7 @@ chown munge.    ${CHROOT}/var/lib/munge/
 ```
 
 # vnfs 에 log 폴더가 생성되도록 합니다. (munge log 폴더가 생성 되어야 함)
+```bash
 grep log /etc/warewulf/vnfs.conf
 
 sed  -i 's#exclude += /var/log/*#\#exclude += /var/log/*#'  /etc/warewulf/vnfs.conf
