@@ -432,7 +432,7 @@ tail -1 ~/dasan_log_ohpc_slurmclient.txt
 
 chroot ${CHROOT} systemctl enable munge
 chroot ${CHROOT} systemctl enable slurmd
-
+```
 # munge directory Permission 설정
 
 ```bash
