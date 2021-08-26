@@ -80,8 +80,6 @@ tail dasan_log_ohpc_cuda8-11-master.txt
 
 ls -l /usr/local | grep cuda
 
-rm -f /usr/local/cuda
-rm -f /usr/local/cuda-11
 ```
 
 ### ### move cuda directory /usr/local to /opt/ohpc/pub/apps
@@ -96,6 +94,10 @@ for I in  8.0 9.0 10.0 10.1 10.2 11.0 11.1 11.2 11.3
 ll /usr/local/ | grep cuda
 
 ll /opt/ohpc/pub/apps/cuda/
+
+# Local에 있는 심볼릭 링크 제거
+rm -f /usr/local/cuda
+rm -f /usr/local/cuda-11
 ```
 
 ## ## [4. multiple CUDNN to MASTER][contents]
