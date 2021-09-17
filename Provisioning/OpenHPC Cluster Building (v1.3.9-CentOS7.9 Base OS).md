@@ -331,7 +331,7 @@ firewall-cmd --list-all --zone=trusted
 
 ```
 
-## ## [3.7 Complete basic Warewulf setup for master node][contents]
+## ## [3.6 Complete basic Warewulf setup for master node][contents]
 
 ### ### Configure Warewulf provisioning to use desired internal interface
 \# 내부망 인터페이스 설정 내용 확인.  
@@ -373,7 +373,7 @@ systemctl restart httpd
 bash /tmp/provisioning_service_run.sh
 ```
 
-## ## [3.8 Define compute image for provisioning][contents]
+## ## [3.7 Define compute image for provisioning][contents]
 
 ### ### Check chroot location.
 \# chroot 작업을 하기 전에 항상, ${CHROOT} 변수가 알맞게 선언 되어 있는지 확인하는 것을 권장합니다.
@@ -381,7 +381,7 @@ bash /tmp/provisioning_service_run.sh
 echo ${CHROOT}
 ```
 
-### ### 3.8.1 Build initial BOS (Base OS) image
+### ### 3.7.1 Build initial BOS (Base OS) image
 ```bash
 wwmkchroot centos-7 ${CHROOT} >> ~/dasan_log_ohpc_initial-BaseOS.txt 2>&1
 tail ~/dasan_log_ohpc_initial-BaseOS.txt
@@ -401,8 +401,8 @@ yum -y --installroot=${CHROOT} update  >> ~/dasan_log_ohpc_update_nodeimage.txt 
 tail ~/dasan_log_ohpc_update_nodeimage.txt
 ```
 
-### ### 3.8.2 Add OpenHPC components
-#### #### 3.8.2.1 Install compute node base meta-package.
+### ### 3.7.2 Add OpenHPC components
+#### #### 3.7.2.1 Install compute node base meta-package.
 \# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
@@ -413,7 +413,7 @@ yum -y --installroot=${CHROOT} install \
 tail ~/dasan_log_ohpc_meta-package.txt  
 ```
 
-#### #### 3.8.2.2 updated to enable DNS resolution.
+#### #### 3.7.2.2 updated to enable DNS resolution.
 ```bash
 cat /etc/resolv.conf
 cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf  
@@ -421,7 +421,7 @@ cp -p /etc/resolv.conf ${CHROOT}/etc/resolv.conf
 
 ***
 
-#### #### 3.8.2.3-A Add Slurm client support meta-package
+#### #### 3.7.2.3-A Add Slurm client support meta-package
 \# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} --disablerepo=OpenHPC,OpenHPC-updates install \
@@ -452,7 +452,7 @@ grep log /etc/warewulf/vnfs.conf
 
 ***
 
-#### #### 3.8.2.3-B Add PBS Professional client support
+#### #### 3.7.2.3-B Add PBS Professional client support
 \# **주의!** - Resource Manager 로 **PBS** 를 사용하는 경우에만 실행 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install pbspro-execution-ohpc >> ~/dasan_log_ohpc_pbsprolient.txt 2>&1
@@ -487,7 +487,7 @@ chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 chroot ${CHROOT} systemctl enable pbs
 ```
 
-#### #### 3.8.2.4 Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
+#### #### 3.7.2.4 Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
 yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc \
  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt 2>&1
@@ -496,7 +496,7 @@ tail ~/dasan_log_ohpc_ntp,kernel,modules.txt
 
 ***
 
-### ### 3.8.3 Customize system configuration
+### ### 3.7.3 Customize system configuration
 
 #### #### Initialize warewulf database and ssh_keys
 ```bash
@@ -563,9 +563,9 @@ echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 
 ***
 
-### ### 3.8.4 Additional Customization (Optional)
+### ### 3.7.4 Additional Customization (Optional)
 
-#### #### 3.8.4.1 Enable InfiniBand drivers
+#### #### 3.7.4.1 Enable InfiniBand drivers
 
 ##### ###### Add IB support and enable on nodes
 ```bash
@@ -585,7 +585,7 @@ wwsh -y file set ifcfg-ib0.ww  --path=/etc/sysconfig/network-scripts/ifcfg-ib0
 
 ```
 
-#### #### 3.8.4.3 Increase locked memory limits
+#### #### 3.7.4.3 Increase locked memory limits
 
 ##### ###### Update memlock settings on master
 ```bash
@@ -606,7 +606,7 @@ perl -pi -e 's/# End of file/\* hard memlock unlimited\n$&/s' ${CHROOT}/etc/secu
 tail ${CHROOT}/etc/security/limits.conf
 ```
 
-#### #### 3.8.4.4 Enable ssh control via resource manager (only Slurm)
+#### #### 3.7.4.4 Enable ssh control via resource manager (only Slurm)
 
 An additional optional customization that is recommended is to restrict ssh access on    
 compute nodes to only allow access by users who have an active job associated with the node.   
@@ -620,7 +620,7 @@ echo "account required pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
 ```
 
 
-#### #### 3.8.4.5 Add Lustre client (2.9.0-77.1.x86_64)
+#### #### 3.7.4.5 Add Lustre client (2.9.0-77.1.x86_64)
 
 http://build.openhpc.community/OpenHPC:/1.3/CentOS_7/x86_64/
 
@@ -655,7 +655,7 @@ mkdir /lustre
 mount -t lustre -o localflock 10.xx.xx.x:/lustre /lustre
 ```
 
-### ### 3.8.5 Import files
+### ### 3.7.5 Import files
 The Warewulf system includes functionality to import arbitrary files from the provisioning server for distribution to managed hosts. This is one way to distribute user credentials to compute nodes.  
 To import local file-based credentials, issue the following:  
 
@@ -677,10 +677,10 @@ wwsh file import /etc/slurm/slurm.conf
 wwsh file import /etc/munge/munge.key
 ```
 
-## ## [3.9 Finalizing provisioning configuration][contents]
+## ## [3.8 Finalizing provisioning configuration][contents]
 
 
-### ### 3.9.0 /etc/warewulf/vnfs.conf 수정.
+### ### 3.8.0 /etc/warewulf/vnfs.conf 수정.
 
 ```bash
 cp  /etc/warewulf/vnfs.conf{,.org}  # conf file backup.
@@ -704,7 +704,7 @@ cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#" | wc -l
 # -> 9
 ```
 
-### ### 3.9.1 Assemble bootstrap image
+### ### 3.8.1 Assemble bootstrap image
 
 #### #### Include drivers from kernel updates; needed if enabling additional kernel modules on computes
 
@@ -722,7 +722,7 @@ wwsh bootstrap list
 ```
 
 
-### ### 3.9.2 Assemble Virtual Node File System (VNFS) image
+### ### 3.8.2 Assemble Virtual Node File System (VNFS) image
 
 ```bash
 echo ${CHROOT}
@@ -733,7 +733,7 @@ wwvnfs --chroot ${CHROOT}
 wwsh vnfs list
 ```
 
-### ### 3.9.3 Register nodes for provisioning
+### ### 3.8.3 Register nodes for provisioning
 
 #### #### Set provisioning interface as the default networking device
 ```bash
@@ -795,7 +795,7 @@ wwsh -y node set node01 -D ib0 --ipaddr=172.1.1.1 --netmask=255.255.255.0
 wwsh -y provision set node01   --fileadd=ifcfg-ib0.ww
 ```
 
-### ### 3.9.4 configure stateful provisioning
+### ### 3.8.4 configure stateful provisioning
 
 #### #### Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
@@ -921,7 +921,7 @@ sshd: xxx.xx.
 sshd: xxx.xxx.xx.x
 ```
 
-## ## [3.9.5 Boot compute nodes][contents]
+## ## [3.9 Boot compute nodes][contents]
 ### ### 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
 ```bash
