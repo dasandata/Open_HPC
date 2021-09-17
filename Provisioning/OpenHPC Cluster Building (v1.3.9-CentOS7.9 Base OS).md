@@ -795,7 +795,7 @@ wwsh -y node set node01 -D ib0 --ipaddr=172.1.1.1 --netmask=255.255.255.0
 wwsh -y provision set node01   --fileadd=ifcfg-ib0.ww
 ```
 
-### ### 3.7.5 configure stateful provisioning
+### ### 3.9.4 configure stateful provisioning
 
 #### #### Add GRUB2 bootloader and re-assemble VNFS image
 ```bash
@@ -921,7 +921,7 @@ sshd: xxx.xx.
 sshd: xxx.xxx.xx.x
 ```
 
-## ## [3.8 Boot compute nodes][contents]
+## ## [3.9.5 Boot compute nodes][contents]
 ### ### 노드를 부팅 한 후 o/s 가 설치 되는지 확인 하고 새 노드에 접속해 봅니다.
 
 ```bash
@@ -1134,7 +1134,7 @@ qstat -q
 qstat -ans
 ```
 
-## ## 6. [Run a Test Job][contents]
+## ## [6. Run a Test Job][contents]
 ```bash
 wwsh file list
 wwsh file resync
@@ -1203,7 +1203,7 @@ qstat
 ```
 ***
 
-## ## 6. 기타
+## ## 7. 기타
 
 ### ### 설정 파일들이 주기적으로 동기화 되도록 설정.
 ```bash
