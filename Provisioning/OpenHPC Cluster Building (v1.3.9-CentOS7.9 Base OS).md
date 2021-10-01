@@ -242,14 +242,13 @@ SchedulerType=sched/backfill
 SelectType=select/cons_res
 SelectTypeParameters=CR_Core
 DefMemPerCPU=0
-FastSchedule=1
 SlurmctldDebug=3
 SlurmctldLogFile=/var/log/slurmctld.log
 SlurmdDebug=3
 SlurmdLogFile=/var/log/slurmd.log
 JobCompType=jobcomp/none
 PropagateResourceLimitsExcept=MEMLOCK
-AccountingStorageType=accounting_storage/filetxt
+AccountingStorageType=accounting_storage/none
 ReturnToService=1
 PrologFlags=x11        # X11 Forwarding for interactive job "srun --x11 --pty /bin/bash"
 
