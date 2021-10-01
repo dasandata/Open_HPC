@@ -263,6 +263,10 @@ PartitionName=default   Default=YES   Nodes=node01  MaxTime=1-12:00:00  State=UP
 EOF
 
 cat   /etc/slurm/slurm.conf
+
+# Slurm version update로 옵션에서 에러 발생하여 아래 2가지 변경
+# FastSchedule=1 delete 
+# AccountingStorageType=accounting_storage/none
 ```
 
 ***
