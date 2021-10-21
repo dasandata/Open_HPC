@@ -540,6 +540,7 @@ echo "/opt/ohpc/pub 10.1.1.0/24(ro,no_subtree_check)"                 >> /etc/ex
 cat /etc/exports
 
 systemctl enable  nfs-server && systemctl restart nfs-server && exportfs
+chroot ${CHROOT} systemctl enable nfs
 ```
 
 #### #### (Optional) nfs by IPoIB with RDMA
@@ -554,7 +555,6 @@ master:/opt/ohpc/pub /opt/ohpc/pub nfs  nfsvers=3,nodev,proto=rdma,port=20049   
 master:/data         /data         nfs  nfsvers=3,nodev,proto=rdma,port=20049,nosuid  0 0
 
 systemctl enable  nfs-server && systemctl restart nfs-server && exportfs
-chroot ${CHROOT} systemctl enable nfs
 ```
 
 
