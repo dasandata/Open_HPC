@@ -65,6 +65,11 @@ tail dasan_log_ohpc_nvidia-driver-latest-vnfs.txt
 umount  ${CHROOT}/dev
 mount | grep ${CHROOT}
 
+# enable nvidia-persistenced
+chroot ${CHROOT}
+systemctl enable  nvidia-persistenced
+exit
+
 wwvnfs --chroot  ${CHROOT}
 wwsh vnfs list
 ```
