@@ -217,7 +217,7 @@ yum -y install docker-ce docker-ce-cli containerd.io
 
 # Check selinx disable.
 getenforce
-grep  SELINUX= /etc/sysconfig/selinux
+grep  SELINUX=   /etc/selinux/config
 
 # Start & Enable Docker Daemon.
 systemctl start  docker
@@ -231,9 +231,9 @@ cp  /etc/yum.repos.d/docker-ce.repo  ${CHROOT}/etc/yum.repos.d/
 yum -y --installroot=${CHROOT}   install  docker-ce docker-ce-cli containerd.io
 
 
-grep 'SELINUX=' ${CHROOT}/etc/sysconfig/selinux  
+grep 'SELINUX=' ${CHROOT}/etc/selinux/config
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/' ${CHROOT}/etc/selinux/config
-grep 'SELINUX=' ${CHROOT}/etc/sysconfig/selinux  
+grep 'SELINUX=' ${CHROOT}/etc/selinux/config
 
 chroot ${CHROOT}  systemctl enable docker
 wwsh file resync  # docker /etc/group sync.
