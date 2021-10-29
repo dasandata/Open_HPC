@@ -65,6 +65,9 @@ tail dasan_log_ohpc_nvidia-driver-latest-vnfs.txt
 umount  ${CHROOT}/dev
 mount | grep ${CHROOT}
 
+# Check to nvidia.ko module file maked to CHROOT
+ll  ${CHROOT}/lib/modules/$(uname -r)/extra/nvidia.ko.xz
+
 # enable nvidia-persistenced
 chroot ${CHROOT}
 systemctl enable  nvidia-persistenced
