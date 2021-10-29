@@ -312,7 +312,7 @@ cp  /opt/ohpc/pub/examples/network/centos/ifcfg-ib0   /etc/sysconfig/network-scr
 sed -i "s/master_ipoib/${sms_ipoib}/"      /etc/sysconfig/network-scripts/ifcfg-ib0
 sed -i "s/ipoib_netmask/${ipoib_netmask}/" /etc/sysconfig/network-scripts/ifcfg-ib0
 
-echo  “MTU=4096”  >>  /etc/sysconfig/network-scripts/ifcfg-ib0
+echo  "MTU=4096"  >>  /etc/sysconfig/network-scripts/ifcfg-ib0
 ```
 
 ### ### 3.5.5 Initiate ib0 (InfiniBand Interface 0)
