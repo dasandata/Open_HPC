@@ -264,9 +264,9 @@ EOF
 
 cat   /etc/slurm/slurm.conf
 
-# Slurm version update로 옵션에서 에러 발생하여 아래 2가지 변경
-# FastSchedule=1 delete 
-# AccountingStorageType=accounting_storage/none
+# Slurm version 20.11.8 update로 옵션에서 에러 발생하여 아래 2가지 변경
+# FastSchedule=1  ==>>  delete
+# AccountingStorageType= 에서 accounting_storage/text ==> accounting_storage/none
 ```
 
 ***
