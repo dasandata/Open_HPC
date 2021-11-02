@@ -176,7 +176,7 @@ cat /etc/ntp.conf | grep -v "#\|^$"
 
 systemctl enable ntpd.service && systemctl restart ntpd
 
-#chrony 사용시 방법
+# chrony를 사용한 시간 설정 방법
 cat /etc/chrony.conf | grep -v "#\|^$"
 
 echo "server time.bora.net" >> /etc/chrony.conf
@@ -422,7 +422,7 @@ tail ~/dasan_log_ohpc_update_nodeimage.txt
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel kernel-headers kernel-devel kernel-tools parted \
  xfsprogs python-devel yum htop ipmitool glibc* perl perl-CPAN perl-CPAN \
- sysstat gcc make xauth firefox squashfs-tools stress chrony >> ~/dasan_log_ohpc_meta-package.txt 2>&1
+ sysstat gcc make xauth firefox squashfs-tools stress >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 
 tail ~/dasan_log_ohpc_meta-package.txt  
 ```
@@ -503,7 +503,9 @@ chroot ${CHROOT} systemctl enable pbs
 
 #### #### 3.7.2.4 Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
 ```bash
-yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc \
+# chrony 사용하여 시간 설정시 NTP 대신 chrony 설치
+
+yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc chrony \
  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt 2>&1
 tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
 ```
@@ -576,6 +578,10 @@ systemctl enable  nfs-server && systemctl restart nfs-server && exportfs
 ```bash
 chroot ${CHROOT} systemctl enable ntpd
 echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
+
+## Chrony를 통한 시간 설정 방법
+chroot ${CHROOT} systemctl enable chrony
+echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/chrony.conf
 ```
 
 ***
