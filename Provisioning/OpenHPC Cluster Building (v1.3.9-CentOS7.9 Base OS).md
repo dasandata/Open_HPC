@@ -166,7 +166,7 @@ yum -y install ohpc-base ohpc-warewulf squashfs-tools >>  ~/dasan_log_ohpc_base,
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
 
-### ### NTP Server 설정
+### ### NTP Server 설정 (Chrony 방식 추가)
 ```bash
 cat /etc/ntp.conf | grep -v "#\|^$"
 
@@ -175,6 +175,17 @@ echo "server time.bora.net" >> /etc/ntp.conf
 cat /etc/ntp.conf | grep -v "#\|^$"
 
 systemctl enable ntpd.service && systemctl restart ntpd
+
+#chrony 사용시 방법
+cat /etc/chrony.conf | grep -v "#\|^$"
+
+echo "server time.bora.net" >> /etc/chrony.conf
+
+echo "allow all" >> /etc/chrony.conf
+
+cat /etc/chrony.conf | grep -v "#\|^$"
+
+systemctl restart chronyd
 ```
 
 ## ## [3.4 Add resource management services on master node][contents]
@@ -406,12 +417,12 @@ tail ~/dasan_log_ohpc_update_nodeimage.txt
 
 ### ### 3.7.2 Add OpenHPC components
 #### #### 3.7.2.1 Install compute node base meta-package.
-\# 기본 적으로 필요한 패키지를 node image 에 설치 합니다.
+\# 기본적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel kernel-headers kernel-devel kernel-tools parted \
  xfsprogs python-devel yum htop ipmitool glibc* perl perl-CPAN perl-CPAN \
- sysstat gcc make xauth firefox squashfs-tools stress >> ~/dasan_log_ohpc_meta-package.txt 2>&1
+ sysstat gcc make xauth firefox squashfs-tools stress chrony >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 
 tail ~/dasan_log_ohpc_meta-package.txt  
 ```
