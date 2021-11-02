@@ -185,7 +185,7 @@ echo "allow all" >> /etc/chrony.conf
 
 cat /etc/chrony.conf | grep -v "#\|^$"
 
-systemctl restart chronyd
+systemctl enable chronyd && systemctl restart chronyd
 ```
 
 ## ## [3.4 Add resource management services on master node][contents]
@@ -580,7 +580,7 @@ chroot ${CHROOT} systemctl enable ntpd
 echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
 
 ## Chrony를 통한 시간 설정 방법
-chroot ${CHROOT} systemctl enable chrony
+chroot ${CHROOT} systemctl enable chronyd
 echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/chrony.conf
 ```
 
