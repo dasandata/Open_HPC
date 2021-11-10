@@ -1,5 +1,5 @@
 
-# # OpenHPC Performace Monitoring using Prometheus + Grafana (based docker)
+# # OpenHPC Performace Monitoring using Prometheus + Grafana
 
 [contents]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#%EB%AA%A9%EC%B0%A8
 [1]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-1-prometheus-install-in-master
@@ -10,7 +10,7 @@
 [6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-prometheus-ipmi-exporter--for-centos7-only-master-
 [7]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-7-grafana-install-on-master
 [8]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-8-grafana-report-to-pdf
-[9]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-grafana-report-to-pdf-cli
+[9]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-grafana-report-pdf-gen-cli
 [grafanadashboards]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#grafana-dashboardshttpsgrafanacomgrafanadashboards
 
 ## ## Requirements  
