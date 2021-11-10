@@ -185,6 +185,7 @@ cd /tmp
 export VERSION=1.15 OS=linux ARCH=amd64
 wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
+export PATH=$PWD/go/bin:$PATH
 
 # dcgm install
 yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
@@ -193,10 +194,10 @@ yum install -y datacenter-gpu-manager
 systemctl --now enable nvidia-dcgm
 
 # dcgm-exporter install
-cd /usr/local
+cd /usr/local/src/
 git clone https://github.com/NVIDIA/gpu-monitoring-tools.git
 cd gpu-monitoring-tools
-export PATH=$PWD/go/bin:$PATH
+
 make binary
 make install
 
@@ -210,6 +211,7 @@ WantedBy=multi-user.target
 EOF
 
 # 기본으로 주석 처리된 부분 제거
+grep   DCGM_FI_DEV_GPU_UTIL                               /etc/dcgm-exporter/default-counters.csv
 sed -i 's/# DCGM_FI_DEV_GPU_UTIL/DCGM_FI_DEV_GPU_UTIL/g'  /etc/dcgm-exporter/default-counters.csv
 
 # dcgm-exporter service start
@@ -246,6 +248,9 @@ cat << EOF >> /etc/prometheus/prometheus.yml
           note: 'compute-node'
 EOF
 
+
+systemctl  restart  prometheus.service
+
 # ohpc-node  
 # 추후 작업 예정...
 
@@ -264,6 +269,7 @@ wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
 export PATH=$PWD/go/bin:$PATH
 
+cd /usr/local/src/
 git clone https://github.com/vpenso/prometheus-slurm-exporter.git
 
 # Change listen on for HTTP requests.
@@ -329,7 +335,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 EOF
 
 # restart prometheus
-docker restart prometheus
+systemctl  restart  prometheus.service
 ```
 
 
@@ -346,6 +352,7 @@ wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
 export PATH=$PWD/go/bin:$PATH
 
+cd /usr/local/src/
 git clone https://github.com/soundcloud/ipmi_exporter
 
 # make slurm expoter
@@ -400,7 +407,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 EOF
 
 # restart prometheus
-docker restart prometheus
+systemctl  restart  prometheus.service
 ```
 
 
