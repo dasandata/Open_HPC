@@ -6,12 +6,11 @@
 [2]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-2-Install-prometheus-node-expoter
 [3]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-3-add-scrape-node-info-to-master
 [4]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-4-Install-prometheus-nvidia-dcgm-expoter-prometheus-dcgm
-[5]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-add-script--crontab-for-start-docker-process-after-node-reboot
-[6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-prometheus-slurm-exporter--for-centos7-only-master-
-[7]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-7-prometheus-ipmi-exporter--for-centos7-only-master-
-[8]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-8-grafana-install-on-master
-[9]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-grafana-report-to-pdf
-[10]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-pdf-gen-cli
+[5]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-prometheus-slurm-exporter--for-centos7-only-master-
+[6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-prometheus-ipmi-exporter--for-centos7-only-master-
+[7]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-7-grafana-install-on-master
+[8]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-8-grafana-report-to-pdf
+[9]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-grafana-report-to-pdf-cli
 [grafanadashboards]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#grafana-dashboardshttpsgrafanacomgrafanadashboards
 
 ## ## Requirements  
@@ -23,12 +22,11 @@
 ### [2. Install prometheus-node-expoter][2]
 ### [3. add scrape node info to master][3]
 ### [4. Install prometheus nvidia dcgm expoter (prometheus-dcgm)][4]
-### [5. Add script & Crontab, for Start docker process after node reboot][5]  
-### [6. Prometheus-slurm exporter ( For Centos7, Only Master )][6]
-### [7. Prometheus-ipmi exporter ( For Centos7, Only Master )][7]
-### [8. Grafana Install (on Master)][8]
-### [9. Grafana Report to PDF][9]
-### [10. Grafana Report PDF Gen cli][10]
+### [5. Prometheus-slurm exporter ( For Centos7, Only Master )][5]
+### [6. Prometheus-ipmi exporter ( For Centos7, Only Master )][6]
+### [7. Grafana Install (on Master)][7]
+### [8. Grafana Report to PDF][8]
+### [9. Grafana Report PDF Gen cli][9]
 ### [Grafana dashboards][grafanadashboards]
 
 ### [END.][contents]
@@ -74,7 +72,7 @@ chown   prometheus:prometheus    /var/lib/prometheus/
 # prometheus download
 # https://prometheus.io/download/
 cd /usr/local/bin
-wget https://github.com/prometheus/prometheus/releases/download/v2.28.1/prometheus-2.28.1.linux-amd64.tar.gz
+wget https://github.com/prometheus/prometheus/releases/download/v2.31.1/prometheus-2.31.1.linux-amd64.tar.gz
 tar xvfz prometheus-*.tar.gz -C /usr/local/bin/prometheus --strip-components 1
 chown  -R prometheus:prometheus    /usr/local/bin/prometheus
 
@@ -128,8 +126,8 @@ mkdir   /usr/local/bin/node_exporter
 
 # node-exporter download
 # https://prometheus.io/download/
-wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
-tar zxvf node_exporter-1.1.2.linux-amd64.tar.gz -C /usr/local/bin/node_exporter --strip-components 1
+wget https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+tar zxvf node_exporter-1.2.2.linux-amd64.tar.gz -C /usr/local/bin/node_exporter --strip-components 1
 
 # node-exporter service add
 cat << EOF > /usr/lib/systemd/system/node-exporter.service
@@ -167,7 +165,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 
 EOF
 
-docker restart prometheus
+systemctl  restart  prometheus.service
 
 ```
 
@@ -243,50 +241,7 @@ EOF
 
 ```
 
-## ## [5. Add script & Crontab, for Start docker process after node reboot][contents]  
-```bash
-# make script folder
-mkdir /opt/ohpc/pub/script
-
-cat << EOF > /opt/ohpc/pub/script/docker-run-prometheus-exporter.sh
-
-# node-exporter
-docker run -d --restart=always --name node-exporter \\
-  --net="host" --pid="host" \\
-  -v "/:/host:ro,rslave" \\
-  quay.io/prometheus/node-exporter:latest \\
-  --path.rootfs=/host
-
-# dcgm-exporter
-docker run -d --restart=always --name dcgm-exporter \\
-  --gpus all -p 9400:9400 \\
-  nvidia/dcgm-exporter:2.0.13-2.1.1-ubuntu18.04
-
-EOF
-
-chmod a+x  /opt/ohpc/pub/script/docker-run-prometheus-exporter.sh
-
-# Check vnfs PATH to chaing export CHROOT.
-wwsh vnfs list
-export CHROOT=/opt/ohpc/admin/images/centos7
-
-# add crontab node vnfs
-cat << EOF >> ${CHROOT}/etc/crontab
-
-# docker-run-prometheus-node-exporter at Reboot.
-@reboot    root    /opt/ohpc/pub/script/docker-run-prometheus-exporter.sh
-
-EOF
-
-cat  ${CHROOT}/etc/crontab
-
-# vnfs update.
-wwvnfs --chroot  ${CHROOT}
-```
-
-
-
-## ## [6. Prometheus-slurm exporter ( For Centos7, Only Master )][contents]
+## ## [5. Prometheus-slurm exporter ( For Centos7, Only Master )][contents]
 ```bash
 # only master.
 
@@ -368,7 +323,7 @@ docker restart prometheus
 ```
 
 
-## ## [7. Prometheus-ipmi exporter ( For Centos7, Only Master )][contents]
+## ## [6. Prometheus-ipmi exporter ( For Centos7, Only Master )][contents]
 ```bash
 # only master.
 
@@ -439,12 +394,12 @@ docker restart prometheus
 ```
 
 
-## ## [8. Grafana Install (on Master)][contents]
+## ## [7. Grafana Install (on Master)][contents]
 
 ```bash
 # https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1  
 
-yum -y install  https://dl.grafana.com/oss/release/grafana-8.0.3-1.x86_64.rpm
+yum -y install  https://dl.grafana.com/enterprise/release/grafana-enterprise-8.2.3-1.x86_64.rpm
 
 which grafana-server
 which grafana-cli
@@ -465,7 +420,7 @@ firewall-cmd --list-all | grep 3000
 # id : admin / pass : admin
 ```
 
-## ## [9. Grafana Report to PDF][contents]
+## ## [8. Grafana Report to PDF][contents]
 
 ```bash
 # pdf 를 생성시키는데 필요한 패키지 설치.
@@ -549,7 +504,7 @@ netstat -tnlp | grep   grafana-repo
 - apitoken : Configuration => API Keys => Add API Key  
 - dashboard settings => Links => Add Dashboard Link => Type Link...   
 
-## ## [10. Grafana Report PDF Gen cli][contents]
+## ## [9. Grafana Report PDF Gen cli][contents]
 #### #### CLI 모드에서 Report 파일 만드는 방법으로 API Key 값과  Dashboard UUID가 필요합니다.  
 #### #### Report 범위 지정 시 사용되는 시간은 Unix Time을 사용하기 때문에 변환 해야 합니다.    
 
