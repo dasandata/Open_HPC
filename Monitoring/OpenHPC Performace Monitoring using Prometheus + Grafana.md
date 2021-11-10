@@ -146,6 +146,13 @@ systemctl  enable   node-exporter.service
 systemctl  start    node-exporter.service
 systemctl  status   node-exporter.service
 
+# ohpc-node
+cp  -r  /usr/local/bin/node_exporter                   ${CHROOT}/usr/local/bin/
+cp      /usr/lib/systemd/system/node-exporter.service  ${CHROOT}/usr/lib/systemd/system/node-exporter.service
+
+chroot  ${CHROOT}   systemctl  daemon-reload
+chroot  ${CHROOT}   systemctl  enable   node-exporter.service
+
 ```
 
 ## ## [3. add scrape node info to master][contents]
@@ -238,6 +245,9 @@ cat << EOF >> /etc/prometheus/prometheus.yml
         labels:
           note: 'compute-node'
 EOF
+
+# ohpc-node  
+# 추후 작업 예정...
 
 ```
 
