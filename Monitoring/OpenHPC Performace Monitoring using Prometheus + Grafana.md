@@ -338,6 +338,18 @@ EOF
 systemctl  restart  prometheus.service
 ```
 
+### etc (systemd service PATH)
+
+```bash
+systemctl show-environment
+
+which sinfo
+
+# slurm-exporter.service
+# [Service]
+# Environment=PATH=/usr/local/slurm/bin:$PATH
+```
+
 
 ## ## [6. Prometheus-ipmi exporter ( For Centos7, Only Master )][contents]
 ```bash
@@ -580,5 +592,9 @@ https://grafana.com/grafana/dashboards/12239
 
 #### slurm
 https://grafana.com/grafana/dashboards/4323
+
+***
+
+
 
 ## ## [END.][contents]
