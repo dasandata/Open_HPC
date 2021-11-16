@@ -299,7 +299,7 @@ tail -1 ~/dasan_log_ohpc_resourcemanager_pbspro.txt
 yum -y groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
 tail -1 ~/dasan_log_ohpc_IBSupport.txt
 
-yum -y install infinipath-psm opensm libibverbs-utils >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
+yum -y install infinipath-psm opensm libibverbs-utils libpsm2 compat-opensm-libs >> ~/dasan_log_ohpc_IBSupport.txt 2>&1
 tail -1 ~/dasan_log_ohpc_IBSupport.txt
 ```
 
@@ -505,9 +505,15 @@ chroot ${CHROOT} systemctl enable pbs
 ```bash
 # chrony 사용하여 시간 설정시 NTP 대신 chrony 설치
 
-yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc chrony \
+## NTP 설치시
+yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc \
  >> ~/dasan_log_ohpc_ntp,kernel,modules.txt 2>&1
 tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
+
+## Chrony 설치시
+yum -y --installroot=${CHROOT} install chrony kernel lmod-ohpc \
+ >> ~/dasan_log_ohpc_chrony,kernel,modules.txt 2>&1
+tail ~/dasan_log_ohpc_chrony,kernel,modules.txt 
 ```
 
 ***
@@ -595,7 +601,7 @@ echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/chrony.conf
 yum -y --installroot=${CHROOT} groupinstall "InfiniBand Support" >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
 tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
 
-yum -y --installroot=${CHROOT} install infinipath-psm  libibverbs-utils >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
+yum -y --installroot=${CHROOT} install infinipath-psm  libibverbs-utils libpsm2 compat-opensm-libs >> ~/dasan_log_ohpc_nodeIBSupport.txt 2>&1
 tail  -1 ~/dasan_log_ohpc_nodeIBSupport.txt
 
 chroot ${CHROOT} systemctl enable rdma
