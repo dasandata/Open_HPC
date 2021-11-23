@@ -166,17 +166,9 @@ yum -y install ohpc-base ohpc-warewulf squashfs-tools >>  ~/dasan_log_ohpc_base,
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
 
-### ### NTP Server 설정 (Chrony 방식 추가)
+### ### Chrony Server 설정
 ```bash
-cat /etc/ntp.conf | grep -v "#\|^$"
-
-echo "server time.bora.net" >> /etc/ntp.conf
-
-cat /etc/ntp.conf | grep -v "#\|^$"
-
-systemctl enable ntpd.service && systemctl restart ntpd
-
-# chrony를 사용한 시간 설정 방법
+# chrony를 사용한 시간 설정 방법 (NTP에서 변경됨)
 cat /etc/chrony.conf | grep -v "#\|^$"
 
 echo "server time.bora.net" >> /etc/chrony.conf
@@ -501,16 +493,8 @@ chroot ${CHROOT} /opt/pbs/libexec/pbs_habitat
 chroot ${CHROOT} systemctl enable pbs
 ```
 
-#### #### 3.7.2.4 Add Network Time Protocol (NTP) support, kernel drivers, modules user environment.
+#### #### 3.7.2.4 Add Network Time Protocol (chrony) support, kernel drivers, modules user environment.
 ```bash
-# chrony 사용하여 시간 설정시 NTP 대신 chrony 설치
-
-## NTP 설치시
-yum -y --installroot=${CHROOT} install ntp kernel lmod-ohpc \
- >> ~/dasan_log_ohpc_ntp,kernel,modules.txt 2>&1
-tail ~/dasan_log_ohpc_ntp,kernel,modules.txt  
-
-## Chrony 설치시
 yum -y --installroot=${CHROOT} install chrony kernel lmod-ohpc \
  >> ~/dasan_log_ohpc_chrony,kernel,modules.txt 2>&1
 tail ~/dasan_log_ohpc_chrony,kernel,modules.txt 
@@ -579,12 +563,9 @@ systemctl enable  nfs-server && systemctl restart nfs-server && exportfs
 ```
 
 
-#### #### Enable NTP time service on computes and identify master host as local NTP server.
+#### #### Enable chrony time service on computes and identify master host as local chrony server.
 
 ```bash
-chroot ${CHROOT} systemctl enable ntpd
-echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/ntp.conf
-
 ## Chrony를 통한 시간 설정 방법
 chroot ${CHROOT} systemctl enable chronyd
 echo "server ${MASTER_HOSTNAME}" >> ${CHROOT}/etc/chrony.conf
