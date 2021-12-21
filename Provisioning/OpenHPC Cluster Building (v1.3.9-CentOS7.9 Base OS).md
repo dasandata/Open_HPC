@@ -497,7 +497,7 @@ chroot ${CHROOT} systemctl enable pbs
 ```bash
 yum -y --installroot=${CHROOT} install chrony kernel lmod-ohpc \
  >> ~/dasan_log_ohpc_chrony,kernel,modules.txt 2>&1
-tail ~/dasan_log_ohpc_chrony,kernel,modules.txt 
+tail ~/dasan_log_ohpc_chrony,kernel,modules.txt
 ```
 
 ***
@@ -768,7 +768,7 @@ wwsh node list
 \# "eth0 과 같은 형식의 인터페이스명을 사용하려면 적용하지 않습니다."  
 
 ```bash
-export kargs="${kargs} net.ifnames=1,biosdevname=1"
+export kargs="${kargs} net.ifnames=1 biosdevname=1"
 
 wwsh -y provision set node01   --kargs="${kargs}"
 wwsh -y provision set --postnetdown=1  node01
