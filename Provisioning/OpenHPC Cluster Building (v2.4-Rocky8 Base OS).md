@@ -2,7 +2,17 @@
 [1]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-1-introduction
 [2]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos
 [3]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-3-install-openhpc-components
-
+[3.1]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-31-enable-openhpc-repository-for-local-use
+[3.3]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-33-add-provisioning-services-on-master-node
+[3.4]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-34-add-resource-management-services-on-master-node
+[3.5]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node
+[3.7]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-37-complete-basic-warewulf-setup-for-master-node
+[3.8]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-37-complete-basic-warewulf-setup-for-master-node
+[3.9]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-39-finalizing-provisioning-configuration
+[3.10]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-310-boot-compute-nodes
+[4]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-4-install-openhpc-development-components
+[5]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-5-resource-manager-startup
+[6]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-6-run-a-test-job
 
 
 # Dasandata Standard Recipes of OpenHPC Cluster Building (v2.4-Rocky8 Base OS)[2022.04]
@@ -153,7 +163,7 @@ yum config-manager --set-enabled powertools
 
 ```
 
-## ## 3.3 Add provisioning services on master node
+## ## [3.3 Add provisioning services on master node][contents]
 
 ### ### Install base meta-packages
 ```bash
@@ -657,9 +667,7 @@ wwsh provision list
 ```bash
 systemctl restart dhcpd 
 wwsh pxe update
-```
-
-***
+```/
 
 #### #### define IPoIB network settings (if planning to mount NFS by IPoIB)
 ```bash
@@ -667,9 +675,6 @@ wwsh -y node set node01 -D ib0 --ipaddr=172.1.1.1 --netmask=255.255.255.0
 
 wwsh -y provision set node01   --fileadd=ifcfg-ib0.ww
 ```
-
-
-
 
 ### ### 3.9.5 Optionally configure stateful provisioning
 
