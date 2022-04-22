@@ -922,6 +922,19 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_2.4.sh
 
 # # [5. Resource Manager Startup][contents]
 
+## slurm.conf 수정
+```bash
+vi /etc/slurm/slurm.conf
+
+wwsh file resync ;  pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+
+systemctl restart slurmctld ; pdsh -w node01  'systemctl restart slurmd'
+
+sinfo
+```
+
+
+## daemon start
 ```bash
 systemctl enable munge
 systemctl enable slurmctld
@@ -964,7 +977,7 @@ pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 ```
 
 
-## ## [6. Run a Test Job][contents]
+### ### 5.1 Run a Test Job
 ```bash
 wwsh file list
 wwsh file resync
@@ -980,7 +993,7 @@ pdsh -w node[01-04] uptime
 pdsh -w node[01-04] 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 ```
 
-### ### 6.1 Interactive execution
+### ### 5.2 Interactive execution
 #### #### Switch to normal user
 ```bash
 su - sonic   # sonic is dasandata's normal user name.
@@ -1010,5 +1023,42 @@ exit
 
 squeue
 ```
+
+# # [6. slurmdbd, sacctmgr][contents]
+
+```bash
+systemctl status slurmdbd
+
+```
+
+```bash
+cat << EOF > /etc/slurm/slurmdbd.conf
+ArchiveEvents=yes
+ArchiveJobs=yes
+ArchiveSteps=no
+ArchiveSuspend=no 
+AuthType=auth/munge
+DbdAddr=localhost
+DbdHost=localhost
+SlurmUser=slurm
+DebugLevel=4
+LogFile=/var/log/slurmdbd.log
+PidFile=/var/run/slurmdbd.pid
+PurgeEventAfter=1month 
+PurgeJobAfter=12month 
+PurgeResvAfter=1month 
+PurgeStepAfter=1month 
+PurgeSuspendAfter=1month 
+TrackWCKey=no
+StorageType=accounting_storage/mysql
+StoragePass=slurmdbpass
+StorageUser=slurm
+StorageLoc=slurm_acct_db
+EOF
+
+
+cat /etc/slurm/slurmdbd.conf
+```
+
 
 # [END.][contents]
