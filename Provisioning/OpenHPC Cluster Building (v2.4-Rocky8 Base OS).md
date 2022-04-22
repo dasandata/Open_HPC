@@ -12,7 +12,8 @@
 [3.10]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-310-boot-compute-nodes
 [4]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-4-install-openhpc-development-components
 [5]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-5-resource-manager-startup
-[6]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-6-slurmdbd-sacctmgr
+[6]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-6-slurmdbd-sacctmgr-cgroup
+[7]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-7-gpu-node-provisioning-of-openhpc-cluster
 [END]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#end
 
 # Dasandata Standard Recipes of OpenHPC Cluster Building (v2.4-Rocky8 Base OS)[2022.04]
@@ -38,7 +39,7 @@
 [4. Install OpenHPC Development Components][4]     
 [5. Resource Manager Startup ][5]  
 [6. slurmdbd, sacctmg ][6]    
-[7. GPU Provision][6]  
+[7. GPU Provision][7]  
 [END][END]  
 
 ***
