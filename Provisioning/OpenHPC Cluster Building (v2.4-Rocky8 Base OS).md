@@ -1,18 +1,8 @@
-[contents]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-%EB%AA%A9%EC%B0%A8  
-[1]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-1-introduction
-[2]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos
-[3]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-3-install-openhpc-components
-[3-4-A]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-34-a-slurm-resource-management-services-install
-[3-4-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-34-b-pbs-pro-resource-management-services-install
-[3-5]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node
-[4]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-4-install-openhpc-development-components
-[5]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-resource-manager-startup
-[5-A]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-a-start-slurm-controller-and-munge-on-master-host
-[5-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-5-b-start-pbspro-daemons-on-master-host
-[6]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-run-a-test-job
-[6-A]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-a-slurm-submit-interactive-job-request-and-use-prun-to-launch-executable
-[6-B]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#-6-b-pbs-pro-submit-interactive-job-request-and-use-prun-to-launch-executabl
-[END]: https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v1.3.9-CentOS7.9%20Base%20OS).md#end
+[contents]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-목차
+[1]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-1-introduction
+[2]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos
+[3]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-3-install-openhpc-components
+
 
 
 # Dasandata Standard Recipes of OpenHPC Cluster Building (v2.4-Rocky8 Base OS)[2022.04]
@@ -26,17 +16,18 @@
 ## ## 목차  
 [1. Introduction ][1]  
 [2. Network and Firewall Setup to Base Operating System (BOS) ][2]  
-[3. Install OpenHPC Components ][3]  
-[3-4. A (Slurm) Resource Management Services Install.][3-4-A]  
-[3-4. B (PBS Pro) Resource Management Services Install][3-4-B]  
-[3-5 Optionally add InfiniBand support services on master node][3-5]  
+[3. Install OpenHPC Components ][3]   
+[3.1. Enable OpenHPC repository for local use][3.1]
+[3.3. Add provisioning services on master node][3.3]
+[3.4. Add resource management services on master node][3.4]
+[3.5. Optionally add InfiniBand support services on master node][3.5]
+[3.7. Complete basic Warewulf setup for master node][3.7]
+[3.8 Define compute image for provisioning][3.8]
+[3.9 Finalizing provisioning configuration][3.9]
+[3.10 Boot compute nodes][3.10]
 [4. Install OpenHPC Development Components][4]   
 [5. Resource Manager Startup ][5]  
-[5-A. Start slurm controller and munge on master host][5-A]  
-[5-B. Start pbspro daemons on master host][5-B]  
 [6. Run a Test Job ][6]  
-[6-A. Slurm Submit interactive job request and use prun to launch executable][6-A]  
-[6-B. PBS Pro Submit interactive job request and use prun to launch executable][6-B]  
 [END][END]
 
 ***
@@ -346,10 +337,6 @@ cat /etc/resolv.conf
 cp -p /etc/resolv.conf  ${CHROOT}/etc/resolv.conf  
 ```
 
-***
-
-#### #### Add Slurm client support meta-package
-\# **주의!** - Resource Manager 로 **Slurm** 을 사용하는 경우에만 실행 합니다.
 ```bash
 # copy credential files into $CHROOT to ensure consistent uid/gids for slurm/munge at install.
 /usr/bin/cp /etc/passwd /etc/group $CHROOT/etc
@@ -377,9 +364,6 @@ yum -y --installroot=$CHROOT install kernel-`uname -r`
 yum -y --installroot=$CHROOT install lmod-ohpc
 
 ```
-
-***
-
 
 ### ### 3.8.3 Customize system configuration
 
