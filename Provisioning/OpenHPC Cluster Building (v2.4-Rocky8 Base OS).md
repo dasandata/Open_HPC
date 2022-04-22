@@ -12,7 +12,7 @@
 [3.10]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-310-boot-compute-nodes
 [4]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-4-install-openhpc-development-components
 [5]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-5-resource-manager-startup
-[6]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-6-run-a-test-job
+[6]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#-6-slurmdbd-sacctmgr
 [END]: OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md#end
 
 # Dasandata Standard Recipes of OpenHPC Cluster Building (v2.4-Rocky8 Base OS)[2022.04]
@@ -37,7 +37,7 @@
 [3.10 Boot compute nodes][3.10]  
 [4. Install OpenHPC Development Components][4]     
 [5. Resource Manager Startup ][5]  
-[6. Run a Test Job ][6]  
+[6. slurmdbd, sacctmg ][6]  
 [END][END]  
 
 ***
@@ -1031,6 +1031,7 @@ systemctl status slurmdbd
 
 ```
 
+## ## make slurmdbd.conf
 ```bash
 cat << EOF > /etc/slurm/slurmdbd.conf
 ArchiveEvents=yes
@@ -1056,8 +1057,87 @@ StorageUser=slurm
 StorageLoc=slurm_acct_db
 EOF
 
-
 cat /etc/slurm/slurmdbd.conf
+
+chmod 600 /etc/slurm/slurmdbd.conf
+chown slurm.  /etc/slurm/slurmdbd.conf
+
+systemctl  restart mariadb
+systemctl  status  mariadb
+```
+
+## ## mysql setup
+```bash
+mysql
+
+ SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
+
+ exit
+
+cat -n /etc/my.cnf | grep includedir
+
+export INNODB_SIZE=600M
+
+cat << EOF > /etc/my.cnf.d/innodb.cnf
+[mysqld]
+innodb_buffer_pool_size=${INNODB_SIZE}
+innodb_log_file_size=64M
+innodb_lock_wait_timeout=900
+EOF
+
+cat /etc/my.cnf.d/innodb.cnf
+```
+
+```bash
+firewall-cmd --add-port=6819/tcp  --permanent  ## slurmdbd  port
+firewall-cmd --add-port=3306/tcp  --permanent  ## mysql  port
+firewall-cmd  --reload
+
+mv /var/lib/mysql/ib_logfile* /tmp/
+
+systemctl  restart   mariadb
+```
+
+```bash
+mysql
+
+ create user 'slurm'@'localhost' identified by 'slurmdbpass';
+ grant all on slurm_acct_db.* TO 'slurm'@'localhost';
+ SHOW VARIABLES LIKE 'have_innodb';
+ create database slurm_acct_db;
+
+ exit
+```
+
+```bash
+systemctl enable  slurmdbd
+systemctl restart slurmdbd
+
+mysql -u  slurm   -p    slurm_acct_db
+slurmdbpass
+
+ SHOW VARIABLES LIKE 'have_innodb';
+ select * from acct_table;
+
+ exit
+```
+
+```bash
+grep AccountingStorageType  /etc/slurm/slurm.conf
+
+sed -i 's/#AccountingStorageType/AccountingStorageType/' /etc/slurm/slurm.conf
+
+grep AccountingStorageType  /etc/slurm/slurm.conf
+
+
+wwsh file resync ;  pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+systemctl restart slurmctld slurmdbd ; pdsh -w node01  'systemctl restart slurmd'
+```
+
+```bash
+sacctmgr list cluster
+
+
 ```
 
 
