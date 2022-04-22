@@ -37,7 +37,8 @@
 [3.10 Boot compute nodes][3.10]  
 [4. Install OpenHPC Development Components][4]     
 [5. Resource Manager Startup ][5]  
-[6. slurmdbd, sacctmg ][6]  
+[6. slurmdbd, sacctmg ][6]    
+[7. GPU Provision][6]  
 [END][END]  
 
 ***
@@ -1024,7 +1025,7 @@ exit
 squeue
 ```
 
-# # [6. slurmdbd, sacctmgr][contents]
+# # [6. slurmdbd, sacctmgr, cgroup][contents]
 
 ```bash
 systemctl status slurmdbd
@@ -1137,8 +1138,77 @@ systemctl restart slurmctld slurmdbd ; pdsh -w node01  'systemctl restart slurmd
 ```bash
 sacctmgr list cluster
 
+sacct
+```
+\# job을 실행한 후 sacct 를 실행 했을 때 과거 작업 목록이 표시 되어야 합니다. 
+
+***
+
+## ## make cgroup.conf
+
+```bash
+cat << EOF > /etc/slurm/cgroup.conf
+###
+#
+# Slurm cgroup support configuration file
+#
+# See man slurm.conf and man cgroup.conf for further
+# information on cgroup configuration parameters
+#--
+CgroupAutomount=yes
+
+ConstrainCores=yes
+ConstrainRAMSpace=no
+ConstrainDevices=yes
+ConstrainSwapSpace=no
+EOF
+
+cat /etc/slurm/cgroup.conf
+
+wwsh file import /etc/slurm/cgroup.conf
+wwsh -y provision set node01   --fileadd=cgroup.conf
+```
+
+```bash 
+###
+cat /etc/slurm/slurm.conf | grep JobAcctGatherType
+
+sed -i 's/#JobAcctGatherType/JobAcctGatherType/'        /etc/slurm/slurm.conf 
+sed -i 's#jobacct_gather/linux#jobacct_gather/cgroup#'  /etc/slurm/slurm.conf
+
+cat /etc/slurm/slurm.conf | grep JobAcctGatherType
+
+###
+cat /etc/slurm/slurm.conf | grep TaskPlugin=
+
+sed -i 's#TaskPlugin=task/affinity#TaskPlugin=task/affinity,task/cgroup#' /etc/slurm/slurm.conf
+
+cat /etc/slurm/slurm.conf | grep TaskPlugin=
+
+###
+cat /etc/slurm/slurm.conf | grep  Proctracktype
+echo "Proctracktype=proctrack/cgroup" >> /etc/slurm/slurm.conf
+cat /etc/slurm/slurm.conf | grep  Proctracktype
+```
+
+```bash
+wwsh file resync ;  pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+systemctl restart slurmctld slurmdbd ; pdsh -w node01  'systemctl restart slurmd'
+```
+
+```bash
+su - sonic
+
 
 ```
 
+
+# # [7. GPU Node Provisioning of OpenHPC Cluster][contents]
+
+
+
+
+
+***
 
 # [END.][contents]
