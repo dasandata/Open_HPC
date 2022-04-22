@@ -27,18 +27,18 @@
 [1. Introduction ][1]  
 [2. Network and Firewall Setup to Base Operating System (BOS) ][2]  
 [3. Install OpenHPC Components ][3]   
-[3.1. Enable OpenHPC repository for local use][3.1]
-[3.3. Add provisioning services on master node][3.3]
-[3.4. Add resource management services on master node][3.4]
-[3.5. Optionally add InfiniBand support services on master node][3.5]
-[3.7. Complete basic Warewulf setup for master node][3.7]
-[3.8 Define compute image for provisioning][3.8]
-[3.9 Finalizing provisioning configuration][3.9]
-[3.10 Boot compute nodes][3.10]
-[4. Install OpenHPC Development Components][4]   
+[3.1. Enable OpenHPC repository for local use][3.1]  
+[3.3. Add provisioning services on master node][3.3]  
+[3.4. Add resource management services on master node][3.4]  
+[3.5. Optionally add InfiniBand support services on master node][3.5]  
+[3.7. Complete basic Warewulf setup for master node][3.7]  
+[3.8 Define compute image for provisioning][3.8]  
+[3.9 Finalizing provisioning configuration][3.9]  
+[3.10 Boot compute nodes][3.10]  
+[4. Install OpenHPC Development Components][4]     
 [5. Resource Manager Startup ][5]  
 [6. Run a Test Job ][6]  
-[END][END]
+[END][END]  
 
 ***
 
@@ -1011,4 +1011,4 @@ exit
 squeue
 ```
 
-# END.
+# [END.][contents]
