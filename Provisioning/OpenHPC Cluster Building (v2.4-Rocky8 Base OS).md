@@ -1351,6 +1351,75 @@ ml swap cuda cuda/11.0
 nvcc -V
 ```
 
+## ## gpustat (python3) install to VNFS
+```bash
+yum -y  install --installroot=${CHROOT}  python3-devel python3-pip ncurses-devel  
+
+chroot  ${CHROOT}
+
+pip3 list
+pip3 install --upgrade gpustat
+pip3 -V
+pip3 list | grep -i gpustat
+
+exit
+
+wwvnfs --chroot  ${CHROOT}
+
+# gpustat  --force-color 
+```
+
+## ## Slurm gres.conf
+```bash
+cat << EOF > /etc/slurm/gres.conf
+# This file location is /etc/slurm/gres.conf
+# for Four GPU Set
+
+Nodename=node01  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
+
+# End of File.
+EOF
+
+cat /etc/slurm/gres.conf
+
+# slurm.conf 수정!
+vi /etc/slurm/slurm.conf  # Gres 부분 설정 변경  
+```
+
+```bash
+wwsh file import /etc/slurm/gres.conf
+wwsh file resync
+wwsh file list
+
+wwsh provision list
+
+wwsh provision set  -y  node01 --fileadd=gres.conf
+pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
+
+```
+
+```bash
+systemctl  restart  slurmctld ;  pdsh -w node01  'systemctl  restart  slurmd'
+
+scontrol  update  nodename=node01 state=resume
+
+sinfo
+
+su - sonic
+
+srun  --gres=gpu:1 --pty /bin/bash
+
+echo $CUDA_VISIBLE_DEVICES
+
+nvidia-smi
+
+sinfo
+
+squeue
+```
+
+
+
 ***
 
 # [END.][contents]
