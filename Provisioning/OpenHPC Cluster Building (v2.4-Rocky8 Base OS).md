@@ -1306,7 +1306,7 @@ umount /mnt
 for I in $(cat cudnn.txt)
   do  echo "$I"
   VER=$(echo "$I" | cut -d '-' -f 2)
-  echo "CUDA-$VAR"
+  echo "CUDA-$VER"
   tar -xzf $I
 
   chmod a+r  cuda/include/*
