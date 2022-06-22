@@ -178,7 +178,7 @@ tail ~/dasan_log_ohpc_base,warewulf.txt
 # chrony를 사용한 시간 설정 방법 (NTP에서 변경됨)
 cat /etc/chrony.conf | grep -v "#\|^$"
 
-echo "server time.bora.net" >> /etc/chrony.conf
+echo "local stratum 10"     >> /etc/chrony.conf
 echo "allow all"            >> /etc/chrony.conf
 
 cat /etc/chrony.conf | grep -v "#\|^$"
@@ -367,7 +367,7 @@ echo SLURMD_OPTIONS="--conf-server ${MASTER_HOSTNAME}" > $CHROOT/etc/sysconfig/s
 yum -y --installroot=$CHROOT install chrony
 
 # Identify master host as local NTP server
-echo "server ${MASTER_HOSTNAME}" >> $CHROOT/etc/chrony.conf
+echo "server ${MASTER_HOSTNAME}" iburst >> $CHROOT/etc/chrony.conf
 
 # Add kernel drivers (matching kernel version on SMS node)
 yum -y --installroot=$CHROOT install kernel-`uname -r`
@@ -381,7 +381,8 @@ yum -y --installroot=$CHROOT install lmod-ohpc
 
 #### #### Initialize warewulf database and ssh_keys
 ```bash
-wwinit database && wwinit ssh_keys
+wwinit database
+wwinit ssh_keys
 ```
 
 #### #### Add NFS client mounts of /home and /opt/ohpc/pub and /{ETC} to base image.
