@@ -1255,6 +1255,10 @@ mount | grep ${CHROOT}
 # Check to nvidia.ko module file maked to CHROOT
 ll  ${CHROOT}/lib/modules/$(uname -r)/extra/drivers/video/nvidia/nvidia.ko
 
+# Enable nvidia persiste mode
+chroot  ${CHROOT}  systemctl enable nvidia-persistenced
+
+
 wwvnfs --chroot  ${CHROOT}
 wwsh vnfs list
 ```
