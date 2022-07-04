@@ -258,11 +258,11 @@ ibhosts
 
 ### ### 3.5.7 ib 방화벽 zone 설정 변경
 ```bash
-firewall-cmd --change-interface=ib0  --zone=public   --permanent
+firewall-cmd --change-interface=ib0  --zone=trusted   --permanent
 
 firewall-cmd --reload && systemctl restart firewalld
 
-firewall-cmd --list-all --zone=public
+firewall-cmd --list-all --zone=trusted
 
 ```
 
