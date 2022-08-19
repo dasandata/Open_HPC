@@ -746,7 +746,7 @@ NETMASK=%{NETDEVS::eno1::NETMASK}
 GATEWAY=%{NETDEVS::eno1::GATEWAY}
 HWADDR=%{NETDEVS::eno1::HWADDR}
 ONBOOT=yes
-NM_CONTROLLED=no
+NM_CONTROLLED=yes
 DEVTIMEOUT=5
 DEFROUTE=yes
 EOF
@@ -756,7 +756,7 @@ wwsh -y file  import             /opt/ohpc/pub/examples/network/centos/ifcfg-eno
 wwsh -y file  set ifcfg-eno1.ww  --path=/etc/sysconfig/network-scripts/ifcfg-eno1
 
 # provision set
-wwsh provision set  node01  --filadd=ifcfg-eno1.ww
+wwsh provision set  node01  --fileadd=ifcfg-eno1.ww
 wwsh node      set  node01  --netdev=eno1    --ipaddr=xx.xx.xx.x  --netmask=  --gateway=  --hwaddr=  
 
 ```
