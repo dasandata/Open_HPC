@@ -372,9 +372,10 @@ cat /etc/resolv.conf
 cp -p /etc/resolv.conf  ${CHROOT}/etc/resolv.conf  
 ```
 
+#### #### slurm-client 설치 등.
 ```bash
 # copy credential files into $CHROOT to ensure consistent uid/gids for slurm/munge at install.
-/usr/bin/cp /etc/passwd /etc/group $CHROOT/etc
+/usr/bin/cp    /etc/passwd /etc/group   $CHROOT/etc
 
 # Add Slurm client support meta-package and enable munge
 yum -y --installroot=${CHROOT} install ohpc-slurm-client >> ~/dasan_log_ohpc_slurmclient.txt 2>&1
@@ -385,6 +386,7 @@ chroot ${CHROOT} systemctl enable slurmd
 
 # Register Slurm server with computes (using "configless" option)
 echo SLURMD_OPTIONS="--conf-server ${MASTER_HOSTNAME}" > $CHROOT/etc/sysconfig/slurmd
+cat $CHROOT/etc/sysconfig/slurmd
 
 # Add Network Time Protocol (NTP) support
 yum -y --installroot=$CHROOT install chrony
