@@ -1014,13 +1014,19 @@ pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 
 
 ### ### 5.1 Run a Test Job
+
+#### #### job test 사용자 추가
+```bash
+adduser testuser
+passwd  testuser
+```
+#### #### 계정 정보 동기화.
 ```bash
 wwsh file list
 wwsh file resync
-```
 
-```bash
 pdsh -w node01 uptime
+
 pdsh -w node01 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 pdsh -w node01 systemctl status slurmd | grep active
 
@@ -1032,7 +1038,7 @@ pdsh -w node[01-04] 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 ### ### 5.2 Interactive execution
 #### #### Switch to normal user
 ```bash
-su - sonic   # sonic is dasandata's normal user name.
+su - testuser    
 ```
 
 #### #### Compile MPI "hello world" example
