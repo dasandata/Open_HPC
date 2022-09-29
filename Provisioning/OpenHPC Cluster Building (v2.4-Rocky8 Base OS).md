@@ -325,6 +325,9 @@ echo ${CHROOT}
 
 ### ### 3.8.1 Build initial BOS (Base OS) image
 ```bash
+# chroot 를 생성할 때 참고하는 template file.
+cat /usr/libexec/warewulf/wwmkchroot/rocky-8.tmpl
+
 wwmkchroot  -v rocky-8  ${CHROOT} >> ~/dasan_log_ohpc_initial-BaseOS.txt 2>&1
 tail ~/dasan_log_ohpc_initial-BaseOS.txt
 ```
@@ -342,10 +345,12 @@ chroot ${CHROOT} uname -r
 yum -y --installroot=${CHROOT} update  >> ~/dasan_log_ohpc_update_nodeimage.txt 2>&1
 tail ~/dasan_log_ohpc_update_nodeimage.txt
 
-dnf -y --installroot ${CHROOT} install epel-release  \
+yum -y --installroot ${CHROOT} install epel-release  \
 >> ~/dasan_log_ohpc_update_nodeimage.txt 2>&1
 tail ~/dasan_log_ohpc_update_nodeimage.txt
-
+```
+#### #### CHROOT 에 OpenHPC Repository 추가.
+```bash
 cp -p /etc/yum.repos.d/OpenHPC*.repo ${CHROOT}/etc/yum.repos.d
 ```
 
