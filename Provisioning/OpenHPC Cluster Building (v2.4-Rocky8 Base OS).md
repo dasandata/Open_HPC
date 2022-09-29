@@ -1203,9 +1203,7 @@ sed -i 's/#AccountingStorageType/AccountingStorageType/' /etc/slurm/slurm.conf
 
 grep AccountingStorageType  /etc/slurm/slurm.conf
 
-
-wwsh file resync ;  pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
-systemctl restart slurmctld slurmdbd ; pdsh -w node01  'systemctl restart slurmd'
+systemctl restart slurmctld  
 ```
 
 ```bash
@@ -1233,7 +1231,6 @@ CgroupAutomount=yes
 ConstrainCores=yes
 ConstrainRAMSpace=no
 ConstrainDevices=yes
-ConstrainSwapSpace=no
 EOF
 
 cat /etc/slurm/cgroup.conf
@@ -1260,18 +1257,21 @@ cat /etc/slurm/slurm.conf | grep TaskPlugin=
 
 ###
 cat /etc/slurm/slurm.conf | grep  Proctracktype
+
 echo "Proctracktype=proctrack/cgroup" >> /etc/slurm/slurm.conf
 cat /etc/slurm/slurm.conf | grep  Proctracktype
 ```
 
 ```bash
-wwsh file resync ;  pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
-systemctl restart slurmctld slurmdbd ; pdsh -w node01  'systemctl restart slurmd'
+systemctl restart slurmctld 
 ```
 
 ```bash
-su - sonic
+su - testuser
 
+srun --nodes=1 --cpus-per-task=2   --pty /bin/bash
+
+stress -c 4
 
 ```
 
