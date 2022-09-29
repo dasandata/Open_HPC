@@ -817,8 +817,9 @@ cat /etc/network.wwsh
 #### #### node 에 root 계정이 password로 접근할 수 없도록 sshd 설정을 변경.
 ```bash
 wwsh vnfs list
-export CHROOT=/opt/ohpc/admin/images/centos7
+export CHROOT=/opt/ohpc/admin/images/rocky8
 
+grep   PermitRootLogin  ${CHROOT}/etc/ssh/sshd_config
 sed -i 's/#PermitRootLogin yes/PermitRootLogin without-password/'  ${CHROOT}/etc/ssh/sshd_config
 
 wwvnfs --chroot  ${CHROOT}
