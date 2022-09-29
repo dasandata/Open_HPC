@@ -424,9 +424,11 @@ echo "${MASTER_HOSTNAME}:/opt/intel    /opt/intel    nfs nfsvers=3,nodev 0 0"   
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.  
 #echo "${MASTER_HOSTNAME}:/data         /data         nfs nfsvers=3,nodev 0 0">> ${CHROOT}/etc/fstab  
+#mkdir ${CHROOT}/data
 
 # 아래는 Dell 서버의 경우 (racadm을 노드에서 사용)  
 #echo "${MASTER_HOSTNAME}:/opt/dell     /opt/dell     nfs nfsvers=3,nodev 0 0" >> ${CHROOT}/etc/fstab  
+#mkdir ${CHROOT}/opt/dell
 
 cat  ${CHROOT}/etc/fstab  
 ```
@@ -442,11 +444,11 @@ echo "/opt/ohpc/pub 10.1.1.0/24(ro,no_subtree_check)"                 >> /etc/ex
 echo "/opt/intel    10.1.1.0/24(ro,no_subtree_check)"                 >> /etc/exports
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.  
-#echo "/data 10.1.1.0/24(rw,no_subtree_check,no_root_squash)" >> /etc/exports
-#mkdir ${CHROOT}/data
+#echo "/data         10.1.1.0/24(rw,no_subtree_check,no_root_squash)" >> /etc/exports
+
 
 # 아래는 dell 서버인 경우에만 (racadm을 노드에서 사용)
-#echo "/opt/dell     10.1.1.0/24(ro,no_subtree_check)"                 >> /etc/exports
+#echo "/opt/dell     10.1.1.0/24(ro,no_subtree_check)"                >> /etc/exports
 
 cat /etc/exports
 
