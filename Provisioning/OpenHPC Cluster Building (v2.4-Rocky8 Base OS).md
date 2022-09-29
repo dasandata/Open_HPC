@@ -1128,11 +1128,9 @@ EOF
 
 cat /etc/slurm/slurmdbd.conf
 
-chmod 600 /etc/slurm/slurmdbd.conf
+chmod 600     /etc/slurm/slurmdbd.conf
 chown slurm.  /etc/slurm/slurmdbd.conf
 
-systemctl  restart mariadb
-systemctl  status  mariadb
 ```
 
 ## ## mysql setup
@@ -1155,16 +1153,23 @@ innodb_lock_wait_timeout=900
 EOF
 
 cat /etc/my.cnf.d/innodb.cnf
+
+mv /var/lib/mysql/ib_logfile* /tmp/
+
+systemctl  restart   mariadb
+
+mysql
+
+ SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
+
+ exit
+
 ```
 
 ```bash
 firewall-cmd --add-port=6819/tcp  --permanent  ## slurmdbd  port
 firewall-cmd --add-port=3306/tcp  --permanent  ## mysql  port
 firewall-cmd  --reload
-
-mv /var/lib/mysql/ib_logfile* /tmp/
-
-systemctl  restart   mariadb
 ```
 
 ```bash
@@ -1183,7 +1188,7 @@ systemctl enable  slurmdbd
 systemctl restart slurmdbd
 
 mysql -u  slurm   -p    slurm_acct_db
-slurmdbpass
+# password => slurmdbpass
 
  SHOW VARIABLES LIKE 'have_innodb';
  select * from acct_table;
