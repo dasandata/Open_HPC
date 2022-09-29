@@ -617,7 +617,7 @@ cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#" | wc -l
 ```bash
 sed -i "s#hybridize += /usr/include#\#hybridize += /usr/include#"           /etc/warewulf/vnfs.conf
 sed -i "s#hybridize += /usr/share/locale#\#hybridize += /usr/share/locale#" /etc/warewulf/vnfs.conf
-sed -i "s#exclude += /usr/src#\#exclude += /usr/src#" /etc/warewulf/vnfs.conf
+sed -i "s#exclude += /usr/src#\#exclude += /usr/src#"                       /etc/warewulf/vnfs.conf
 
 cat /etc/warewulf/vnfs.conf  | grep -v "^$\|^#"
 
@@ -646,11 +646,12 @@ cat /etc/crontab
 
 cat  /etc/warewulf/bootstrap.conf
 
-echo ""                                >> /etc/warewulf/bootstrap.conf
-echo "# Dasandata additions"           >> /etc/warewulf/bootstrap.conf
-echo "drivers  += updates/kernel/"     >> /etc/warewulf/bootstrap.conf
-echo "modprobe += ahci, nvme, e1000e"  >> /etc/warewulf/bootstrap.conf
-echo ""                                >> /etc/warewulf/bootstrap.conf
+cat << EOF >> /etc/warewulf/bootstrap.conf
+# Dasandata additions
+drivers  += updates/kernel/
+modprobe += ahci, nvme, e1000e
+
+EOF
 
 tail  /etc/warewulf/bootstrap.conf
 
