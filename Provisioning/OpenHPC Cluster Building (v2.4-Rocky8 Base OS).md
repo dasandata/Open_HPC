@@ -414,19 +414,21 @@ wwinit ssh_keys
 
 ```bash
 df -hT | grep -v tmpfs
-echo ${MASTER_HOSTNAME}
-cat  ${CHROOT}/etc/fstab
 mkdir /opt/intel
+
+cat  ${CHROOT}/etc/fstab
 
 echo "${MASTER_HOSTNAME}:/home         /home         nfs nfsvers=3,nodev,nosuid 0 0" >> ${CHROOT}/etc/fstab
 echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev 0 0"        >> ${CHROOT}/etc/fstab
 echo "${MASTER_HOSTNAME}:/opt/intel    /opt/intel    nfs nfsvers=3,nodev 0 0"        >> ${CHROOT}/etc/fstab
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.
-#echo "${MASTER_HOSTNAME}:/data /data nfs nfsvers=3,nodev 0 0" >> ${CHROOT}/etc/fstab
+#echo "${MASTER_HOSTNAME}:/data         /data         nfs nfsvers=3,nodev 0 0">> ${CHROOT}/etc/fstab
+
 # 아래는 Dell 서버의 경우 (racadm을 노드에서 사용)
-#echo "${MASTER_HOSTNAME}:/opt/dell /opt/dell nfs nfsvers=3,nodev 0 0" >> ${CHROOT}/etc/fstab
-#cat  ${CHROOT}/etc/fstab  
+#echo "${MASTER_HOSTNAME}:/opt/dell     /opt/dell     nfs nfsvers=3,nodev 0 0" >> ${CHROOT}/etc/fstab
+
+cat  ${CHROOT}/etc/fstab  
 ```
 
 
