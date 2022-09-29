@@ -189,6 +189,12 @@ echo "allow all"            >> /etc/chrony.conf
 cat /etc/chrony.conf | grep -v "#\|^$"
 
 systemctl enable chronyd && systemctl restart chronyd
+
+# chrony가 동기화되었는지 확인
+chronyc tracking
+chronyc sources
+chronyc sourcestats
+
 ```
 
 ## ## [3.4 Add resource management services on master node][contents]
