@@ -125,7 +125,12 @@ cat /etc/sysconfig/network-scripts/ifcfg-${INT_NIC}
 
 ## ## 2.3 방화벽 zone 설정 변경
 ```bash
+firewall-cmd --list-all --zone=public
+firewall-cmd --list-all --zone=trusted
+
 firewall-cmd --add-masquerade --zone=public --permanent
+
+firewall-cmd --change-interface=${EXT_NIC}  --zone=public    --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 
 firewall-cmd --reload
