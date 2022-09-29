@@ -955,15 +955,11 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_2.4.sh
 
 # # [5. Resource Manager Startup][contents]
 
-## slurm.conf 수정
+## slurm.conf 의 NodeName 및  PartitionName 정보 수정
 ```bash
 vi /etc/slurm/slurm.conf
 
-wwsh file resync ;  pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
-
-systemctl restart slurmctld ; pdsh -w node01  'systemctl restart slurmd'
-
-sinfo
+cat /etc/slurm/slurm.conf
 ```
 
 
@@ -977,6 +973,8 @@ systemctl start slurmctld
 
 systemctl status munge
 systemctl status slurmctld
+
+pdsh -w node[01-02]  'systemctl restart slurmd'
 ```
 
 ### ### sinfo
@@ -1002,10 +1000,15 @@ alias squeuelong='squeue  -o "%6i  %12j %9T %15u %8g %10P %8q %4D %20R %4C %13b 
 EOF
 
 cat  /etc/profile.d/slurm.alias.sh
-wwsh file import  /etc/profile.d/slurm.alias.sh
 
-wwsh provision list
+wwsh file list
+wwsh file import  /etc/profile.d/slurm.alias.sh
+wwsh file list
+
+wwsh provision print    node01  | grep FILES
 wwsh provision set  -y  node01 --fileadd=slurm.alias.sh
+wwsh provision print    node01  | grep FILES
+
 pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 ```
 
