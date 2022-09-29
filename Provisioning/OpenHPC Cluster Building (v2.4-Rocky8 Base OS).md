@@ -957,6 +957,9 @@ bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_2.4.sh
 
 ## slurm.conf 의 NodeName 및  PartitionName 정보 수정
 ```bash
+
+sed -i 's/Oversubscribe=EXCLUSIVE/Oversubscribe=NO/' /etc/slurm/slurm.conf 
+
 vi /etc/slurm/slurm.conf
 
 cat /etc/slurm/slurm.conf
@@ -1053,17 +1056,41 @@ ls
 
 #### #### [Submit interactive job request and use prun to launch executable][contents]
 ```bash
-srun -N 1 -n 4 --pty /bin/bash  # -N = node 갯수 / -c = cpu 갯수
+srun --nodes 1 --ntasks-per-node 2 --pty /bin/bash  
 
 squeue
 
-prun ./a.out
+prun  a.out
 
 squeue
 
 exit
 
 squeue
+
+# mpi test.
+
+srun   --nodes 2 --ntasks-per-node 2 --pty /bin/bash  # 이건 실행이 안됩니다. (아직 왜 안되는지 모름)
+
+salloc --nodes=1 --ntasks-per-node=4  prun  a.out
+
+salloc --nodes=2 --ntasks-per-node=2  prun  a.out
+
+# sbatch mpitest
+cat << EOF > mpitest.sh
+#!/bin/bash
+
+prun a.out
+
+EOF
+
+cat mpitest.sh
+
+sbatch --nodes=2 --ntasks-per-node=2   mpitest.sh
+sbatch --nodes=2 --ntasks-per-node=4   mpitest.sh
+
+squeue
+cat slurm-<jobID>.out
 ```
 
 # # [6. slurmdbd, sacctmgr, cgroup][contents]
