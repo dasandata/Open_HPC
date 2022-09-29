@@ -220,7 +220,11 @@ perl -pi -e "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" \
 perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/" \
    /etc/slurm/slurm.conf
 
+# 중복된 설정값 2개중 1개 제거
+sed -i  '/jobcomp\/none/d'   /etc/slurm/slurm.conf
+
 cat /etc/slurm/slurm.conf
+
 ```
 
 
@@ -1256,10 +1260,11 @@ sed -i 's#TaskPlugin=task/affinity#TaskPlugin=task/affinity,task/cgroup#' /etc/s
 cat /etc/slurm/slurm.conf | grep TaskPlugin=
 
 ###
-cat /etc/slurm/slurm.conf | grep  Proctracktype
+cat /etc/slurm/slurm.conf | grep  ProctrackType
 
-echo "Proctracktype=proctrack/cgroup" >> /etc/slurm/slurm.conf
-cat /etc/slurm/slurm.conf | grep  Proctracktype
+sed -i 's#ProctrackType=proctrack/pgid#ProctrackType=proctrack/cgroup#' /etc/slurm/slurm.conf
+
+cat /etc/slurm/slurm.conf | grep  ProctrackType
 ```
 
 ```bash
