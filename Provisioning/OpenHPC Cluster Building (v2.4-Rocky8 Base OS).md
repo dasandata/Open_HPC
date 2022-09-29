@@ -827,9 +827,9 @@ wwvnfs --chroot  ${CHROOT}
 
 #### #### 외부 ip 접근이 허용된 장비를 로그인 노드로 운영할 경우, pam.d 를 일반 노드와 다르게 적용.
 ```bash
-diff  ${CHROOT}/etc/pam.d/sshd   /etc/pam.d/sshd
-# 21d20
-# < account required pam_slurm.so
+diff    /etc/pam.d/sshd   ${CHROOT}/etc/pam.d/sshd 
+# 17a18
+# > account required pam_slurm.so
 
 wwsh file import    /etc/pam.d/sshd  # master 와 동일한 pam.d 를 적용하기 위함.
 wwsh provision set  login-node  --fileadd=sshd
