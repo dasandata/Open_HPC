@@ -687,6 +687,8 @@ wwsh -y file set network --path /etc/sysconfig/network --mode=0644 --uid=0
 
 #### #### Add new nodes to Warewulf data store
 ```bash
+wwsh node list
+
 wwsh -y node new node01
 
 wwsh -y node set node01 --netdev eth0 --netmask=255.255.255.0 --gateway ${MASTER_IP} \
@@ -697,6 +699,8 @@ wwsh node list
 
 #### #### Define provisioning image for hosts
 ```bash
+wwsh provision list
+
 wwsh -y provision set node01 --vnfs=rocky8  --bootstrap=`uname -r ` \
 --files=dynamic_hosts,passwd,group,shadow,network,slurm.conf,munge.key
 
@@ -708,7 +712,7 @@ wwsh provision list
 ```bash
 systemctl restart dhcpd 
 wwsh pxe update
-```/
+```
 
 #### #### define IPoIB network settings (if planning to mount NFS by IPoIB)
 ```bash
@@ -727,9 +731,15 @@ wwvnfs --chroot ${CHROOT}
 
 #### #### Copy Filesystem cmds files
 ```bash
-cd /root/
+ll  /etc/warewulf/filesystem/examples/
+
+cat /etc/warewulf/filesystem/examples/gpt_example.cmds
+
+# dasandata custom cmds.
+cd  /root/
 git clone https://github.com/dasandata/Open_HPC
-cp   /root/Open_HPC/Provisioning/*.cmds   /etc/warewulf/filesystem/
+cp  /root/Open_HPC/Provisioning/*.cmds   /etc/warewulf/filesystem/
+ll  /etc/warewulf/filesystem/
 ```
 
 #### #### In GPT, Add GRUB2 bootloader for sda
@@ -796,6 +806,10 @@ wwsh -y file  set ifcfg-eno1.ww  --path=/etc/sysconfig/network-scripts/ifcfg-eno
 # provision set
 wwsh provision set  node01  --fileadd=ifcfg-eno1.ww
 wwsh node      set  node01  --netdev=eno1    --ipaddr=xx.xx.xx.x  --netmask=  --gateway=  --hwaddr=  
+
+# Modify default gateway file
+
+cat /etc/network.wwsh
 
 ```
 
