@@ -210,10 +210,17 @@ tail ~/dasan_log_ohpc_resourcemanager_slurm.txt
 # Use ohpc-provided file for starting SLURM configuration
 cp /etc/slurm/slurm.conf.ohpc /etc/slurm/slurm.conf
 
+cat /etc/slurm/slurm.conf
+
 # Identify resource manager hostname on master host
 perl -pi -e "s/ControlMachine=\S+/ControlMachine=${MASTER_HOSTNAME}/" \
    /etc/slurm/slurm.conf
 
+# Identify resource manager ClusterName
+perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/" \
+   /etc/slurm/slurm.conf
+
+cat /etc/slurm/slurm.conf
 ```
 
 
