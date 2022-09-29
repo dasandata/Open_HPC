@@ -644,11 +644,19 @@ cat /etc/crontab
 ```bash
 # Include drivers from kernel updates; needed if enabling additional kernel modules on computes
 
-export WW_CONF=/etc/warewulf/bootstrap.conf
-echo "drivers += updates/kernel/"      >> $WW_CONF
-echo "modprobe += ahci, nvme, e1000e"  >> $WW_CONF
+cat  /etc/warewulf/bootstrap.conf
+
+echo ""                                >> /etc/warewulf/bootstrap.conf
+echo "# Dasandata additions"           >> /etc/warewulf/bootstrap.conf
+echo "drivers  += updates/kernel/"     >> /etc/warewulf/bootstrap.conf
+echo "modprobe += ahci, nvme, e1000e"  >> /etc/warewulf/bootstrap.conf
+echo ""                                >> /etc/warewulf/bootstrap.conf
+
+tail  /etc/warewulf/bootstrap.conf
 
 # Build bootstrap image & check bootstrap list
+wwsh bootstrap list
+
 wwbootstrap  `uname -r`
 
 wwsh bootstrap list
@@ -658,6 +666,8 @@ wwsh bootstrap list
 ### ### 3.9.2 Assemble Virtual Node File System (VNFS) image
 
 ```bash
+wwsh vnfs list
+
 echo ${CHROOT}
 
 wwvnfs --chroot ${CHROOT}
