@@ -365,7 +365,7 @@ cp -p /etc/yum.repos.d/OpenHPC*.repo ${CHROOT}/etc/yum.repos.d
 yum -y --installroot=${CHROOT} install \
  ohpc-base-compute kernel kernel-headers kernel-devel kernel-tools parted \
  xfsprogs yum htop ipmitool glibc* perl perl-CPAN perl-CPAN sysstat gcc make \
- xauth firefox squashfs-tools stress podman >> ~/dasan_log_ohpc_meta-package.txt 2>&1
+ xauth firefox squashfs-tools stress podman dmidecode >> ~/dasan_log_ohpc_meta-package.txt 2>&1
 
 tail ~/dasan_log_ohpc_meta-package.txt  
 ```
