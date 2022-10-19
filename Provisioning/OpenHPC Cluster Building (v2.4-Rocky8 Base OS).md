@@ -707,7 +707,7 @@ wwsh node list
 wwsh provision list
 
 wwsh -y provision set node01 --vnfs=rocky8  --bootstrap=`uname -r ` \
---files=dynamic_hosts,passwd,group,shadow,network,slurm.conf,munge.key
+--files=dynamic_hosts,passwd,group,shadow,network,munge.key
 
 wwsh provision list
 ```
