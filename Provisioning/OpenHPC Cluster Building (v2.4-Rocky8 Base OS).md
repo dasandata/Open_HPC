@@ -1458,31 +1458,25 @@ cat << EOF > /etc/slurm/gres.conf
 # This file location is /etc/slurm/gres.conf
 # for Four GPU Set
 
-Nodename=node01  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
+Nodename=gpu01  Name=gpu  Type=GTX1080Ti  File=/dev/nvidia[0-3]
 
 # End of File.
 EOF
 
 cat /etc/slurm/gres.conf
 
+vi  /etc/slurm/gres.conf
+
 # slurm.conf 수정!
+
+echo "GresTypes=gpu" >> /etc/slurm/slurm.conf 
+echo "NodeName=gpu01        Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 State=UNKNOWN Gres=gpu:GTX1080Ti:1" >>  /etc/slurm/slurm.conf 
+
 vi /etc/slurm/slurm.conf  # Gres 부분 설정 변경  
 ```
 
 ```bash
-wwsh file import /etc/slurm/gres.conf
-wwsh file resync
-wwsh file list
-
-wwsh provision list
-
-wwsh provision set  -y  node01 --fileadd=gres.conf
-pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
-
-```
-
-```bash
-systemctl  restart  slurmctld ;  pdsh -w node01  'systemctl  restart  slurmd'
+systemctl  restart  slurmctld 
 
 scontrol  update  nodename=node01 state=resume
 
