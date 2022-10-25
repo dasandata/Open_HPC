@@ -1239,8 +1239,6 @@ EOF
 
 cat /etc/slurm/cgroup.conf
 
-wwsh file import /etc/slurm/cgroup.conf
-wwsh -y provision set node01   --fileadd=cgroup.conf
 ```
 
 ```bash 
@@ -1269,6 +1267,8 @@ cat /etc/slurm/slurm.conf | grep  ProctrackType
 
 ```bash
 systemctl restart slurmctld 
+
+pdsh -w node[01-02],gpu01   systemctl restart slurmd
 ```
 
 ```bash
