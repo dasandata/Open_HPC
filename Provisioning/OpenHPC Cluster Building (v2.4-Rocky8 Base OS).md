@@ -1465,6 +1465,7 @@ vi  /etc/slurm/gres.conf
 
 echo "GresTypes=gpu" >> /etc/slurm/slurm.conf 
 echo "NodeName=gpu01        Sockets=1 CoresPerSocket=4 ThreadsPerCore=1 State=UNKNOWN Gres=gpu:GTX1080Ti:1" >>  /etc/slurm/slurm.conf 
+echo "PartitionName=gpu    Nodes=gpu01                   MaxTime=6-24:00:00 State=UP Oversubscribe=NO"      >>  /etc/slurm/slurm.conf 
 
 vi /etc/slurm/slurm.conf  # Gres 부분 설정 변경  
 ```
@@ -1478,7 +1479,7 @@ sinfo
 
 su - sonic
 
-srun  --gres=gpu:1 --pty /bin/bash
+srun  --partition gpu --gres=gpu:1 --pty /bin/bash
 
 echo $CUDA_VISIBLE_DEVICES
 
