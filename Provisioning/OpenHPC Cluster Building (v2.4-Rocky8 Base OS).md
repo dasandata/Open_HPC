@@ -1292,11 +1292,6 @@ https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8
 dnf config-manager --installroot=$CHROOT --add-repo \
 https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
 
-yum -y install \
-https://developer.download.nvidia.com/compute/machine-learning/repos/rhel8/x86_64/nvidia-machine-learning-repo-rhel8-1.0.0-1.x86_64.rpm
-
-yum -y install --installroot=$CHROOT \
-https://developer.download.nvidia.com/compute/machine-learning/repos/rhel8/x86_64/nvidia-machine-learning-repo-rhel8-1.0.0-1.x86_64.rpm
 ```
 
 ## ## nvidia X11 관련 lib 설치
