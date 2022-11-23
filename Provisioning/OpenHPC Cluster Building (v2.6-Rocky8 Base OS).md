@@ -16,7 +16,7 @@
 [7]: OpenHPC%20Cluster%20Building%20(v2.6-Rocky8%20Base%20OS).md#-7-gpu-node-provisioning-of-openhpc-cluster
 [END]: OpenHPC%20Cluster%20Building%20(v2.6-Rocky8%20Base%20OS).md#end
 
-# Dasandata Standard Recipes of OpenHPC Cluster Building (v2.6-Rocky8 Base OS)[2022.04]
+# Dasandata Standard Recipes of OpenHPC Cluster Building (v2.6-Rocky8 Base OS)[2022.11]
 
 \# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인 하여 설치를 시작 합니다.  
