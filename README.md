@@ -8,8 +8,8 @@
 감사합니다.
 ***
 
-## [1. Standard Recipes of OpenHPC Cluster Building 2.4][1]
-[1]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md
+## [1. Standard Recipes of OpenHPC Cluster Building 2.6][1]
+[1]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v2.6-Rocky8%20Base%20OS).md
 
 ## [2. Admin Guide for OpenHPC Cluster][2]
 [2]:https://github.com/dasandata/Open_HPC/blob/master/Document/Admin%20Guide/README.md
@@ -22,3 +22,6 @@
 
 ## [old_2. GPU Node Provisioning of OpenHPC Cluster][old_2]
 [old_2]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/GPU%20Node%20Provisioning%20of%20OpenHPC%20Cluster.md
+
+## [old_3. Standard Recipes of OpenHPC Cluster Building 2.4][old_3]
+[old_3]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v2.4-Rocky8%20Base%20OS).md
