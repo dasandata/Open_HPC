@@ -1328,104 +1328,6 @@ ll  ${CHROOT}/lib/modules/$(uname -r)/extra/drivers/video/nvidia/nvidia.ko
 # Enable nvidia persiste mode
 chroot  ${CHROOT}  systemctl enable nvidia-persistenced
 
-
-wwvnfs --chroot  ${CHROOT}
-wwsh vnfs list
-```
-
-
-## ## CUDA 설치 (master only)
-```bash
-yum -y install cuda-11-0 cuda-11-1 cuda-11-2 cuda-11-3 cuda-11-4 cuda-11-5 \
->> dasan_log_ohpc_cuda-master.txt 2>&1
-tail dasan_log_ohpc_cuda-master.txt
-
-ls -l /usr/local | grep cuda
-```
-
-```bash
-mkdir /opt/ohpc/pub/apps/cuda/
-
-for I in  11.0 11.1 11.2 11.3 11.4 
-  do echo $I
-  mv /usr/local/cuda-$I  /opt/ohpc/pub/apps/cuda/$I
-  done
-
-ll /usr/local/ | grep cuda
-
-ll /opt/ohpc/pub/apps/cuda/
-
-# Local에 있는 심볼릭 링크 제거
-rm -f /usr/local/cuda
-rm -f /usr/local/cuda-11
-```
-
-## ## multiple CUDNN to MASTER
-```bash
-mkdir /root/cudnn/
-cd    /root/cudnn/
-
-echo "cudnn-11.0-linux-x64-v8.0.2.39.tgz
-cudnn-11.1-linux-x64-v8.0.5.39.tgz
-cudnn-11.2-linux-x64-v8.1.1.33.tgz
-cudnn-11.3-linux-x64-v8.2.1.32.tgz
-cudnn-11.4-linux-x64-v8.2.4.15.tgz" > cudnn.txt
-
-# copy cudnn from file server.
-mount -t nfs  192.168.0.5:/file   /mnt
-for I in $(cat cudnn.txt)
-  do  cp  /mnt/12_NVIDIA_CUDNN/1_Linux/$I  /root/cudnn/
-done
-umount /mnt
-
-# 압축 해제 후 /opt/ohpc/pub/apps/cuda 아래로 이동.
-for I in $(cat cudnn.txt)
-  do  echo "$I"
-  VER=$(echo "$I" | cut -d '-' -f 2)
-  echo "CUDA-$VER"
-  tar -xzf $I
-
-  chmod a+r  cuda/include/*
-  chmod a+r  cuda/lib64/*
-
-  mv  cuda/include/cudnn.h  /opt/ohpc/pub/apps/cuda/$VER/include/
-  mv  cuda/lib64/libcudnn*  /opt/ohpc/pub/apps/cuda/$VER/lib64/
-
-  rm -rf   cuda/
-done
-
-cd ~
-
-```
-## ## Add Multiple Cuda Module
-```bash
-cd /root/
-git clone https://github.com/dasandata/Open_HPC
-
-cd /root/Open_HPC/
-git pull
-
-# Add CUDA Module File by each version
-mkdir -p /opt/ohpc/pub/modulefiles/cuda
-MODULES_DIR="/opt/ohpc/pub/modulefiles"
-
-for CUDA_VERSION in 11.0 11.1 11.2 11.3 11.4
-  do cp -a /root/Open_HPC/Module_Template/cuda.txt ${MODULES_DIR}/cuda/${CUDA_VERSION}
-  sed -i "s/{version}/${CUDA_VERSION}/" ${MODULES_DIR}/cuda/${CUDA_VERSION}
-done
-
-ll /opt/ohpc/pub/modulefiles/cuda/
-```
-```bash
-rm -rf  ~/.lmod.d/.cache
-
-module av | grep cuda
-
-ml load cuda
-nvcc -V
-
-ml swap cuda cuda/11.0
-nvcc -V
 ```
 
 ## ## gpustat (python3) install to VNFS
@@ -1444,6 +1346,96 @@ exit
 wwvnfs --chroot  ${CHROOT}
 
 # gpustat  --force-color 
+```
+```
+
+
+## ## CUDA 설치 (master only)
+```bash
+yum -y install cuda-11-8 \
+>> dasan_log_ohpc_cuda-master.txt 2>&1
+tail dasan_log_ohpc_cuda-master.txt
+
+ls -l /usr/local | grep cuda
+```
+
+```bash
+mkdir /opt/ohpc/pub/apps/cuda/
+
+for VER in  11.8  
+  do echo $VER
+  mv /usr/local/cuda-$VER  /opt/ohpc/pub/apps/cuda/$VER
+  done
+
+ll /usr/local/ | grep cuda
+
+ll /opt/ohpc/pub/apps/cuda/
+
+# Local에 있는 심볼릭 링크 제거
+rm -f /usr/local/cuda
+rm -f /usr/local/cuda-11
+```
+
+## ## CUDNN to MASTER
+```bash
+mkdir /root/cudnn/
+cd    /root/cudnn/
+
+# copy cudnn from file server.
+I="cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar"
+
+mount -t nfs  192.168.0.5:/file   /mnt
+cp  /mnt/12_NVIDIA_CUDNN/1_LINUX/$I  /root/cudnn/
+
+umount /mnt
+
+# 압축 해제 후 /opt/ohpc/pub/apps/cuda 아래로 이동.
+
+VER=11.8
+echo "CUDA-$VER"
+
+tar -xvf $I
+
+chmod a+r  cudnn-linux-x86_64-8.6.0.163_cuda11-archive/include/*
+chmod a+r  cudnn-linux-x86_64-8.6.0.163_cuda11-archive/lib/*
+
+mv  cudnn-linux-x86_64-8.6.0.163_cuda11-archive/include/cudnn.h  /opt/ohpc/pub/apps/cuda/$VER/include/
+mv  cudnn-linux-x86_64-8.6.0.163_cuda11-archive/lib/libcudnn*    /opt/ohpc/pub/apps/cuda/$VER/lib64/
+
+rm -rf   cuda/
+
+cd ~
+
+```
+## ## Add  Cuda Module
+```bash
+cd /root/
+git clone https://github.com/dasandata/Open_HPC
+
+cd /root/Open_HPC/
+git pull
+
+# Add CUDA Module File by each version
+mkdir -p /opt/ohpc/pub/modulefiles/cuda
+MODULES_DIR="/opt/ohpc/pub/modulefiles"
+
+for CUDA_VERSION in 11.8
+  do cp -a /root/Open_HPC/Module_Template/cuda.txt ${MODULES_DIR}/cuda/${CUDA_VERSION}
+  sed -i "s/{version}/${CUDA_VERSION}/" ${MODULES_DIR}/cuda/${CUDA_VERSION}
+done
+
+ll /opt/ohpc/pub/modulefiles/cuda/
+
+```
+
+```bash
+rm -rf  ~/.lmod.d/.cache
+
+module av | grep cuda
+
+ml load cuda
+nvcc -V
+
 ```
 
 ## ## Slurm gres.conf
