@@ -886,7 +886,7 @@ tail -1 ~/dasan_log_ohpc_autotools,meta-package.txt
 
 ## ## 4.2 Compilers
 ```bash
-yum -y install  gnu12-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt 2>&1
+yum -y install  gnu12-compilers-ohpc gnu9-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt 2>&1
 tail -1 ~/dasan_log_ohpc_Compilers.txt
 ```
 

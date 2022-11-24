@@ -14,7 +14,7 @@ echo
 echo
 # 4.2 Compilers 
 echo "##### Start... Install Compilers"
-yum -y install  gnu12-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt 2>&1
+yum -y install  gnu12-compilers-ohpc gnu9-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt 2>&1
 tail -1 ~/dasan_log_ohpc_Compilers.txt
 echo
 echo
