@@ -72,7 +72,7 @@ chown   prometheus:prometheus    /var/lib/prometheus/
 # prometheus download
 # https://prometheus.io/download/
 cd /usr/local/bin
-wget https://github.com/prometheus/prometheus/releases/download/v2.31.1/prometheus-2.31.1.linux-amd64.tar.gz
+wget https://github.com/prometheus/prometheus/releases/download/v2.37.3/prometheus-2.37.3.linux-amd64.tar.gz
 tar xvfz prometheus-*.tar.gz -C /usr/local/bin/prometheus --strip-components 1
 chown  -R prometheus:prometheus    /usr/local/bin/prometheus
 
