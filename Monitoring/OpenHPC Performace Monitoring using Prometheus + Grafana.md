@@ -127,7 +127,7 @@ mkdir   /usr/local/bin/node_exporter
 # node-exporter download
 # https://prometheus.io/download/
 wget https://github.com/prometheus/node_exporter/releases/download/v1.4.0/node_exporter-1.4.0.linux-amd64.tar.gz
-tar zxvf node_exporter-1.2.2.linux-amd64.tar.gz -C /usr/local/bin/node_exporter --strip-components 1
+tar zxvf node_exporter-*.tar.gz -C /usr/local/bin/node_exporter --strip-components 1
 
 # node-exporter service add
 cat << EOF > /usr/lib/systemd/system/node-exporter.service
@@ -163,7 +163,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
 
   - job_name: 'node-exporter'
     static_configs:
-      - targets: ['10.1.1.254:9100']
+      - targets: ['10.1.1.200:9100']
         labels:
           note: 'master-node'
       - targets: ['10.1.1.1:9100','10.1.1.2:9100','10.1.1.3:9100','10.1.1.4:9100']
