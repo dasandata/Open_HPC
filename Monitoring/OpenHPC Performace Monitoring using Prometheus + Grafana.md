@@ -150,7 +150,6 @@ systemctl  status   node-exporter.service
 cp  -r  /usr/local/bin/node_exporter                   ${CHROOT}/usr/local/bin/
 cp      /usr/lib/systemd/system/node-exporter.service  ${CHROOT}/usr/lib/systemd/system/node-exporter.service
 
-chroot  ${CHROOT}   systemctl  daemon-reload
 chroot  ${CHROOT}   systemctl  enable   node-exporter.service
 
 ```
@@ -235,6 +234,12 @@ DCGM_FI_DEV_MEM_CLOCK{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 
 DCGM_FI_DEV_MEMORY_TEMP{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"} 9223372036854775794
 ...
 
+# ohpc-node
+cp      /usr/bin/dcgm-exporter                         ${CHROOT}/usr/bin/
+cp      /usr/lib/systemd/system/dcgm-exporter.service  ${CHROOT}/usr/lib/systemd/system/dcgm-exporter.service
+
+chroot  ${CHROOT}   systemctl  enable   dcgm-exporter.service
+
 # prometheus.yml gpu node add
 cat << EOF >> /etc/prometheus/prometheus.yml
 
@@ -248,11 +253,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
           note: 'compute-node'
 EOF
 
-
 systemctl  restart  prometheus.service
-
-# ohpc-node  
-# 추후 작업 예정...
 
 ```
 
