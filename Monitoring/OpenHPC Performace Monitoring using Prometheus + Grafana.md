@@ -417,7 +417,7 @@ cat << EOF >> /etc/prometheus/prometheus.yml
     scrape_timeout:   5s
 
     static_configs:
-      - targets: ['10.1.1.254:9290']
+      - targets: ['10.1.1.200:9290']
 EOF
 
 # restart prometheus
