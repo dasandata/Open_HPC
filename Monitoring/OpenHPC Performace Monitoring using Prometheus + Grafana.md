@@ -319,6 +319,7 @@ systemctl  daemon-reload
 systemctl  enable   slurm-exporter.service
 systemctl  start    slurm-exporter.service
 systemctl  status   slurm-exporter.service
+
 netstat -tnlp | grep 9800
 
 # Prometheus-config file Modified
