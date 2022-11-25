@@ -194,8 +194,8 @@ systemctl --now enable nvidia-dcgm
 
 # dcgm-exporter install
 cd /usr/local/src/
-git clone https://github.com/NVIDIA/gpu-monitoring-tools.git
-cd gpu-monitoring-tools
+git clone https://github.com/NVIDIA/dcgm-exporter.git
+cd dcgm-exporter
 
 make binary
 make install
@@ -235,6 +235,11 @@ DCGM_FI_DEV_MEMORY_TEMP{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"
 ...
 
 # ohpc-node
+
+yum install -y  --installroot=${CHROOT} datacenter-gpu-manager
+chroot  ${CHROOT}   systemctl enable nvidia-dcgm
+
+cp  -r  /etc/dcgm-exporter                             ${CHROOT}/etc/
 cp      /usr/bin/dcgm-exporter                         ${CHROOT}/usr/bin/
 cp      /usr/lib/systemd/system/dcgm-exporter.service  ${CHROOT}/usr/lib/systemd/system/dcgm-exporter.service
 
