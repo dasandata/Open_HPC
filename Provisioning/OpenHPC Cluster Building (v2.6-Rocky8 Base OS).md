@@ -1221,6 +1221,17 @@ sacct
 ```
 \# job을 실행한 후 sacct 를 실행 했을 때 과거 작업 목록이 표시 되어야 합니다. 
 
+## ## Slurm Database Backup & Restore
+\# Backup
+```bash
+mysqldump   slurm_acct_db > backup_slurm_acct_db.sql
+```
+
+\# Restore
+```bash
+mysql       slurm_acct_db < backup_slurm_acct_db.sql
+```
+
 ***
 
 ## ## Re make cgroup.conf
