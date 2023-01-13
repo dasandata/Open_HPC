@@ -1341,6 +1341,12 @@ chroot  ${CHROOT}  systemctl enable nvidia-persistenced
 
 ```
 
+## ## nvlink GPU 필수 package
+```bash
+yum -y install --installroot ${CHROOT}   nvidia-fabric-manager cuda-drivers-fabricmanager nvidia-fabric-manager-devel   
+
+```
+
 ## ## gpustat (python3) install to VNFS
 ```bash
 yum -y  install --installroot=${CHROOT}  python3-devel python3-pip ncurses-devel  
