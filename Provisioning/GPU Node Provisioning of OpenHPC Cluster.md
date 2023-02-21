@@ -57,7 +57,7 @@ yum -y install --installroot ${CHROOT} gcc make \
 tail dasan_log_ohpc_nvidia-driver-latest-vnfs.txt
 
 # Install nvidia-driver node VNFS
-yum -y install --installroot ${CHROOT} nvidia-driver-latest \
+yum -y install --installroot ${CHROOT} kmod-nvidia-latest-dkms \
 >> dasan_log_ohpc_nvidia-driver-latest-vnfs.txt 2>&1
 tail dasan_log_ohpc_nvidia-driver-latest-vnfs.txt
 
