@@ -828,8 +828,8 @@ wwsh vnfs list
 export CHROOT=/opt/ohpc/admin/images/rocky8
 
 grep   PermitRootLogin  ${CHROOT}/etc/ssh/sshd_config
-sed -i 's/#PermitRootLogin yes/PermitRootLogin without-password/'  ${CHROOT}/etc/ssh/sshd_config
 
+sed -i 's/PermitRootLogin yes/PermitRootLogin without-password/'  ${CHROOT}/etc/ssh/sshd_config
 wwvnfs --chroot  ${CHROOT}
 ```
 
