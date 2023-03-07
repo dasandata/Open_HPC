@@ -410,6 +410,14 @@ yum -y --installroot=$CHROOT install lmod-ohpc
 
 ```
 
+#### #### 기타
+```bash
+
+# dnf-makecache.timer disable
+ chroot  $CHROOT  systemctl disable     dnf-makecache.timer
+
+```
+
 ### ### 3.8.3 Customize system configuration
 
 #### #### Initialize warewulf database and ssh_keys
