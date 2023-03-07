@@ -174,7 +174,7 @@ yum config-manager --set-enabled powertools
 
 ### ### Install base meta-packages
 ```bash
-yum -y install ohpc-base ohpc-warewulf squashfs-tools >>  ~/dasan_log_ohpc_base,warewulf.txt 2>&1
+yum -y install ohpc-base ohpc-warewulf squashfs-tools redhat-lsb >>  ~/dasan_log_ohpc_base,warewulf.txt 2>&1
 tail ~/dasan_log_ohpc_base,warewulf.txt  
 ```
 
