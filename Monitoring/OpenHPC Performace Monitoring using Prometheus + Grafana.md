@@ -106,11 +106,11 @@ systemctl  enable   prometheus.service
 systemctl  start    prometheus.service
 systemctl  status   prometheus.service
 
-# Firewall Port Open 9090
-firewall-cmd --list-all | grep 9090
-firewall-cmd --add-port=9090/tcp
-firewall-cmd --add-port=9090/tcp --permanent
-firewall-cmd --list-all | grep 9090
+#(제외) Firewall Port Open 9090
+#firewall-cmd --list-all | grep 9090
+#firewall-cmd --add-port=9090/tcp
+#firewall-cmd --add-port=9090/tcp --permanent
+#firewall-cmd --list-all | grep 9090
 
 # Open Broser to http://localhost:9090
 
@@ -298,10 +298,10 @@ cp bin/slurm-exporter  /usr/local/sbin/slurm-exporter
 # for test.
 /usr/local/sbin/slurm-exporter
 
-# Firewall port add
-firewall-cmd --add-port=9800/tcp --permanent
-firewall-cmd --reload
-firewall-cmd --list-all
+# (제외) Firewall port add
+#firewall-cmd --add-port=9800/tcp --permanent
+#firewall-cmd --reload
+#firewall-cmd --list-all
 
 # Prometheus-slurm service add
 cat << EOF > /lib/systemd/system/slurm-exporter.service
@@ -386,10 +386,10 @@ cp ./ipmi_exporter   /usr/local/sbin/ipmi_exporter
 # for test.
 /usr/local/sbin/ipmi_exporter
 
-# Firewall port add
-firewall-cmd --add-port=9290/tcp --permanent
-firewall-cmd --reload
-firewall-cmd --list-all
+# (제외) Firewall port add
+#firewall-cmd --add-port=9290/tcp --permanent
+#firewall-cmd --reload
+#firewall-cmd --list-all
 
 # Prometheus-slurm service add
 cat << EOF > /lib/systemd/system/ipmi-exporter.service
