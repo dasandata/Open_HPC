@@ -9,8 +9,6 @@
 [5]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-prometheus-slurm-exporter--for-centos7-only-master-
 [6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-prometheus-ipmi-exporter--for-centos7-only-master-
 [7]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-7-grafana-install-on-master
-[8]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-8-grafana-report-to-pdf
-[9]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-9-grafana-report-pdf-gen-cli
 [grafanadashboards]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#grafana-dashboardshttpsgrafanacomgrafanadashboards
 
 ## ## Requirements  
@@ -25,8 +23,6 @@
 ### [5. Prometheus-slurm exporter ( For Centos7, Only Master )][5]
 ### [6. Prometheus-ipmi exporter ( For Centos7, Only Master )][6]
 ### [7. Grafana Install (on Master)][7]
-### [8. Grafana Report to PDF][8]
-### [9. Grafana Report PDF Gen cli][9]
 ### [Grafana dashboards][grafanadashboards]
 
 ### [END.][contents]
@@ -454,125 +450,6 @@ firewall-cmd --list-all | grep 3000
 
 # Open Broser to http://localhost:3000
 # id : admin / pass : admin
-```
-
-## ## [8. Grafana Report to PDF][contents]
-
-```bash
-# pdf 를 생성시키는데 필요한 패키지 설치.
-yum -y  install  texmaker texlive texlive-*.noarch
-
-which pdflatex
-
-### 그라파나가 패널을 이미지로 렌더링 하기위해 필요한 패키지 설치.
-# https://grafana.com/docs/grafana/latest/administration/image_rendering/  
-
-grafana-cli plugins install grafana-image-renderer
-
-systemctl   restart   grafana-server
-
-yum -y  install libXcomposite libXdamage libXtst cups libXScrnSaver pango atk \
-adwaita-cursor-theme adwaita-icon-theme at at-spi2-atk at-spi2-core cairo-gobject \
-colord-libs dconf desktop-file-utils ed emacs-filesystem gdk-pixbuf2 glib-networking \
-gnutls gsettings-desktop-schemas gtk-update-icon-cache gtk3 hicolor-icon-theme \
-jasper-libs json-glib libappindicator-gtk3 libdbusmenu libdbusmenu-gtk3 libepoxy \
-liberation-fonts liberation-narrow-fonts liberation-sans-fonts liberation-serif-fonts \
-libgusb libindicator-gtk3 libmodman libproxy libsoup libwayland-cursor libwayland-egl \
-libxkbcommon m4 mailx nettle patch psmisc redhat-lsb-core redhat-lsb-submod-security \
-rest spax time trousers xdg-utils xkeyboard-config
-
-
-### grafana-reporter 설치.
-
-cd /tmp/
-
-# Donwload go 1.15
-export VERSION=1.15 OS=linux ARCH=amd64
-wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
-
-tar -xzf go$VERSION.$OS-$ARCH.tar.gz
-export PATH=$PWD/go/bin:$PATH
-export GOPATH=/tmp/GOPATH
-
-go get github.com/IzakMarais/reporter/...
-go install -v github.com/IzakMarais/reporter/cmd/grafana-reporter
-
-ll ${GOPATH}/bin/grafana-reporter
-
-# Firewall Port Open 8686
-firewall-cmd --list-all | grep 8686
-firewall-cmd --add-port=8686/tcp
-firewall-cmd --add-port=8686/tcp --permanent
-firewall-cmd --list-all | grep 8686
-
-# test.
-${GOPATH}/bin/grafana-reporter
-
-# grafana-reporter service add
-
-cp ${GOPATH}/bin/grafana-reporter  /usr/local/sbin/grafana-reporter
-cat << EOF > /lib/systemd/system/grafana-reporter.service
-[Unit]
-Description=Grafana-Reporter
-
-[Service]
-ExecStart=/usr/local/sbin/grafana-reporter
-Restart=always
-RestartSec=15
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-ll       /lib/systemd/system/grafana-reporter.service
-chmod +x /lib/systemd/system/grafana-reporter.service
-
-systemctl daemon-reload
-systemctl enable grafana-reporter.service
-systemctl start  grafana-reporter.service
-systemctl status grafana-reporter.service
-
-netstat -tnlp | grep   grafana-repo
-
-```
-### ### apitoken, PDF Gen Link
-- http://localhost:8686/api/v5/report/{dashboardUID}?apitoken=12345&var-host=devbox  
-- apitoken : Configuration => API Keys => Add API Key  
-- dashboard settings => Links => Add Dashboard Link => Type Link...   
-
-## ## [9. Grafana Report PDF Gen cli][contents]
-#### #### CLI 모드에서 Report 파일 만드는 방법으로 API Key 값과  Dashboard UUID가 필요합니다.  
-#### #### Report 범위 지정 시 사용되는 시간은 Unix Time을 사용하기 때문에 변환 해야 합니다.    
-
-```bash
-# 기본API KEY 값, 대시보드 UUID 변수 선언
-GRAFANA_API_KEY="여기에 키값을 입력"
-DAILY_BOARD_UUID="대시보드 UUID 입력"
-WEEKL_BOARD_UUID="대시보드 UUID 입력"
-MONTH_BOARD_UUID="대시보드 UUID 입력"
-
-# DAILY Report 생성할 경우
-# grafana는 시간 단위가 밀리세컨드 3자리까지 표기
-STA_DAY=$(date -d "2021-05-01" +%s%3N)
-END_DAY=$(date -d "2021-05-02" +%s%3N)
-
-# Weekly Report 생성할 경우
-# grafana는 시간 단위가 밀리세컨드 3자리까지 표기
-STA_DAY=$(date -d "2021-05-01" +%s%3N)
-END_DAY=$(date -d "2021-05-08" +%s%3N)
-
-# Monthly Report 생성할 경우
-# grafana는 시간 단위가 밀리세컨드 3자리까지 표기
-STA_DAY=$(date -d "2021-05-01" +%s%3N)
-END_DAY=$(date -d "2021-06-01" +%s%3N)
-
-# 보고서 출력시 파일 이름 설정
-OUTFILE="Daily_Output"
-OUTFILE="Weekl_Output"
-OUTFILE="Month_Output"
-
-grafana-reporter -cmd_enable=1 -cmd_apiKey $GRAFANA_API_KEY -ip localhost:3000 -cmd_dashboard $DAILY_BOARD_UUID -cmd_ts "from=$STA_DAY&to=$END_DAY" -cmd_o $OUTFILE.pdf
-
 ```
 
 ***
