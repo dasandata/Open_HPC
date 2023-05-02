@@ -355,6 +355,12 @@ which sinfo
 
 
 ## ## [6. Prometheus-ipmi exporter ( For Centos7, Only Master )][contents]
+
+### ### 컴파일 하지 않고 바이너리 다운로드로 대체   
+```
+https://github.com/prometheus-community/ipmi_exporter/releases
+```
+
 ```bash
 # only master.
 
