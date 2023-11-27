@@ -226,7 +226,7 @@ perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/" \
 # 중복된 설정값 2개중 1개 제거
 sed -i  '/jobcomp\/none/d'             /etc/slurm/slurm.conf
 
-cat /etc/slurm/slurm.conf | grep -v "^#\|^$" |
+cat /etc/slurm/slurm.conf | grep -v "^#\|^$"
 
 ```
 
@@ -441,16 +441,16 @@ mkdir /opt/intel
 cat  ${CHROOT}/etc/fstab
 
 echo " " >> ${CHROOT}/etc/fstab
-echo "${MASTER_HOSTNAME}:/home         /home         nfs nfsvers=3,nodev,nosuid 0 0" >> ${CHROOT}/etc/fstab
-echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=3,nodev 0 0"        >> ${CHROOT}/etc/fstab
-echo "${MASTER_HOSTNAME}:/opt/intel    /opt/intel    nfs nfsvers=3,nodev 0 0"        >> ${CHROOT}/etc/fstab
+echo "${MASTER_HOSTNAME}:/home         /home         nfs nfsvers=4,nodev,nosuid 0 0" >> ${CHROOT}/etc/fstab
+echo "${MASTER_HOSTNAME}:/opt/ohpc/pub /opt/ohpc/pub nfs nfsvers=4,nodev 0 0"        >> ${CHROOT}/etc/fstab
+echo "${MASTER_HOSTNAME}:/opt/intel    /opt/intel    nfs nfsvers=4,nodev 0 0"        >> ${CHROOT}/etc/fstab
 
 # 아래는 data 디렉토리를 별도로 구성하는 경우에만.  
-#echo "${MASTER_HOSTNAME}:/data         /data         nfs nfsvers=3,nodev 0 0">> ${CHROOT}/etc/fstab  
+#echo "${MASTER_HOSTNAME}:/data         /data         nfs nfsvers=4,nodev 0 0">> ${CHROOT}/etc/fstab  
 #mkdir ${CHROOT}/data
 
 # 아래는 Dell 서버의 경우 (racadm을 노드에서 사용)  
-#echo "${MASTER_HOSTNAME}:/opt/dell     /opt/dell     nfs nfsvers=3,nodev 0 0" >> ${CHROOT}/etc/fstab  
+#echo "${MASTER_HOSTNAME}:/opt/dell     /opt/dell     nfs nfsvers=4,nodev 0 0" >> ${CHROOT}/etc/fstab  
 #mkdir ${CHROOT}/opt/dell
 
 cat  ${CHROOT}/etc/fstab  
