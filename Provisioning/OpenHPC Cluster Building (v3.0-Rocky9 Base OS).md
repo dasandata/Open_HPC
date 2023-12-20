@@ -1387,6 +1387,7 @@ chroot  ${CHROOT}  systemctl enable nvidia-persistenced
 ```bash
 yum -y install --installroot ${CHROOT}   nvidia-fabric-manager cuda-drivers-fabricmanager nvidia-fabric-manager-devel   
 
+chroot $CHROOT systemctl enable nvidia-fabricmanager
 ```
 
 ## ## gpustat (python3) install to VNFS
@@ -1536,6 +1537,14 @@ sinfo
 squeue
 ```
 
+
+```bash
+
+conda activate pythorch
+
+python -c "import torch; print(torch.cuda.is_available())"
+
+```
 
 
 ***
