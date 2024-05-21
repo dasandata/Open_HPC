@@ -6,8 +6,8 @@
 [2]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-2-Install-prometheus-node-expoter
 [3]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-3-add-scrape-node-info-to-master
 [4]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-4-Install-prometheus-nvidia-dcgm-expoter-prometheus-dcgm
-[5]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-prometheus-slurm-exporter--for-centos7-only-master-
-[6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-prometheus-ipmi-exporter--for-centos7-only-master-
+[5]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-5-prometheus-slurm-exporter--for-rocky9-only-master-
+[6]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-6-prometheus-ipmi-exporter--for-rocky9-only-master-
 [7]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#-7-grafana-install-on-master
 [grafanadashboards]: OpenHPC%20Performace%20Monitoring%20using%20Prometheus%20%2B%20Grafana.md#grafana-dashboardshttpsgrafanacomgrafanadashboards
 
@@ -20,8 +20,8 @@
 ### [2. Install prometheus-node-expoter][2]
 ### [3. add scrape node info to master][3]
 ### [4. Install prometheus nvidia dcgm expoter (prometheus-dcgm)][4]
-### [5. Prometheus-slurm exporter ( For Centos7, Only Master )][5]
-### [6. Prometheus-ipmi exporter ( For Centos7, Only Master )][6]
+### [5. Prometheus-slurm exporter ( For Rocky9, Only Master )][5]
+### [6. Prometheus-ipmi exporter ( For Rocky9, Only Master )][6]
 ### [7. Grafana Install (on Master)][7]
 ### [Grafana dashboards][grafanadashboards]
 
@@ -361,7 +361,7 @@ which sinfo
 ```
 
 
-## ## [6. Prometheus-ipmi exporter ( For Centos7, Only Master )][contents]
+## ## [6. Prometheus-ipmi exporter ( For Rocky9, Only Master )][contents]
 
 ### ### 컴파일 하지 않고 바이너리 다운로드로 대체   
 ```
