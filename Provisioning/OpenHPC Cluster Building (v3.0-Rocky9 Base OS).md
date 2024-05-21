@@ -1008,6 +1008,7 @@ tail -1  ~/dasan_log_ohpc_inteloneapi_3rdparty.txt
 ```bash
 
 sed -i 's/Oversubscribe=EXCLUSIVE/Oversubscribe=NO/' /etc/slurm/slurm.conf 
+echo "SelectTypeParameters=CR_Core"  >>  /etc/slurm/slurm.conf 
 
 vi /etc/slurm/slurm.conf
 
