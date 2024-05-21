@@ -265,14 +265,14 @@ systemctl  restart  prometheus.service
 
 ```
 
-## ## [5. Prometheus-slurm exporter ( For Centos7, Only Master )][contents]
+## ## [5. Prometheus-slurm exporter ( For Rocky9, Only Master )][contents]
 ```bash
 # only master.
 
 cd /tmp/
 
-# Donwload go 1.15
-export VERSION=1.15 OS=linux ARCH=amd64
+# Donwload go 1.22.3
+export VERSION=11.22.3 OS=linux ARCH=amd64
 wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
