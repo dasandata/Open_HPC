@@ -237,6 +237,7 @@ DCGM_FI_DEV_MEMORY_TEMP{gpu="0", UUID="GPU-604ac76c-d9cf-fef3-62e9-d92044ab6e52"
 ...
 
 # ohpc-node
+cp /etc/yum.repos.d/cuda-rhel8.repo   $CHROOT/etc/yum.repos.d/
 
 yum install -y  --installroot=${CHROOT} datacenter-gpu-manager
 chroot  ${CHROOT}   systemctl enable nvidia-dcgm
