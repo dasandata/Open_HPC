@@ -184,6 +184,8 @@ wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
 export PATH=$PWD/go/bin:$PATH
 
+go version
+
 # dcgm install
 yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
 yum clean expire-cache
