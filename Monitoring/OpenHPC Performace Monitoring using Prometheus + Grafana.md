@@ -368,28 +368,16 @@ which sinfo
 https://github.com/prometheus-community/ipmi_exporter/releases
 ```
 
-```bash
+```bash 
 # only master.
-
-cd /tmp/
-
-# Donwload go 1.15
-export VERSION=1.15 OS=linux ARCH=amd64
-wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
-
-tar -xzf go$VERSION.$OS-$ARCH.tar.gz
-export PATH=$PWD/go/bin:$PATH
-
 cd /usr/local/src/
-git clone https://github.com/soundcloud/ipmi_exporter
 
-# make slurm expoter
-cd ipmi_exporter/
-pwd
-make
+wget https://github.com/prometheus-community/ipmi_exporter/releases/download/v1.8.0/ipmi_exporter-1.8.0.linux-amd64.tar.gz
+
+tar xzvf ipmi_exporter-1.8.0.linux-amd64.tar.gz
 
 # copy make file
-cp ./ipmi_exporter   /usr/local/sbin/ipmi_exporter
+cp ipmi_exporter-1.8.0.linux-amd64/ipmi_exporter   /usr/local/sbin/
 /usr/local/sbin/ipmi_exporter  --version
 
 # for test.
