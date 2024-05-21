@@ -432,7 +432,7 @@ systemctl  restart  prometheus.service
 ```bash
 # https://grafana.com/grafana/download?pg=get&plcmt=selfmanaged-box1-cta1  
 
-yum -y install  https://dl.grafana.com/enterprise/release/grafana-enterprise-9.2.6-1.x86_64.rpm
+yum -y install  https://dl.grafana.com/enterprise/release/grafana-enterprise-11.0.0-1.x86_64.rpm
 
 which grafana-server
 which grafana-cli
