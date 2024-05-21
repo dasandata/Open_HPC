@@ -123,6 +123,8 @@ mkdir   /usr/local/bin/node_exporter
 # node-exporter download
 # https://prometheus.io/download/
 wget https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-amd64.tar.gz
+
+mkdir /usr/local/bin/node_exporter
 tar zxvf node_exporter-*.tar.gz -C /usr/local/bin/node_exporter --strip-components 1
 
 # node-exporter service add
