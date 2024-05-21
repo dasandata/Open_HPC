@@ -211,9 +211,9 @@ ExecStart=/usr/bin/dcgm-exporter
 WantedBy=multi-user.target
 EOF
 
-# 기본으로 주석 처리된 부분 제거
+# 과거버젼에서 주석처리 되었던 부분 확인.
 grep   DCGM_FI_DEV_GPU_UTIL                               /etc/dcgm-exporter/default-counters.csv
-sed -i 's/# DCGM_FI_DEV_GPU_UTIL/DCGM_FI_DEV_GPU_UTIL/g'  /etc/dcgm-exporter/default-counters.csv
+
 
 # dcgm-exporter service start
 chmod +x /lib/systemd/system/dcgm-exporter.service
