@@ -179,7 +179,7 @@ systemctl  restart  prometheus.service
 
 # go install
 cd /tmp
-export VERSION=1.15 OS=linux ARCH=amd64
+export VERSION=1.22.3 OS=linux ARCH=amd64
 wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 tar -xzf go$VERSION.$OS-$ARCH.tar.gz
 export PATH=$PWD/go/bin:$PATH
@@ -198,6 +198,8 @@ git clone https://github.com/NVIDIA/dcgm-exporter.git
 cd dcgm-exporter
 
 make binary
+cp  cmd/dcgm-exporter/dcgm-exporter  /
+
 make install
 
 cat << EOF > /usr/lib/systemd/system/dcgm-exporter.service
