@@ -1288,7 +1288,6 @@ cat << EOF > /etc/slurm/cgroup.conf
 # See man slurm.conf and man cgroup.conf for further
 # information on cgroup configuration parameters
 #--
-CgroupAutomount=yes
 
 ConstrainCores=yes
 ConstrainRAMSpace=no
