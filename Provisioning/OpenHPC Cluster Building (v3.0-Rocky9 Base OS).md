@@ -1018,6 +1018,8 @@ tail -1  ~/dasan_log_ohpc_inteloneapi_3rdparty.txt
 ## slurm.conf 의 NodeName 및  PartitionName 정보 수정
 ```bash
 
+cat /etc/slurm/slurm.conf | grep Oversubscribe
+
 sed -i 's/Oversubscribe=EXCLUSIVE/Oversubscribe=NO/' /etc/slurm/slurm.conf 
 
 vi /etc/slurm/slurm.conf
