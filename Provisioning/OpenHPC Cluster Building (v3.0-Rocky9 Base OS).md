@@ -224,7 +224,8 @@ perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/" \
    /etc/slurm/slurm.conf
 
 # 중복된 설정값 2개중 1개 제거
-sed -i  '/jobcomp\/none/d'             /etc/slurm/slurm.conf
+sed -i  's/ReturnToService=1/d'          /etc/slurm/slurm.conf
+echo "ReturnToService=1"             >>  /etc/slurm/slurm.conf
 
 # 누락된 CR_Core 옵션 추가.
 echo "SelectTypeParameters=CR_Core"  >>  /etc/slurm/slurm.conf 
