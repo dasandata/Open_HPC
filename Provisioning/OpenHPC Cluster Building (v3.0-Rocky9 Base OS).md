@@ -899,7 +899,6 @@ df -hT | grep -v tmpfs
 
 
 # chrony가 동기화되었는지 확인
-sleep 10
 chronyc tracking
 chronyc sources
 chronyc sourcestats
