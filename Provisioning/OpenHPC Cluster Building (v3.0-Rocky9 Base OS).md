@@ -226,6 +226,10 @@ perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/" \
 # 중복된 설정값 2개중 1개 제거
 sed -i  '/jobcomp\/none/d'             /etc/slurm/slurm.conf
 
+# 누락된 CR_Core 옵션 추가.
+echo "SelectTypeParameters=CR_Core"  >>  /etc/slurm/slurm.conf 
+
+
 cat /etc/slurm/slurm.conf | grep -v "^#\|^$"
 
 ```
@@ -1015,7 +1019,6 @@ tail -1  ~/dasan_log_ohpc_inteloneapi_3rdparty.txt
 ```bash
 
 sed -i 's/Oversubscribe=EXCLUSIVE/Oversubscribe=NO/' /etc/slurm/slurm.conf 
-echo "SelectTypeParameters=CR_Core"  >>  /etc/slurm/slurm.conf 
 
 vi /etc/slurm/slurm.conf
 
