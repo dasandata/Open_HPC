@@ -4,10 +4,15 @@
 select /dev/sda
 mklabel gpt
 
-mkpart ESP  fat32       1MiB    513MiB
-mkpart swap linux-swap  513MiB  10%
-mkpart root ext4        10%     50%
-mkpart var  ext4        50%     100%
+mkpart ESP      fat32       1MiB    513MiB
+mkpart primary  linux-swap  513MiB  10%
+mkpart primary  ext4        10%     50%
+mkpart primary  ext4        50%     100%
+
+name 1 ESP
+name 2 swap
+name 3 root
+name 4 var
 
 set 1 boot on
 
