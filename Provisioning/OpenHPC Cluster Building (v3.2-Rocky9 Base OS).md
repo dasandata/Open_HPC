@@ -392,7 +392,7 @@ cat   /etc/resolv.conf
 cp -p /etc/resolv.conf  ${CHROOT}/etc/resolv.conf  
 ```
 
-#### #### slurm-client 설치 등.
+#### #### slurm-client 설치
 ```bash
 # copy credential files into $CHROOT to ensure consistent uid/gids for slurm/munge at install.
 cp    /etc/passwd /etc/group   $CHROOT/etc
@@ -407,7 +407,11 @@ chroot ${CHROOT} systemctl enable slurmd
 # Register Slurm server with computes (using "configless" option)
 echo SLURMD_OPTIONS="--conf-server ${MASTER_HOSTNAME}" > $CHROOT/etc/sysconfig/slurmd
 cat $CHROOT/etc/sysconfig/slurmd
+```
 
+#### #### ntp, lmod 설치
+
+```bash
 # Add Network Time Protocol (NTP) support
 yum -y --installroot=$CHROOT install chrony
 
