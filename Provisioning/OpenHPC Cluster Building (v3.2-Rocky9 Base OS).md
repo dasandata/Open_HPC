@@ -927,7 +927,7 @@ tail -1 ~/dasan_log_ohpc_lmod.txt
 ## ## 4.6 3rd Party Libraries and Tools
 ### ### Install 3rd party libraries/tools meta-packages built with GNU toolchain
 ```bash
-yum -y ohpc-gnu14-serial-libs ohpc-gnu14-io-libs ohpc-gnu14-python-libs ohpc-gnu14-runtimes \
+yum -y install  ohpc-gnu14-serial-libs ohpc-gnu14-io-libs ohpc-gnu14-python-libs ohpc-gnu14-runtimes \
      >> ~/dasan_log_ohpc_3rdPartyLib.txt 2>&1
 tail -1 ~/dasan_log_ohpc_3rdPartyLib.txt
 ```
