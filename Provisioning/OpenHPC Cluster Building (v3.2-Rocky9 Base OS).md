@@ -409,7 +409,7 @@ echo SLURMD_OPTIONS="--conf-server ${MASTER_HOSTNAME}" > $CHROOT/etc/sysconfig/s
 cat $CHROOT/etc/sysconfig/slurmd
 ```
 
-#### #### ntp, lmod 설치
+#### #### ntp, lmod 설치 등.
 
 ```bash
 # Add Network Time Protocol (NTP) support
@@ -423,11 +423,6 @@ yum -y --installroot=$CHROOT install kernel-`uname -r`
 
 # Include modules user environment
 yum -y --installroot=$CHROOT install lmod-ohpc
-
-```
-
-#### #### 기타
-```bash
 
 # dnf-makecache.timer disable
  chroot  $CHROOT  systemctl disable     dnf-makecache.timer
