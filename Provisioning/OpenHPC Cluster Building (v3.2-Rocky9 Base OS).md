@@ -679,6 +679,16 @@ wwsh bootstrap list
 
 ### ### 3.9.2 Assemble Virtual Node File System (VNFS) image
 
+#### #### Check SELINUX
+```bash
+cat $CHROOT/etc/selinux/config | grep ^SELINUX=
+
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' $CHROOT/etc/selinux/config
+
+cat $CHROOT/etc/selinux/config | grep ^SELINUX=
+```
+
+
 ```bash
 wwsh vnfs list
 
