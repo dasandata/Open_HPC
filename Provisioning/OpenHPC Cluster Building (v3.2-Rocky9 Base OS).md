@@ -980,7 +980,15 @@ yum -y install                     \
 
 tail -1  ~/dasan_log_ohpc_inteloneapi_3rdparty.txt
 ```
+### ### Fast way ;)  (use script)
+```bash
+cd ~
+git clone https://github.com/dasandata/Open_HPC
+cat ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_3.2.sh
 
+bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_3.2.sh
+```
+***
 
 ***
 
