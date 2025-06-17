@@ -221,10 +221,6 @@ perl -pi -e "s/SlurmctldHost=\S+/SlurmctldHost=${MASTER_HOSTNAME}/" \
 perl -pi -e "s/ClusterName=\S+/ClusterName=${CLUSTER_NAME}/" \
    /etc/slurm/slurm.conf
 
-# 중복된 설정값 2개중 1개 제거
-sed -i  '/ReturnToService=1/d'          /etc/slurm/slurm.conf
-echo "ReturnToService=1"             >>  /etc/slurm/slurm.conf
-cat  /etc/slurm/slurm.conf | grep ReturnToService
 
 cat /etc/slurm/slurm.conf | grep -v "^#\|^$"
 
@@ -342,7 +338,7 @@ echo ${CHROOT}
 # chroot 를 생성할 때 참고하는 template file.
 cat /usr/libexec/warewulf/wwmkchroot/almalinux-9.tmpl
 
-wwmkchroot -v alma-9  ${CHROOT} >> ~/dasan_log_ohpc_initial-BaseOS.txt 2>&1
+wwmkchroot -v almalinux-9  ${CHROOT} >> ~/dasan_log_ohpc_initial-BaseOS.txt 2>&1
 tail ~/dasan_log_ohpc_initial-BaseOS.txt
 ```
 
