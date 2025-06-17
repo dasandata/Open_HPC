@@ -714,7 +714,7 @@ wwsh node list
 ```bash
 wwsh provision list
 
-wwsh -y provision set node01 --vnfs=alma-9  --bootstrap=`uname -r ` \
+wwsh -y provision set node01 --vnfs=alma9  --bootstrap=`uname -r ` \
 --files=dynamic_hosts,passwd,group,shadow,network,munge.key
 
 wwsh provision list
