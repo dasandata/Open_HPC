@@ -374,7 +374,10 @@ source  /root/.bashrc
 
 echo $CHROOT
 ```
-# Enable OpenHPC inside image and update image. Disable image build on exit, rebuild later.
+
+### ### 3.8.2 Add OpenHPC components
+#### #### Install compute node base meta-package.
+# 기본적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
 wwctl image exec --build=false almalinux-10 -- /bin/bash -ex <<- EOF
 dnf -y install dnf-utils
@@ -383,19 +386,8 @@ dnf -y update
 EOF
 ```
 
-### ### 3.8.2 Add OpenHPC components
-#### #### Install compute node base meta-package.
-# 기본적으로 필요한 패키지를 node image 에 설치 합니다.
 ```bash
-dwwctl image exec --build=false rocky-10 -- /bin/bash -ex <<- EOF
-dnf -y install dnf-utils
-dnf -y install http://repos.openhpc.community/OpenHPC/4/EL_10/x86 64/ohpc-release-4-1.el10.x86 64.rpm
-dnf -y update
-EOF
-```
-
-```bash
-wwctl image exec --build=false rocky-10 -- /bin/bash -ex <<- EOF
+wwctl image exec --build=false almalinux-10 -- /bin/bash -ex <<- EOF
 dnf -y install epel-release
 dnf -y install ohpc-base-compute
 EOF
