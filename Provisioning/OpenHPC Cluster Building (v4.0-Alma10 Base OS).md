@@ -1,22 +1,22 @@
-[contents]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-목차
-[1]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-1-introduction
-[2]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos
-[3]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-3-install-openhpc-components
-[3.1]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-31-enable-openhpc-repository-for-local-use
-[3.3]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-33-add-provisioning-services-on-master-node
-[3.4]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-34-add-resource-management-services-on-master-node
-[3.5]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node
-[3.7]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-37-complete-basic-warewulf-setup-for-master-node
-[3.8]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-37-complete-basic-warewulf-setup-for-master-node
-[3.9]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-39-finalizing-provisioning-configuration
-[3.10]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-310-boot-compute-nodes
-[4]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-4-install-openhpc-development-components
-[5]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-5-resource-manager-startup
-[6]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-6-slurmdbd-sacctmgr-cgroup
-[7]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#-7-gpu-node-provisioning-of-openhpc-cluster
-[END]: OpenHPC%20Cluster%20Building%20(v3.2-Alma9%20Base%20OS).md#end
+[contents]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-목차
+[1]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-1-introduction
+[2]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-2-network-and-firewall-setup-to-base-operating-system-bos
+[3]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-3-install-openhpc-components
+[3.1]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-31-enable-openhpc-repository-for-local-use
+[3.3]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-33-add-provisioning-services-on-master-node
+[3.4]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-34-add-resource-management-services-on-master-node
+[3.5]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-35-optionally-add-infiniband-support-services-on-master-node
+[3.7]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-37-complete-basic-warewulf-setup-for-master-node
+[3.8]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-37-complete-basic-warewulf-setup-for-master-node
+[3.9]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-39-finalizing-provisioning-configuration
+[3.10]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-310-boot-compute-nodes
+[4]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-4-install-openhpc-development-components
+[5]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-5-resource-manager-startup
+[6]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-6-slurmdbd-sacctmgr-cgroup
+[7]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#-7-gpu-node-provisioning-of-openhpc-cluster
+[END]: OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md#end
 
-# Dasandata Standard Recipes of OpenHPC Cluster Building (v3.2-Alma9 Base OS)[2025.05]
+# Dasandata Standard Recipes of OpenHPC Cluster Building (v4.0-Alma10 Base OS)[2025.12]
 
 \# 참조 링크 : http://openhpc.community/  
 \# Root 로 로그인 하여 설치를 시작 합니다.  
