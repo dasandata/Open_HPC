@@ -381,7 +381,7 @@ echo $CHROOT
 ```bash
 wwctl image exec --build=false almalinux-10 -- /bin/bash -ex <<- EOF
 dnf -y install dnf-utils
-dnf -y install http://repos.openhpc.community/OpenHPC/4/EL 10/x86 64/ohpc-release-4-1.el10.x86 64.rpm
+dnf -y install http://repos.openhpc.community/OpenHPC/4/EL_10/x86_64/ohpc-release-4-1.el10.x86_64.rpm
 dnf -y update
 EOF
 ```
@@ -406,17 +406,6 @@ dnf -y install chrony
 # Include modules user environment
 dnf -y install lmod-ohpc
 EOF
-```
-
-### ### 3.8.3 Customize system configuration
-
-#### #### /data
-```bash
-```
-
-#### #### Export /home and OpenHPC public packages from master server.
-
-```bash
 ```
 
 ### ### 3.8.4 Additional Customization (optional)
@@ -472,18 +461,28 @@ echo "account required pam_slurm.so" >> $CHROOT/etc/pam.d/sshd
 ```bash
 # Add NVIDIA GPU driver repository to the SMS
 dnf -y install cuda-repo-ohpc
+dnf -y update kernel kernel-core kernel-modules
+dnf -y update
 
 # Install the toolkit on the SMS
 dnf -y install nvidia-driver-cuda cuda-devel-ohpc
 
 # Install NVIDIA repository and GPU driver in the compute image
 wwctl image exec --build=false almalinux-10 -- /bin/bash -ex <<- EOF
+dnf -y update kernel kernel-core kernel-modules
 dnf -y install cuda-repo-ohpc
 dnf -y install kmod-nvidia-latest-dkms nvidia-driver-cuda
-KVER=$(rpm -q --queryformat='%{version}-%{release}.%{arch}\n' \
+KVER=\$(rpm -q --queryformat='%{version}-%{release}.%{arch}\n' \
 kernel-core | sort -r | head -1)
-dkms autoinstall --verbose -k \${KVER}
+echo "Building modules for kernel: \$KVER"
+dkms autoinstall --verbose -k \$KVER
 dkms status
+EOF
+```
+
+```bash
+wwctl image exec --build=false almalinux-10 -- /bin/bash -ex <<- EOF
+dnf -y update
 EOF
 ```
 
@@ -595,15 +594,17 @@ Warewulf는 선택적으로, 계산 노드에서 ramfs나 디스크로의 투‑
 ### ### 3.9.1 Two-Stage Provisioning (optional)
 ```bash
 ## Install Dracut in the image
-wwctl image exec --build=false almalinux-10-- /usr/bin/dnf install -y warewulf-ohpc-dracut \
+wwctl image exec --build=false almalinux-10 -- /usr/bin/dnf install -y warewulf-ohpc-dracut \
 ignition gdisk
 
 ## Configure Dracut. Note the leading and trailing spaces in the quotes in "add_dracutmodules"
 echo 'hostonly="no"' > $CHROOT/etc/dracut.conf.d/wwinit.conf
 echo 'add_dracutmodules+=" wwinit ignition "' >> $CHROOT/etc/dracut.conf.d/wwinit.conf
 
+cat $CHROOT/etc/dracut.conf.d/wwinit.conf
+
 ## Build the Dracut initramfs
-wwctl image exec --build=false almalinux-10-- /usr/bin/dracut --force --regenerate-all
+wwctl image exec --build=false almalinux-10 -- /usr/bin/dracut --force --regenerate-all
 
 ## Enable Dracut boot for compute nodes that use the "nodes" profile
 wwctl profile set --yes nodes --tagadd IPXEMenuEntry=dracut
@@ -613,6 +614,8 @@ wwctl profile set --yes nodes --tagadd IPXEMenuEntry=dracut
 ```bash
 
 ## Create the target "rootfs" partition and filesystem
+## ${node_disk}에는 실제 장치명이 들어가야함.
+### ex) /dev/sda , /dev/nvme01 ...
  wwctl profile set --yes nodes \
 --diskname ${node_disk} --diskwipe \
 --partname rootfs --partcreate --partnumber 1 \
@@ -638,7 +641,7 @@ wwctl profile list --all
 ```bash
 wwctl node add --image=almalinux-10 --profile=nodes --netname=default --ipaddr=10.1.1.1 --hwaddr=aa:bb:cc:dd:ee:ff node01
 
-wwsh node list
+wwctl node list
 ```
 
 #### #### Optionally define IPoIB network settings (required if planning to mount Lustre/BeeGFS over IB)
@@ -654,60 +657,6 @@ wwctl configure --all
 # Enable and start munge and slurmctld
 systemctl enable --now munge
 systemctl enable --now slurmctld
-```
-
-
-
-#### #### 외부 네트워크 접근을 허용시 필요한 ifcfg file 생성 및 import.
-```bash
-# eno1 ifcfg file add. (for Access from External Network)
-cat << EOF > /opt/ohpc/pub/examples/network/centos/ifcfg-eno1.ww
-DEVICE=eno1
-BOOTPROTO=static
-IPADDR=%{NETDEVS::eno1::IPADDR}
-NETMASK=%{NETDEVS::eno1::NETMASK}
-GATEWAY=%{NETDEVS::eno1::GATEWAY}
-HWADDR=%{NETDEVS::eno1::HWADDR}
-ONBOOT=yes
-NM_CONTROLLED=yes
-DEVTIMEOUT=5
-DEFROUTE=yes
-EOF
-
-# file import
-wwsh -y file  import             /opt/ohpc/pub/examples/network/centos/ifcfg-eno1.ww
-wwsh -y file  set ifcfg-eno1.ww  --path=/etc/sysconfig/network-scripts/ifcfg-eno1
-
-# provision set
-wwsh provision set  node01  --fileadd=ifcfg-eno1.ww
-wwsh node      set  node01  --netdev=eno1    --ipaddr=xx.xx.xx.x  --netmask=  --gateway=  --hwaddr=  
-
-# Modify default gateway file
-
-cat /etc/network.wwsh
-
-```
-
-#### #### (노드를 외부ip 에서 접속할 경우에만) node 에 root 계정이 password로 접근할 수 없도록 sshd 설정을 변경. 
-```bash
-wwsh vnfs list
-export CHROOT=/opt/ohpc/admin/images/alma9
-
-grep   PermitRootLogin  ${CHROOT}/etc/ssh/sshd_config
-
-sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' \
-       ${CHROOT}/etc/ssh/sshd_config
-wwvnfs --chroot  ${CHROOT}
-```
-
-#### #### 외부 ip 접근이 허용된 장비를 로그인 노드로 운영할 경우, pam.d 를 일반 노드와 다르게 적용.
-```bash
-diff    /etc/pam.d/sshd   ${CHROOT}/etc/pam.d/sshd 
-# 17a18
-# > account required pam_slurm.so
-
-wwsh file import    /etc/pam.d/sshd  # master 와 동일한 pam.d 를 적용하기 위함.
-wwsh provision set  login-node  --fileadd=sshd
 ```
 
 ## ## [3.10 Boot compute nodes][contents]
@@ -1162,56 +1111,6 @@ su - testuser
 srun --nodes=1 --cpus-per-task=2   --pty /bin/bash
 
 stress -c 4
-
-```
-
-
-# # [7. GPU Node Provisioning of OpenHPC Cluster][contents]
-
-## ## Nvidia 저장소 생성 (Cuda,cudnn 설치를 위해)
-```bash
-
-dnf config-manager --add-repo \
-https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
-
-dnf config-manager --installroot=$CHROOT --add-repo \
-https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
-
-```
-
-## ## nvidia X11 관련 lib 설치
-```bash
-dnf -y install libXi-devel mesa-libGLU-devel libXmu-devel libX11-devel freeglut-devel libXm* openmotif*
-
-dnf -y install --installroot=$CHROOT \
- libXi-devel mesa-libGLU-devel libXmu-devel libX11-devel freeglut-devel libXm* openmotif*
-```
-
-## ## Install NVIDIA Driver to VNFS
-```bash
-# Mount /dev on CHROOT
-mount -o bind /dev  ${CHROOT}/dev
-mount -o bind /proc  ${CHROOT}/proc
-mount | grep ${CHROOT}
-
-# Install gcc, make to VNFS
-dnf -y install --installroot ${CHROOT} gcc make \
->> dasan_log_ohpc_nvidia-driver-latest-vnfs.txt 2>&1
-tail dasan_log_ohpc_nvidia-driver-latest-vnfs.txt
-
-# Install nvidia-driver node VNFS
-dnf -y install --installroot ${CHROOT} nvidia-driver nvidia-driver-cuda nvidia-driver-devel nvidia-driver-NVML \
->> dasan_log_ohpc_nvidia-driver-latest-vnfs.txt 2>&1
-tail dasan_log_ohpc_nvidia-driver-latest-vnfs.txt
-
-# umount /dev on CHROOT
-umount  ${CHROOT}/dev
-umount  ${CHROOT}/proc
-mount | grep ${CHROOT}
-
-
-# Enable nvidia persiste mode
-chroot  ${CHROOT}  systemctl enable nvidia-persistenced
 
 ```
 
