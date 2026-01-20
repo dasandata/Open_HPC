@@ -708,21 +708,20 @@ tail -1 ~/dasan_log_ohpc_autotools,meta-package.txt
 
 ## ## 4.2 Compilers
 ```bash
-dnf -y install   gnu14-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt 2>&1
+dnf -y install  gnu15-compilers-ohpc >> ~/dasan_log_ohpc_Compilers.txt 2>&1
 tail -1 ~/dasan_log_ohpc_Compilers.txt
 ```
 
 ## ## 4.3 MPI Stacks 
 ```bash
-dnf -y install   openmpi5-pmix-gnu14-ohpc mpich-ofi-gnu14-ohpc mpich-ucx-gnu14-ohpc mvapich2-gnu14-ohpc \
-       >> ~/dasan_log_ohpc_MPI-Stacks.txt 2>&1
+dnf -y install  openmpi5-pmix-gnu15-ohpc mpich-ofi-gnu15-ohpc mpich-ucx-gnu15-ohpc mvapich2-gnu15-ohpc --allowerasing >> ~/dasan_log_ohpc_MPI-Stacks.txt 2>&1
 tail -1 ~/dasan_log_ohpc_MPI-Stacks.txt
 ```
 
 ## ## 4.4 Performance Tools
 ### ### Install perf-tools meta-package
 ```bash
-dnf -y install  ohpc-gnu14-perf-tools  ohpc-gnu14-geopm \
+dnf -y install ohpc-gnu15-perf-tools \
  >> ~/dasan_log_ohpc_perf-tools.txt 2>&1
 tail -1 ~/dasan_log_ohpc_perf-tools.txt
 ```
@@ -730,21 +729,21 @@ tail -1 ~/dasan_log_ohpc_perf-tools.txt
 ## ## 4.5 Setup default development environment
 
 ```bash
-dnf -y install   lmod-defaults-gnu14-openmpi5-ohpc  >> ~/dasan_log_ohpc_lmod.txt 2>&1
+dnf -y install  lmod-defaults-gnu15-openmpi5-ohpc  >> ~/dasan_log_ohpc_lmod.txt 2>&1
 tail -1 ~/dasan_log_ohpc_lmod.txt
 ```
 
 ## ## 4.6 3rd Party Libraries and Tools
 ### ### Install 3rd party libraries/tools meta-packages built with GNU toolchain
 ```bash
-dnf -y install  ohpc-gnu14-serial-libs ohpc-gnu14-io-libs ohpc-gnu14-python-libs ohpc-gnu14-runtimes \
+dnf -y install  ohpc-gnu15-serial-libs ohpc-gnu15-io-libs ohpc-gnu15-python-libs ohpc-gnu15-runtimes \
      >> ~/dasan_log_ohpc_3rdPartyLib.txt 2>&1
 tail -1 ~/dasan_log_ohpc_3rdPartyLib.txt
 ```
 
 ### ### Install parallel lib meta-packages for all available MPI toolchains
 ```bash
-dnf -y install  ohpc-gnu14-mpich-parallel-libs ohpc-gnu14-openmpi5-parallel-libs \
+dnf -y install  ohpc-gnu15-mpich-parallel-libs ohpc-gnu15-openmpi5-parallel-libs \
   >> ~/dasan_log_ohpc_parallellib.txt 2>&1
 tail -1 ~/dasan_log_ohpc_parallellib.txt
 ```
@@ -753,9 +752,9 @@ tail -1 ~/dasan_log_ohpc_parallellib.txt
 
 ### ### Enable Intel oneAPI and install OpenHPC compatibility packages
 ```bash
-dnf -y install  intel-oneapi-toolkit-release-ohpc  >> ~/dasan_log_ohpc_inteloneapi.txt 2>&1
+dnf -y install intel-oneapi-toolkit-release-ohpc  >> ~/dasan_log_ohpc_inteloneapi.txt 2>&1
 
-rpm --import https://dnf.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
 
 dnf -y install intel-compilers-devel-ohpc intel-mpi-devel-ohpc \
   >> ~/dasan_log_ohpc_inteloneapi.txt 2>&1
@@ -768,7 +767,7 @@ tail -1 ~/dasan_log_ohpc_inteloneapi.txt
 dnf -y install                     \
  openmpi5-pmix-intel-ohpc          \
  ohpc-intel-serial-libs            \
- ohpc-intel-geopm                  \
+ #ohpc-intel-geopm                  \
  ohpc-intel-io-libs                \
  ohpc-intel-perf-tools             \
  ohpc-intel-python3-libs           \
@@ -784,9 +783,9 @@ tail -1  ~/dasan_log_ohpc_inteloneapi_3rdparty.txt
 ```bash
 cd ~
 git clone https://github.com/dasandata/Open_HPC
-cat ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_3.2.sh
+cat ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_4.0.sh
 
-bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_3.2.sh
+bash ./Open_HPC/Provisioning/4_Install_OpenHPC_Development_Components_4.0.sh
 ```
 ***
 
