@@ -20,7 +20,7 @@ echo
 echo
 # 4.3 MPI Stacks
 echo "##### Start... Install MPI Stacks"
-dnf -y install  openmpi5-pmix-gnu15-ohpc mpich-ofi-gnu15-ohpc mpich-ucx-gnu15-ohpc mvapich2-gnu15-ohpc \
+dnf -y install  openmpi5-pmix-gnu15-ohpc mpich-ofi-gnu15-ohpc mpich-ucx-gnu15-ohpc mvapich2-gnu15-ohpc --allowerasing \
  >> ~/dasan_log_ohpc_MPI-Stacks.txt 2>&1
 tail -1 ~/dasan_log_ohpc_MPI-Stacks.txt
 echo
