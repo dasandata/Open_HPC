@@ -21,7 +21,7 @@ echo
 # 4.3 MPI Stacks
 echo "##### Start... Install MPI Stacks"
 dnf -y install  openmpi5-pmix-gnu15-ohpc mpich-ofi-gnu15-ohpc mpich-ucx-gnu15-ohpc mvapich2-gnu15-ohpc \
- mvapich2-psm2-gnu15-ohpc >> ~/dasan_log_ohpc_MPI-Stacks.txt 2>&1
+ >> ~/dasan_log_ohpc_MPI-Stacks.txt 2>&1
 tail -1 ~/dasan_log_ohpc_MPI-Stacks.txt
 echo
 echo
@@ -42,7 +42,7 @@ echo
 # Install 3rd party libraries/tools meta-packages built with GNU toolchain
 echo "##### Start... Install 3rd Party Libraries and Tools"
 dnf -y install  ohpc-gnu15-serial-libs ohpc-gnu15-io-libs ohpc-gnu15-python-libs \
- ohpc-gnu15-runtimes >> ~/davsan_log_ohpc_3rdPartyLib.txt 2>&1
+ ohpc-gnu15-runtimes >> ~/dasan_log_ohpc_3rdPartyLib.txt 2>&1
 tail -1 ~/dasan_log_ohpc_3rdPartyLib.txt
 echo
 echo
@@ -70,7 +70,6 @@ echo "##### Install 3rd party libraries/tools meta-packages built with Intel too
 dnf -y install                     \
  openmpi5-pmix-intel-ohpc          \
  ohpc-intel-serial-libs            \
- ohpc-intel-geopm                  \
  ohpc-intel-io-libs                \
  ohpc-intel-perf-tools             \
  ohpc-intel-python3-libs           \
