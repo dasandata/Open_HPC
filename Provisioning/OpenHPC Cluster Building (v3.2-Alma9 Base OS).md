@@ -1082,7 +1082,7 @@ DbdHost=localhost
 SlurmUser=slurm
 DebugLevel=4
 LogFile=/var/log/slurmdbd.log
-PidFile=/var/run/slurmdbd.pid
+PidFile=/var/run/slurm/slurmdbd.pid
 PurgeEventAfter=1month 
 PurgeJobAfter=12month 
 PurgeResvAfter=1month 
@@ -1112,7 +1112,7 @@ mysql
 
 cat -n /etc/my.cnf | grep includedir
 
-export INNODB_SIZE=600M
+export INNODB_SIZE=2049M
 
 cat << EOF > /etc/my.cnf.d/innodb.cnf
 [mysqld]
@@ -1145,6 +1145,30 @@ mysql
 
  exit
 ```
+
+```bash
+ll /var/run/slurm  ## 없으면 생성
+
+mkdir -p /var/run/slurm
+
+chown slurm:slurm /var/run/slurm
+
+ll -d /var/run/slurm
+```
+
+```bash
+ll /var/log/slurmdbd.log ## 없으면 생성
+
+touch /var/log/slurmdbd.log
+
+chown slurm:slurm /var/log/slurmdbd.log
+
+chmod 600 /var/log/slurmdbd.log
+
+ll /var/log/slurmdbd.log
+```
+
+```bash
 
 ```bash
 systemctl enable  slurmdbd
@@ -1226,6 +1250,31 @@ cat /etc/slurm/slurm.conf | grep TaskPlugin=
 
 ###
 cat /etc/slurm/slurm.conf | grep  ProctrackType
+
+```
+
+```bash 
+###
+cat /etc/slurm/slurm.conf | grep SlurmctldLogFile
+
+ll /var/log/slurmctld.log  ## 없으면 생성
+
+touch /var/log/slurmctld.log
+
+ll /var/log/slurmctld.log
+
+chown slurm:slurm /var/log/slurmctld.log
+
+###
+cat /etc/slurm/slurm.conf | grep SlurmdLogFile
+
+ll /var/log/slurmd.log ## 없으면 생성
+
+touch /var/log/slurmd.log
+
+ll /var/log/slurmd.log
+
+chown slurm:slurm /var/log/slurmd.log
 
 ```
 
