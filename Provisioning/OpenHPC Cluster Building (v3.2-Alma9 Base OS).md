@@ -129,6 +129,11 @@ firewall-cmd --add-masquerade --zone=public --permanent
 firewall-cmd --change-interface=${EXT_NIC}  --zone=public    --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 
+#srun port range
+firewall-cmd --permanent --add-port=60001-63000/tcp
+#slurm port
+firewall-cmd --permanent --add-port=6817-6818/tcp
+
 firewall-cmd --add-service=nfs --permanent
 firewall-cmd --add-service=dhcp --permanent
 firewall-cmd --add-service=tftp --permanent
@@ -1181,8 +1186,6 @@ ll /var/log/slurmdbd.log
 ```
 
 ```bash
-
-```bash
 systemctl enable  slurmdbd
 systemctl restart slurmdbd
 
@@ -1291,6 +1294,8 @@ chown slurm:slurm /var/log/slurmd.log
 ```
 
 ```bash
+echo "SrunPortRange=60001-63000" >> /etc/slurm/slurm.conf
+
 systemctl restart slurmctld 
 
 pdsh -w node[01-02]   systemctl restart slurmd
