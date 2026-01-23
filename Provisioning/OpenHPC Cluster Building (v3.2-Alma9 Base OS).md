@@ -129,6 +129,10 @@ firewall-cmd --add-masquerade --zone=public --permanent
 firewall-cmd --change-interface=${EXT_NIC}  --zone=public    --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 
+firewall-cmd --add-service=nfs --permanent
+firewall-cmd --add-service=dhcp --permanent
+firewall-cmd --add-service=tftp --permanent
+
 firewall-cmd --reload
 systemctl restart firewalld
 
@@ -658,6 +662,14 @@ EOF
 tail  /etc/warewulf/bootstrap.conf
 
 # Build bootstrap image & check bootstrap list
+
+echo "[mysqld]"                    >> /etc/my.cnf.d/server.cnf
+echo "max_allowed_packet=512M"     >> /etc/my.cnf.d/server.cnf
+echo "database chunk size = 134217728" >> /etc/warewulf/database.conf
+
+systemctl restart mariadb.service
+
+###
 wwsh bootstrap list
 
 wwbootstrap  `uname -r`

@@ -672,6 +672,14 @@ EOF
 tail  /etc/warewulf/bootstrap.conf
 
 # Build bootstrap image & check bootstrap list
+
+echo "[mysqld]"                    >> /etc/my.cnf.d/server.cnf
+echo "max_allowed_packet=512M"     >> /etc/my.cnf.d/server.cnf
+echo "database chunk size = 134217728" >> /etc/warewulf/database.conf
+
+systemctl restart mariadb.service
+
+###
 wwsh bootstrap list
 
 wwbootstrap  `uname -r`
