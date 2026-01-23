@@ -131,6 +131,10 @@ firewall-cmd --add-masquerade --zone=public --permanent
 firewall-cmd --change-interface=${EXT_NIC}  --zone=public    --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 
+firewall-cmd --add-service=nfs --permanent
+firewall-cmd --add-service=dhcp --permanent
+firewall-cmd --add-service=tftp --permanent
+
 firewall-cmd --reload
 systemctl restart firewalld
 
@@ -1205,13 +1209,6 @@ mysql
 
  exit
 
-```
-
-```bash
-# 이부분은 안해도 됩니다.
-#firewall-cmd --add-port=6819/tcp  --permanent  ## slurmdbd  port
-#firewall-cmd --add-port=3306/tcp  --permanent  ## mysql  port
-#firewall-cmd  --reload
 ```
 
 ```bash
