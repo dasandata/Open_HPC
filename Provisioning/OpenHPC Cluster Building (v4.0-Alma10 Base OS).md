@@ -126,10 +126,6 @@ firewall-cmd --add-masquerade --zone=public --permanent
 firewall-cmd --change-interface=${EXT_NIC}  --zone=public    --permanent
 firewall-cmd --change-interface=${INT_NIC}  --zone=trusted   --permanent
 
-firewall-cmd --add-service=nfs --permanent
-firewall-cmd --add-service=dhcp --permanent
-firewall-cmd --add-service=tftp --permanent
-
 firewall-cmd --reload
 systemctl restart firewalld
 
