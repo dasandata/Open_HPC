@@ -7,7 +7,7 @@
 
 감사합니다.
 ***
-## [0. Standard Recipes of OpenHPC Cluster Building 4.0 (Alma10+warewulf4+slurm)][1]
+## [0. Standard Recipes of OpenHPC Cluster Building 4.0 (Alma10+warewulf4+slurm)][0]
 [0]:https://github.com/dasandata/Open_HPC/blob/master/Provisioning/OpenHPC%20Cluster%20Building%20(v4.0-Alma10%20Base%20OS).md
 
 ## [1. Standard Recipes of OpenHPC Cluster Building 3.2 (Alma9+warewulf+slurm)][1]
