@@ -78,7 +78,9 @@ export CLUSTER_NAME=ohpc_cluster # 변경 필요
 export MASTER_HOSTNAME=$(hostname -s)
 export MASTER_IP=10.1.1.200
 export MASTER_PREFIX=24
+export MASTER_SUBNET=255.255.255.0
 export MASTER_NETWORK=10.1.1.0
+export NODE_INT_NIC=eth0
 
 # 인터페이스 이름.
 export EXT_NIC=eno1 # 외부망.
@@ -304,7 +306,7 @@ ifconfig ${INT_NIC}
 ```bash
 # 적절한 네트워크 인터페이스와 설정을 사용하도록 warewulf.conf 파일을 수정  
 yq -i ".ipaddr = \"${MASTER_IP}\"" /etc/warewulf/warewulf.conf
-yq -i ".netmask = \"${MASTER_PREFIX}\"" /etc/warewulf/warewulf.conf
+yq -i ".netmask = \"${MASTER_SUBNET}\"" /etc/warewulf/warewulf.conf
 yq -i ".network = \"${MASTER_NETWORK}\"" /etc/warewulf/warewulf.conf
 yq -i ".dhcp[\"range start\"] = \"${MASTER_NETWORK}\"" /etc/warewulf/warewulf.conf
 yq -i ".dhcp[\"range end\"] = \"static\"" /etc/warewulf/warewulf.conf
@@ -345,7 +347,7 @@ wwctl profile set --yes nodes --system-overlays nodeconfig --runtime-overlays sy
 
 # 기본 네트워크 구성을 설정
 wwctl profile set -y nodes --netname=default --netdev=${NODE_INT_NIC}
-wwctl profile set -y nodes --netname=default --netmask=${MASTER_PREFIX}
+wwctl profile set -y nodes --netname=default --netmask=${MASTER_SUBNET}
 wwctl profile set -y nodes --netname=default --gateway=${MASTER_IP}
 wwctl profile set -y nodes --netname=default --nettagadd=DNS=8.8.8.8  # 추후 외부망 연결 시 변경
 
@@ -396,15 +398,11 @@ EOF
 #### #### slurm-client, ntp, lmod 설치 등.
 ```bash
  wwctl image exec --build=false almalinux-10 -- /bin/bash -ex <<- EOF
-# Add Slurm client support meta-package
 dnf -y install ohpc-slurm-client
-# Enable services to start on boot
+dnf -y install chrony
+dnf -y install lmod-ohpc
 systemctl enable munge.service
 systemctl enable slurmd.service
-# Add Network Time Protocol (NTP) support
-dnf -y install chrony
-# Include modules user environment
-dnf -y install lmod-ohpc
 EOF
 ```
 
@@ -676,25 +674,6 @@ chronyc sources
 chronyc sourcestats
 ```
 
-***
-
-### ### Command List of Checking Warewulf configuration
-```bash
-wwsh  file list
-
-wwsh  bootstrap list
-
-wwsh  vnfs list
-
-wwsh  node list
-
-wwsh  node print
-
-wwsh  object  print  -p :all
-```
-
-***
-
 # # [4. Install OpenHPC Development Components][contents]
 
 ## ## 4.1 Development Tools
@@ -835,27 +814,6 @@ scontrol  update  nodename=node01  state=resume
 sinfo --long
 ```
 
-### ### slurm alias 적용.
-```bash
-cat << EOF > /etc/profile.d/slurm.alias.sh
-alias sinfolong='sinfo    -o "%16P %14C %6t %15N %5D %15G %11l %14f "     '
-alias squeuelong='squeue  -o "%6i  %12j %9T %15u %8g %10P %8q %4D %20R %4C %13b %11l %11L %p"'
-EOF
-
-cat  /etc/profile.d/slurm.alias.sh
-
-wwsh file list
-wwsh file import  /etc/profile.d/slurm.alias.sh
-wwsh file list
-
-wwsh provision print    node01  | grep FILES
-wwsh provision set  -y  node01 --fileadd=slurm.alias.sh
-wwsh provision print    node01  | grep FILES
-
-pdsh -w node01  'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
-```
-
-
 ### ### 5.1 Run a Test Job
 
 #### #### job test 사용자 추가
@@ -870,12 +828,10 @@ wwsh file resync
 
 pdsh -w node01 uptime
 
-pdsh -w node01 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 pdsh -w node01 systemctl status slurmd | grep active
 
 # node가 여러대 인 경우
 pdsh -w node[01-04] uptime
-pdsh -w node[01-04] 'rm -rf /tmp/.wwgetfile*  &&  /warewulf/bin/wwgetfiles'
 ```
 
 ### ### 5.2 Interactive execution
@@ -1186,7 +1142,7 @@ wwvnfs --chroot  ${CHROOT}
 
 ## ## CUDA 설치 (master only)
 ```bash
-dnf -y install cuda-12-9   >> dasan_log_ohpc_cuda-master.txt 2>&1
+dnf -y install cuda-13-1   >> dasan_log_ohpc_cuda-master.txt 2>&1
 tail dasan_log_ohpc_cuda-master.txt
 
 ls -l /usr/local | grep cuda
@@ -1195,7 +1151,7 @@ ls -l /usr/local | grep cuda
 ```bash
 mkdir /opt/ohpc/pub/apps/cuda/
 
-for VER in  12.9
+for VER in  13.1
   do echo $VER
   mv /usr/local/cuda-$VER  /opt/ohpc/pub/apps/cuda/$VER
   done
@@ -1206,7 +1162,7 @@ ll /opt/ohpc/pub/apps/cuda/
 
 # Local에 있는 심볼릭 링크 제거
 rm -f /usr/local/cuda
-rm -f /usr/local/cuda-12
+rm -f /usr/local/cuda-13
 ```
 
 ## ## CUDNN to MASTER
@@ -1214,20 +1170,20 @@ rm -f /usr/local/cuda-12
 mkdir /root/cudnn/
 cd    /root/cudnn/
 
-wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-9.10.1.4_cuda12-archive.tar.xz
+wget https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/linux-x86_64/cudnn-linux-x86_64-9.19.1.2_cuda13-archive.tar.xz
 
 # 압축 해제 후 /opt/ohpc/pub/apps/cuda 아래로 이동.
 
-VER=12.9
+VER=13.1
 echo "CUDA-$VER"
 
-tar -xvf cudnn-linux-x86_64-9.10.1.4_cuda12-archive.tar.xz
+tar -xvf cudnn-linux-x86_64-9.19.1.2_cuda13-archive.tar.xz
 
-chmod a+r  cudnn-linux-x86_64-9.10.1.4_cuda12-archive/include/*
-chmod a+r  cudnn-linux-x86_64-9.10.1.4_cuda12-archive/lib/*
+chmod a+r  cudnn-linux-x86_64-9.19.1.2_cuda13-archive/include/*
+chmod a+r  cudnn-linux-x86_64-9.19.1.2_cuda13-archive/lib/*
 
-mv  cudnn-linux-x86_64-9.10.1.4_cuda12-archive/include/cudnn.h  /opt/ohpc/pub/apps/cuda/$VER/include/
-mv  cudnn-linux-x86_64-9.10.1.4_cuda12-archive/lib/libcudnn*    /opt/ohpc/pub/apps/cuda/$VER/lib64/
+mv  cudnn-linux-x86_64-9.19.1.2_cuda13-archive/include/cudnn.h  /opt/ohpc/pub/apps/cuda/$VER/include/
+mv  cudnn-linux-x86_64-9.19.1.2_cuda13-archive/lib/libcudnn*    /opt/ohpc/pub/apps/cuda/$VER/lib64/
 
 rm -rf   cuda/
 
