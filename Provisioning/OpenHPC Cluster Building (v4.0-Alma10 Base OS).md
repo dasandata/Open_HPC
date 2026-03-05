@@ -316,7 +316,7 @@ cat /etc/warewulf/warewulf.conf
 # 부팅 시 /opt 디렉터리가 마운트되도록 nodes.conf 파일을 수정
 perl -pi -e "s/defaults,noauto,nofail,ro/defaults,nofail,ro/" /etc/warewulf/nodes.conf
 
-grep "noauto"  /etc/warewulf/nodes.conf
+grep "noauto"  /etc/warewulf/nodes.conf  # 출력물 없어야함
 
 # 내부 네트워크 인터페이스에서 요청을 수신하도록 dnsmasq를 설정
 echo "interface=${INT_NIC}" > /etc/dnsmasq.d/ww4-interface.conf
@@ -339,7 +339,7 @@ grep "log" /etc/dnsmasq.d/ww4-interface.conf
 systemctl enable --now warewulfd
 
 # 새로운 "nodes" 프로필을 생성하고 "default" 프로필을 상속받도록 설정
-wwctl profile add nodes --profile default --comment "Nodesprofile"
+wwctl profile add nodes --profile default --comment "Nodes profile"
 
 # 노드 설정 파일들을 저장할 "nodeconfig" 오버레이를 새로 생성하고, syncuser 오버레이를 사용
 wwctl overlay create nodeconfig
