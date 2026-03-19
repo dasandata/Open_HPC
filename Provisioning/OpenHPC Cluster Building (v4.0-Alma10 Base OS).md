@@ -169,7 +169,7 @@ tail ~/dasan_log_ohpc_base,warewulf.txt
 
 ### ### Create the tftboot directory
 ```bash
- install -d -m 0755 /var/lib/tftpboot
+install -d -m 0755 /var/lib/tftpboot
 ```
 
 
@@ -820,18 +820,9 @@ sinfo --long
 ```bash
 adduser testuser
 passwd  testuser
-```
-#### #### 계정 정보 동기화.
-```bash
-wwsh file list
-wwsh file resync
 
-pdsh -w node01 uptime
-
-pdsh -w node01 systemctl status slurmd | grep active
-
-# node가 여러대 인 경우
-pdsh -w node[01-04] uptime
+wwctl configure --all
+wwctl overay build
 ```
 
 ### ### 5.2 Interactive execution
@@ -890,7 +881,12 @@ cat slurm-<jobID>.out
 # # [6. slurmdbd, sacctmgr, cgroup][contents]
 
 ```bash
+
+dnf install -y mariadb-server
+systemctl enable --now mariadb
+
 systemctl status slurmdbd
+systemctl start --now mariadb
 
 ```
 
