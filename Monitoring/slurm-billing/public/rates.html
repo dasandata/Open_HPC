@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slurm 자원 단가 관리</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- 헤더 및 내비게이션 -->
+        <header class="mb-8 border-b border-gray-800 pb-5 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-white">자원별 단가 관리</h1>
+                <p class="text-sm text-gray-400 mt-1">Slurm TRES 자원별 시간당 단가(원)를 설정합니다.</p>
+            </div>
+            <a href="index.html" class="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                ← 과금 대시보드로 돌아가기
+            </a>
+        </header>
+
+        <!-- 새 자원 추가 폼 카드 -->
+        <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md mb-8">
+            <h2 class="text-lg font-semibold text-white mb-4">새 자원/단가 추가</h2>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <input type="text" id="new-tres" placeholder="예: gres/gpu:h100 또는 cpu" class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                <input type="number" id="new-price" placeholder="시간당 단가 (원)" class="w-full sm:w-48 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                <button id="add-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2 rounded-lg text-sm transition-colors cursor-pointer">
+                    추가하기
+                </button>
+            </div>
+        </div>
+
+        <!-- 단가 목록 수정 테이블 -->
+        <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden shadow-xl">
+            <div class="p-6 border-b border-gray-700 flex justify-between items-center bg-gray-800/50">
+                <h2 class="text-xl font-semibold text-white">설정된 단가 목록</h2>
+                <button id="save-all-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-5 py-2 rounded-lg text-sm transition-colors cursor-pointer">
+                    전체 변경사항 저장
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-700/50 text-gray-300 text-sm font-semibold border-b border-gray-700">
+                            <th class="p-4">TRES 자원명</th>
+                            <th class="p-4">시간당 단가 (원/시간)</th>
+                            <th class="p-4 text-center">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rates-table-body" class="divide-y divide-gray-700 text-sm">
+                        <!-- 동적 데이터 삽입 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRates = {};
+
+        // 서버에서 단가 목록 불러오기
+        async function loadRates() {
+            try {
+                const res = await fetch('/api/rates');
+                currentRates = await res.json();
+                renderTable();
+            } catch (err) {
+                alert('단가 정보를 불러오는데 실패했습니다.');
+            }
+        }
+
+        // 테이블 그리기
+        function renderTable() {
+            const tbody = document.getElementById('rates-table-body');
+            tbody.innerHTML = '';
+
+            Object.entries(currentRates).forEach(([tres, price]) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-700/30 transition-colors';
+                tr.innerHTML = `
+                    <td class="p-4 font-semibold text-white">${tres}</td>
+                    <td class="p-4">
+                        <input type="number" value="${price}" data-tres="${tres}" class="price-input bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-sm text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 w-40"> 원
+                    </td>
+                    <td class="p-4 text-center">
+                        <button onclick="deleteRate('${tres}')" class="text-red-400 hover:text-red-300 font-medium text-xs bg-red-950/40 border border-red-800 px-3 py-1.5 rounded transition-colors cursor-pointer">
+                            삭제
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 단가 삭제
+        function deleteRate(tres) {
+            if (confirm(`'${tres}' 자원을 단가 목록에서 삭제하시겠습니까?`)) {
+                delete currentRates[tres];
+                renderTable();
+            }
+        }
+
+        // 새 단가 추가
+        document.getElementById('add-btn').addEventListener('click', () => {
+            const tresInput = document.getElementById('new-tres');
+            const priceInput = document.getElementById('new-price');
+
+            const tres = tresInput.value.trim().toLowerCase();
+            const price = parseInt(priceInput.value, 10);
+
+            if (!tres || isNaN(price)) {
+                alert('자원명과 올바른 단가를 입력해주세요.');
+                return;
+            }
+
+            currentRates[tres] = price;
+            tresInput.value = '';
+            priceInput.value = '';
+            renderTable();
+        });
+
+        // 전체 저장 버튼 클릭 시 API 호출
+        document.getElementById('save-all-btn').addEventListener('click', async () => {
+            // 테이블에 입력된 변경값을 currentRates 객체에 반영
+            document.querySelectorAll('.price-input').forEach(input => {
+                const tres = input.getAttribute('data-tres');
+                const val = parseInt(input.value, 10);
+                if (!isNaN(val)) {
+                    currentRates[tres] = val;
+                }
+            });
+
+            try {
+                const res = await fetch('/api/rates', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentRates)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('단가 설정이 저장되었습니다.');
+                } else {
+                    alert('저장 실패: ' + result.message);
+                }
+            } catch (err) {
+                alert('서버와 통신 중 오류가 발생했습니다.');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadRates);
+    </script>
+</body>
+</html>

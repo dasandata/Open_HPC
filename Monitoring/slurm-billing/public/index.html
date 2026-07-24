@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slurm GPU/CPU 사용량 과금 대시보드</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- 헤더 섹션 -->
+
+<header class="mb-8 border-b border-gray-800 pb-5 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight text-white">Slurm 자원 사용 요금 현황</h1>
+        <p class="text-sm text-gray-400 mt-2">조회된 기간: <span id="billing-period" class="font-semibold text-emerald-400">-</span></p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+        <!-- 날짜 컨트롤러 -->
+        <div class="flex flex-wrap items-center gap-3 bg-gray-800 p-3 rounded-lg border border-gray-700">
+            <div class="flex items-center gap-2">
+                <label for="start-date" class="text-xs font-medium text-gray-400">시작일</label>
+                <input type="date" id="start-date" class="bg-gray-700 border border-gray-600 rounded text-sm p-1.5 text-white focus:outline-none focus:border-emerald-500">
+            </div>
+            <div class="flex items-center gap-2">
+                <label for="end-date" class="text-xs font-medium text-gray-400">종료일</label>
+                <input type="date" id="end-date" class="bg-gray-700 border border-gray-600 rounded text-sm p-1.5 text-white focus:outline-none focus:border-emerald-500">
+            </div>
+            <button id="search-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm px-4 py-1.5 rounded transition-colors cursor-pointer">
+                조회하기
+            </button>
+        </div>
+
+        <!-- [추가] 단가 관리 페이지 이동 버튼 -->
+        <a href="rates.html" class="bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 font-medium text-sm px-4 py-3 rounded-lg transition-colors flex items-center gap-1.5">
+            ⚙️ 단가 설정
+        </a>
+    </div>
+</header>
+
+        <!-- 알림 메시지 (실제 환경이 아닐 때 가이드용) -->
+        <div id="mock-alert" class="hidden mb-6 p-4 bg-amber-950/40 border border-amber-800 text-amber-300 rounded-xl text-sm">
+            ⚠️ 현재 서버 환경에 <strong>sreport</strong> 명령어가 없어 개발자 테스트용 데이터가 표시 중입니다. Slurm 마스터 노드에서 실행 시 정상 구동됩니다.
+        </div>
+
+        <!-- 요약 카드 섹션 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                <h3 class="text-gray-400 text-sm font-medium">총 청구 금액</h3>
+                <p id="total-cluster-cost" class="text-3xl font-bold text-emerald-400 mt-2">0원</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                <h3 class="text-gray-400 text-sm font-medium">활성 사용자 수</h3>
+                <p id="total-users" class="text-3xl font-bold text-blue-400 mt-2">0명</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                <h3 class="text-gray-400 text-sm font-medium">호스트네임 (마스터)</h3>
+                <p id="server-hostname" class="text-2xl font-bold text-purple-400 mt-2 truncate">-</p>
+            </div>
+        </div>
+
+        <!-- 메인 데이터 테이블 -->
+        <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden shadow-xl">
+            <div class="p-6 border-b border-gray-700 bg-gray-800/50">
+                <h2 class="text-xl font-semibold text-white">사용자별 상세 요금 표</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-700/50 text-gray-300 text-sm font-semibold border-b border-gray-700">
+                            <th class="p-4">계정 (ID)</th>
+                            <th class="p-4">소속 Account</th>
+                            <th class="p-4">주요 자원 사용량 (시간)</th>
+                            <th class="p-4 text-right">총 청구 금액</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billing-table-body" class="divide-y divide-gray-700 text-sm">
+                        <!-- 동적 데이터 삽입 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 데이터를 가져와서 화면을 그리는 핵심 함수
+        async function fetchBillingData(start, end) {
+            try {
+                const response = await fetch(`/api/billing?start=${start}&end=${end}`);
+                const data = await response.json();
+
+                // 가상 데이터 알림창 토글
+                const alertBox = document.getElementById('mock-alert');
+                if (data.isMock) alertBox.classList.remove('hidden');
+                else alertBox.classList.add('hidden');
+
+                // 상단 헤더 요약 및 호스트네임 갱신
+                document.getElementById('billing-period').innerText = data.period;
+                document.getElementById('total-users').innerText = `${data.users.length}명`;
+                document.getElementById('server-hostname').innerText = data.hostname; // 서버 호스트네임 반영
+
+                let clusterTotalCost = 0;
+                const tableBody = document.getElementById('billing-table-body');
+                tableBody.innerHTML = '';
+
+                data.users.forEach(user => {
+                    clusterTotalCost += user.totalCost;
+
+                    let usageBadges = '';
+                    for (const [tres, details] of Object.entries(user.tresUsage)) {
+                        if (details.minutes > 0) {
+                            const cleanName = tres.replace('gres/gpu:', '').toUpperCase();
+                            const isCpu = cleanName === 'CPU';
+                            const badgeColor = isCpu ? 'bg-slate-700 text-slate-300' : 'bg-amber-950 text-amber-400 border border-amber-800';
+
+                            usageBadges += `
+                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium mr-2 mb-1 ${badgeColor}">
+                                    ${cleanName}: ${details.hours.toLocaleString()}h (${details.cost.toLocaleString()}원)
+                                </span>
+                            `;
+                        }
+                    }
+
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-700/30 transition-colors';
+                    row.innerHTML = `
+                        <td class="p-4 font-semibold text-white">${user.login}</td>
+                        <td class="p-4 text-gray-400">${user.account}</td>
+                        <td class="p-4">${usageBadges || '<span class="text-gray-500">사용 기록 없음</span>'}</td>
+                        <td class="p-4 text-right font-bold text-emerald-400 text-base">${user.totalCost.toLocaleString()}원</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                document.getElementById('total-cluster-cost').innerText = `${clusterTotalCost.toLocaleString()}원`;
+
+            } catch (error) {
+                console.error("데이터 로드 실패:", error);
+                alert("서버 통신 중 오류가 발생했습니다.");
+            }
+        }
+
+        // 오늘 날짜 및 이번 달 1일을 계산하여 달력 기본값 세팅하는 함수
+        function initDatePickers() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+
+            const formattedToday = `${year}-${month}-${day}`;
+            const formattedFirstDay = `${year}-${month}-01`;
+
+            document.getElementById('start-date').value = formattedFirstDay;
+            document.getElementById('end-date').value = formattedToday;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDatePickers();
+
+            const startInput = document.getElementById('start-date');
+            const endInput = document.getElementById('end-date');
+
+            fetchBillingData(startInput.value, endInput.value);
+
+            document.getElementById('search-btn').addEventListener('click', () => {
+                fetchBillingData(startInput.value, endInput.value);
+            });
+        });
+    </script>
+</body>
+</html>

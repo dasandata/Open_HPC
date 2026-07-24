@@ -1,0 +1,17 @@
+# /etc/systemd/system/slurm-billing.service
+[Unit]
+Description=Slurm Billing Dashboard Node.js App
+After=network.target slurmctld.service
+
+[Service]
+Type=simple
+# [주의] 홈디렉토리의 소유주인 일반 계정 이름으로 실행하는 것이 안전합니다.
+User=sonic
+# 애플리케이션이 있는 실제 프로젝트 폴더 경로
+WorkingDirectory=/home/sonic/slurm-billing
+# 방금 'which node'로 찾은 절대 경로와 실행할 파일 지정
+ExecStart=/home/sonic/.nvm/versions/node/v16.20.2/bin/node /home/sonic/slurm-billing/server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

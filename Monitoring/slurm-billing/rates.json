@@ -1,0 +1,11 @@
+{
+  "cpu": 100,
+  "gres/gpu:rtx3090": 500,
+  "gres/gpu:a100": 2000,
+  "gres/gpu:a6000": 1200,
+  "gres/gpu:rtx4090": 700,
+  "gres/gpu:rtx6000ada": 1500,
+  "gres/gpu:a5000": 400,
+  "gres/gpu:rtxpro6000": 1000,
+  "gres/gpu:h100": 3000
+}
