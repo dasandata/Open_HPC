@@ -310,6 +310,7 @@ yq -i ".netmask = \"${MASTER_SUBNET}\"" /etc/warewulf/warewulf.conf
 yq -i ".network = \"${MASTER_NETWORK}\"" /etc/warewulf/warewulf.conf
 yq -i ".dhcp[\"range start\"] = \"${MASTER_NETWORK}\"" /etc/warewulf/warewulf.conf
 yq -i ".dhcp[\"range end\"] = \"static\"" /etc/warewulf/warewulf.conf
+yq -i '.dhcp.template = "static"' /etc/warewulf/warewulf.conf
 
 cat /etc/warewulf/warewulf.conf
 
